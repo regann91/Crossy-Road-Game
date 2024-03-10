@@ -1,16 +1,20 @@
 #include <iostream>
 #include <GL/glew.h>
+#include <GL/glut.h>
 #include <GL/freeglut.h>
 #include <glm/vec3.hpp>
 #include <vector>
 
-
+#include "TextureManager.h"
 #include "Character.h"
-#include <GL/glut.h>
+
 
 // Constructor implementation
 Character::Character(float startX, float startY, float charWidth, float charHeight)
-    : GameObject(startX, startY, charWidth, charHeight) {}
+    : GameObject(startX, startY, charWidth, charHeight) 
+{
+    color = glm::vec3(176, 63, 130)/256.0f;
+}
 
 float Character::getX() const {
     return x;
@@ -25,21 +29,6 @@ float Character::getHeight() const {
     return height;
 }
 
-
-
-
-// draw implementation
-void Character::draw() const {
-    // Custom drawing for the character (blue rectangle)
-    glColor3f(0.5, 0.5, 0.0);  
-    glBegin(GL_QUADS);
-    glVertex2f(x, y);
-    glVertex2f(x + width, y);
-    glVertex2f(x + width, y + height);
-    glVertex2f(x, y + height);
-    glEnd();
-}
-
 // collidesWith implementation
 bool Character::collidesWith(const GameObject& other) const {
     return (x < other.x + other.width &&
@@ -52,4 +41,20 @@ bool Character::collidesWith(const GameObject& other) const {
 void Character::move(float deltaX, float deltaY) {
     x += deltaX;
     y += deltaY;
+
+    // Checks where the player wants to move -> collisions
+    updateCamera();
+}
+
+// Updates the camera according to the Y player position
+void Character::updateCamera() {
+    int posX = WIDTH / 2 + width / 2;
+    int posY = y + height / 2;
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(- WIDTH / 2 + posX, WIDTH / 2 + posX, - HEIGHT / 2 + posY, HEIGHT / 2 + posY);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 }

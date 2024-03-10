@@ -7,17 +7,17 @@
 #pragma once
 #include "GameObject.h"
 
-class Car : public GameObject {
+class MovingObject : public GameObject {
 public:
 
     // Constructor
-    Car(float startX, float startY, float carWidth, float carHeight, float carSpeed);
+    MovingObject(float startX, float startY, float movingWidth, float movingHeight, glm::vec3 color, float movingSpeed);
 
     // Update function for car movement
     void update(float deltaTime);
 
-    // Override the draw function
-    void draw() const override;
+    // Returns speed
+    float getSpeed() const { return speed; }
 
 private:
     float speed;

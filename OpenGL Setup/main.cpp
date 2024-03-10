@@ -2,87 +2,69 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include "Character.h"
-#include "Road.h"
+#include "Game.h"
 #include "Tree.h"
-#include "Car.h"
-#include "River.h"
+#include "Way.h"
+#include "TextureManager.h"
 
-// Example instances of game objects
-Road road1(150.0);
-Road road2(600.0);
-River river1(0.0, 450.0, 400.0);
-River river2(450.0, 450.0, 350.0);
-Character player(400.0, 50.0, 50.0, 50.0);  // Initialize the player character
-Tree tree1(100.0, 350.0, 35.0, 50.0);  // Initialize a tree
-Tree tree2(100.0, 750.0, 35.0, 50.0);
-Tree tree3(250.0, 300.0, 35.0, 50.0);
-Tree tree4(250.0, 550.0, 35.0, 50.0);
-Tree tree5(350.0, 400.0, 35.0, 50.0);
-Tree tree6(450.0, 250.0, 35.0, 50.0);
-Tree tree7(500.0, 700.0, 35.0, 50.0);
-Tree tree8(550.0, 100.0, 35.0, 50.0);
-Tree tree9(600.0, 350.0, 35.0, 50.0);
-Tree tree10(700.0, 300.0, 35.0, 50.0);
-std::vector<Tree> trees = { tree1, tree2, tree3, tree4, tree5, tree6, tree7, tree8, tree9, tree10 };
-
-
-
+Game game;
+Character player;
  
 // Initialization function
 void init() {
-    glClearColor(1.0, 1.0, 1.0, 1.0);  // Set the clear color to white
-    glMatrixMode(GL_PROJECTION);
-    gluOrtho2D(0, 800, 0, 800);  // Set up a 2D orthographic view
-
-    road1.initCars();
-    road2.initCars();
+    glClearColor(0, 0, 0, 0);  // Set the clear color to white
+    game.init();
+    Character player = Character();
+    player.updateCamera();
 }
 
 // Display function to render the game
 void display() {
     glClear(GL_COLOR_BUFFER_BIT);  // Clear the color buffer
-
-    road1.draw();   // Render the road
-    road2.draw();
-    river1.draw();
-    river2.draw();
-    for (const auto& tree : trees) {
-        tree.draw();
-    }
-    player.draw();  // Render the character
-
-    // Check for collision with cars on road 1
-    for (const auto& car : road1.cars) {
-        if (player.collidesWith(car)) {
-            std::cout << "Game Over! You collided with a car on road 1." << std::endl;
-            exit(0);  // Terminate the game
-        }
-    }
-
-    // Check for collision with cars on road 2
-    for (const auto& car : road2.cars) {
-        if (player.collidesWith(car)) {
-            std::cout << "Game Over! You collided with a car on road 2." << std::endl;
-            exit(0);  // Terminate the game
-        }
-    }
-
-    // Check for collision with river (falling into water)
-    if (player.collidesWith(river1) || player.collidesWith(river2)) {
-        std::cout << "Game Over! You fell into the river." << std::endl;
-        exit(0);
-    }
+    glClearColor(0.3, 0.34, 0.53, 0);
+    game.drawObjects();
+    player.draw();
 
     glutSwapBuffers();  // Swap the front and back buffers to display the rendered image
 }
 
+// Reshape function, allows to keep aspect ratio
+void myReshape(int w, int h) {
+
+    // Original aspect ratio of viewport
+    const float aspect_ratio = (float)WIDTH / (float)HEIGHT;
+
+    float scale;
+    // If AR is smaller -> window less wide / taller so need to reshape keeping in mind width
+    // If AR is higher -> window wider / less tall so need to reshape keeping in mind height
+    scale = (float)w / (float)h < aspect_ratio
+        ? (float)w / (float)WIDTH
+        : (float)h / (float)HEIGHT;
+
+
+    float margin_x = (w - WIDTH * scale) / 2;
+    float margin_y = (h - HEIGHT * scale) / 2;
+
+    glViewport(margin_x, margin_y, WIDTH * scale, HEIGHT * scale);
+}
+
 // Update function for game logic (e.g., character and car movement, collision detection)
 void update() {
+    // Update all ways (moving boulders and trunks)
+    game.updateWays();
 
-    road1.update();  // Update cars on road 1
-    road2.update();  // Update cars on road 2
+    // Collision check from ways
+    auto ways = game.getWays();
 
-    if (player.getY() >= 750.0) {
+    // if player enters a way then 
+    for (std::shared_ptr<Way> way : ways) {
+        if (way->collided(player)) {
+            std::cout << "You lost the game :(" << std::endl;
+            exit(0);
+        }
+    }
+
+    if (player.getY() >= 950) {
         std::cout << "Congratulations! You won the game!" << std::endl;
         exit(0);  
     }
@@ -94,22 +76,36 @@ void update() {
 void timerUpdate(int value) {
     update();  // Call the update function
 
-    glutTimerFunc(10, timerUpdate, 0);  // Call timerUpdate function every 10 milliseconds
+    glutTimerFunc(DELTA_TIME, timerUpdate, 0);  // Call timerUpdate function every 10 milliseconds
+}
+
+// Tree checking
+bool anyTreeCollided() {
+    auto trees = game.getTrees();
+    for (Tree tree : trees) {
+        if (player.collidesWith(tree)) return true;
+    }
+    return false;
 }
 
 // Keyboard input handling function
 void specialKeys(int key, int x, int y) {
-    const float moveStep = 50.0;  // Adjust the step size as needed
-
     switch (key) {
     case GLUT_KEY_UP:
-        player.move(0, moveStep);  // Move character up
+        player.move(0, MOVESTEP);  // Move character left
+        if(anyTreeCollided()) player.move(0, -MOVESTEP);
         break;
     case GLUT_KEY_LEFT:
-        player.move(-moveStep, 0);  // Move character left
+        player.move( -MOVESTEP/2, 0);  // Move character left
+        if (anyTreeCollided()) player.move(MOVESTEP/2, 0);
         break;
     case GLUT_KEY_RIGHT:
-        player.move(moveStep, 0);  // Move character right
+        player.move( MOVESTEP/2, 0);  // Move character right
+        if (anyTreeCollided()) player.move(-MOVESTEP/2, 0);
+        break;
+    case GLUT_KEY_DOWN:
+        player.move( 0, -MOVESTEP);  // Move character down
+        if (anyTreeCollided()) player.move(0, MOVESTEP);
         break;
     default:
         break;
@@ -121,15 +117,17 @@ void specialKeys(int key, int x, int y) {
 // Main function
 int main(int argc, char** argv) {
     glutInit(&argc, argv);  // Initialize GLUT
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);  // Set up the display mode
 
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);  // Set up the display mode
+    
     glutCreateWindow("Crossy Road Game");  // Create a window with the specified title
-    glutInitWindowSize(800, 600);  // Set the initial window size
+    glutInitWindowSize(WIDTH, HEIGHT);  // Set the initial window size
 
     init();  // Call the init function to set up OpenGL
 
     // Register the display, update, and keyboard functions
     glutDisplayFunc(display);
+    glutReshapeFunc(myReshape);
     glutIdleFunc(update);
     glutTimerFunc(0, timerUpdate, 0);  // Call timerUpdate function immediately and set up timer
     glutSpecialFunc(specialKeys);
