@@ -87,7 +87,7 @@ void Way::initMovingObjects() {
                     initialX = existingObj.x + objWidth + objSpacing;
                 }
             }
-            movingObjects.emplace_back(MovingObject(initialX, y + (50.0 * l), objWidth, 50.0, colors, speedForLane1));
+            movingObjects.emplace_back(MovingObject(initialX, y + (50.0 * l), objWidth, 50.0, colors, (-1*l) * speedForLane1));
         }
     }
 }
