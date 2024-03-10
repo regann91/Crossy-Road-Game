@@ -60,7 +60,6 @@ void Way::initMovingObjects() {
     std::vector<float> xPositions;
     // LANE GENERATION LOOP : 2 lanes
     for (int l = 0; l < 2; l++) {
-        std::cout << l << std::endl;
         // Repeat the process for the second lane
         xPositions.clear();  // Clear the vector for the next set of x positions
 
@@ -87,7 +86,7 @@ void Way::initMovingObjects() {
                     initialX = existingObj.x + objWidth + objSpacing;
                 }
             }
-            movingObjects.emplace_back(MovingObject(initialX, y + (50.0 * l), objWidth, 50.0, colors, (-1*l) * speedForLane1));
+            movingObjects.emplace_back(MovingObject(initialX, y + (50.0 * l), objWidth, 50.0, colors, speedForLane1 * std::pow(-1,l)));
         }
     }
 }

@@ -60,13 +60,18 @@ void update() {
     for (std::shared_ptr<Way> way : ways) {
         if (way->collided(player)) {
             std::cout << "You lost the game :(" << std::endl;
-            exit(0);
+            glutLeaveMainLoop();
         }
+    }
+
+    if (player.getX() < 0 || player.getX() > WIDTH) {
+        std::cout << "You escaped the game, never to be seen again" << std::endl;
+        glutLeaveMainLoop();
     }
 
     if (player.getY() >= 950) {
         std::cout << "Congratulations! You won the game!" << std::endl;
-        exit(0);  
+        glutLeaveMainLoop();
     }
 
     glutPostRedisplay();
