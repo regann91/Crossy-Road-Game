@@ -73,7 +73,7 @@ void Way::initMovingObjects() {
         std::shuffle(xPositions.begin(), xPositions.end(), std::default_random_engine(std::random_device{}()));
 
         // Generate a single speed for the first lane
-        float speedForLane1 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 8.0;
+        float speedForLane1 = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 4.0;
 
         // Add cars to the road using randomized x positions and the same speed for the lane
         for (int i = 0; i < numObj; ++i) {
