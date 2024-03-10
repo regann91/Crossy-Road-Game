@@ -1,4 +1,4 @@
-# CSED451 - Assignement 1 (Crossy Road Game)
+# CSED451 - Assignment 1 (Crossy Road Game)
 
 Our rendition of the popular arcade game, Crossy Road.
 
