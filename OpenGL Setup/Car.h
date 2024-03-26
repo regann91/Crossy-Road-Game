@@ -3,13 +3,15 @@
 #include <GL/freeglut.h>
 #include <glm/vec3.hpp>
 #include <vector>
+#include "Wheel.h"
 
 #pragma once
 #include "GameObject.h"
 
 class Car : public GameObject {
 public:
-
+    Wheel leftWheel;
+    Wheel rightWheel;
     // Constructor
     Car(float startX, float startY, float carWidth, float carHeight, float carSpeed);
 
@@ -21,4 +23,5 @@ public:
 
 private:
     float speed;
+
 };

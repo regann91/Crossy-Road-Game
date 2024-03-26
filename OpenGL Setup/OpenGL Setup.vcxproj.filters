@@ -36,6 +36,9 @@
     <ClCompile Include="River.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Wheel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Road.h">
@@ -54,6 +57,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="River.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Wheel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
