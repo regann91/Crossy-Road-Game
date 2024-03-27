@@ -1,142 +1,105 @@
-#include <iostream>
 #include <GL/glew.h>
-#include <GL/freeglut.h>
-#include "Character.h"
-#include "Game.h"
-#include "Tree.h"
-#include "Way.h"
+#include <gl/glut.h>
+#include <iostream>
+
 #include "TextureManager.h"
+#include "GameObject.h"
+#include "Game.h"
+#include "Character.h"
+
+// Adding missing definition in Microsoft headers
+#define GL_CLAMP_TO_EDGE 0x812F
+#define DELTA 50
 
 Game game;
-Character player;
- 
-// Initialization function
-void init() {
-    glClearColor(0, 0, 0, 0);  // Set the clear color to white
-    game.init();
-    Character player = Character();
-    player.updateCamera();
-}
-
-// Display function to render the game
-void display() {
-    glClear(GL_COLOR_BUFFER_BIT);  // Clear the color buffer
-    glClearColor(0.3, 0.34, 0.53, 0);
-    game.drawObjects();
-    player.draw();
-
-    glutSwapBuffers();  // Swap the front and back buffers to display the rendered image
-}
 
 // Reshape function, allows to keep aspect ratio
 void myReshape(int w, int h) {
 
     // Original aspect ratio of viewport
-    const float aspect_ratio = (float)WIDTH / (float)HEIGHT;
+    const float aspect_ratio = VIEW_WIDTH / VIEW_HEIGHT;
 
     float scale;
     // If AR is smaller -> window less wide / taller so need to reshape keeping in mind width
     // If AR is higher -> window wider / less tall so need to reshape keeping in mind height
     scale = (float)w / (float)h < aspect_ratio
-        ? (float)w / (float)WIDTH
-        : (float)h / (float)HEIGHT;
+        ? (float)w / VIEW_WIDTH
+        : (float)h / VIEW_HEIGHT;
 
+    float margin_x = (w - VIEW_WIDTH * scale) / 2;
+    float margin_y = (h - VIEW_HEIGHT * scale) / 2;
 
-    float margin_x = (w - WIDTH * scale) / 2;
-    float margin_y = (h - HEIGHT * scale) / 2;
-
-    glViewport(margin_x, margin_y, WIDTH * scale, HEIGHT * scale);
+    glViewport(margin_x, margin_y, VIEW_WIDTH * scale, VIEW_HEIGHT * scale);
 }
 
-// Update function for game logic (e.g., character and car movement, collision detection)
-void update() {
-    // Update all ways (moving boulders and trunks)
-    game.updateWays();
 
-    // Collision check from ways
-    auto ways = game.getWays();
+// Display function to render the game
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT);  // Clear the color buffer
 
-    // if player enters a way then 
-    for (std::shared_ptr<Way> way : ways) {
-        if (way->collided(player)) {
-            std::cout << "You lost the game :(" << std::endl;
-            glutLeaveMainLoop();
-        }
-    }
+    game.drawScene();
 
-    if (player.getX() < 0 || player.getX() > WIDTH) {
-        std::cout << "You escaped the game, never to be seen again" << std::endl;
-        glutLeaveMainLoop();
-    }
-
-    if (player.getY() >= 950) {
-        std::cout << "Congratulations! You won the game!" << std::endl;
-        glutLeaveMainLoop();
-    }
-
-    glutPostRedisplay();
+    glutSwapBuffers();  // Swap the front and back buffers to display the rendered image
 }
 
-// Timer update function with a single int parameter
-void timerUpdate(int value) {
-    update();  // Call the update function
-
-    glutTimerFunc(DELTA_TIME, timerUpdate, 0);  // Call timerUpdate function every 10 milliseconds
-}
-
-// Tree checking
-bool anyTreeCollided() {
-    auto trees = game.getTrees();
-    for (Tree tree : trees) {
-        if (player.collidesWith(tree)) return true;
-    }
-    return false;
-}
 
 // Keyboard input handling function
 void specialKeys(int key, int x, int y) {
     switch (key) {
     case GLUT_KEY_UP:
-        player.move(0, MOVESTEP);  // Move character left
-        if(anyTreeCollided()) player.move(0, -MOVESTEP);
+        game.movePlayer(0, STEP);  // Move character up
         break;
     case GLUT_KEY_LEFT:
-        player.move( -MOVESTEP/2, 0);  // Move character left
-        if (anyTreeCollided()) player.move(MOVESTEP/2, 0);
+        game.movePlayer(-STEP, 0);  // Move character left
         break;
     case GLUT_KEY_RIGHT:
-        player.move( MOVESTEP/2, 0);  // Move character right
-        if (anyTreeCollided()) player.move(-MOVESTEP/2, 0);
+        game.movePlayer(STEP, 0);  // Move character right
         break;
     case GLUT_KEY_DOWN:
-        player.move( 0, -MOVESTEP);  // Move character down
-        if (anyTreeCollided()) player.move(0, MOVESTEP);
+        game.movePlayer(0, -STEP);  // Move character down
         break;
     default:
         break;
     }
-
-    glutPostRedisplay();  // Request a redraw to update the display
 }
 
-// Main function
-int main(int argc, char** argv) {
-    glutInit(&argc, argv);  // Initialize GLUT
+// Timer update function with a single int parameter
+void timerUpdate(int value) {
+    game.update();  // Call the update function
 
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);  // Set up the display mode
+    glutTimerFunc(DELTA_TIME, timerUpdate, 0);  // Call timerUpdate function every 10 milliseconds
+}
+
+// Idle GLUT callback func
+void update() {
+    game.update();
+}
+
+int main(int argc, char** argv)
+{
+    // Initialization
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+    glutCreateWindow("Crossy Roads!");
+    glShadeModel(GL_FLAT);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    // Init of GLEW
+    GLenum err = glewInit();
+    if (err) {
+        std::cout << "GLEW Init failed" << std::endl;
+    }
+
+    game.init();
     
-    glutCreateWindow("Crossy Road Game");  // Create a window with the specified title
-    glutInitWindowSize(WIDTH, HEIGHT);  // Set the initial window size
-
-    init();  // Call the init function to set up OpenGL
-
-    // Register the display, update, and keyboard functions
-    glutDisplayFunc(display);
     glutReshapeFunc(myReshape);
+    glutDisplayFunc(display);
     glutIdleFunc(update);
-    glutTimerFunc(0, timerUpdate, 0);  // Call timerUpdate function immediately and set up timer
     glutSpecialFunc(specialKeys);
-    glutMainLoop();  // Enter the GLUT main loop
+    glutTimerFunc(0, timerUpdate, 0);  // Call timerUpdate function immediately and set up timer
+    // Update loop
+    glutMainLoop();
 
     return 0;
 }

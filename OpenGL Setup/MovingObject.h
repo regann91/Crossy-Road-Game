@@ -1,17 +1,12 @@
-#include <iostream>
-#include <GL/glew.h>
-#include <GL/freeglut.h>
-#include <glm/vec3.hpp>
-#include <vector>
-
-#pragma once
 #include "GameObject.h"
 
 class MovingObject : public GameObject {
 public:
-
     // Constructor
-    MovingObject(float startX, float startY, float movingWidth, float movingHeight, glm::vec3 color, float movingSpeed);
+    MovingObject(float startX, float startY, float movingWidth, float movingHeight, std::string texPath, float movingSpeed, float laneW);
+
+    // Override draw function
+    void draw() const override;
 
     // Update function for car movement
     void update(float deltaTime);
@@ -20,5 +15,8 @@ public:
     float getSpeed() const { return speed; }
 
 private:
+    // Speed of moving object
     float speed;
+    // Width of the lane it is on
+    float laneWidth;
 };

@@ -6,11 +6,4 @@
 #include <vector>
 
 Tree::Tree(float x, float y, float width, float height)
-    : GameObject(x, y, width, height, glm::vec3(237,137,196)) {}
-
-float Tree::getX() const {
-    return x;
-}
-float Tree::getY() const {
-    return y;
-}
+    : GameObject(x, y, width, height, "../OpenGL\ Setup/textures/tree.bmp") {}

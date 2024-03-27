@@ -1,49 +1,31 @@
-//
-//// Destructor
-//River::~River() {
-//    for (const auto& obj : movingObjects) {
-//        delete& obj;
-//    }
-//}
-//
-//// Constructor implementation
-//River::River(int roadY) : Way(roadY) {}
-//
-//
-//// draw implementation
-//void River::draw() const {
-//    // Custom drawing for the road (gray rectangle)
-//    glColor3f(0.5, 0.5, 0.5);  // Set color to gray
-//    glBegin(GL_QUADS);
-//    glVertex2f(x, y);
-//    glVertex2f(x + width, y);
-//    glVertex2f(x + width, y + height);
-//    glVertex2f(x, y + height);
-//    glEnd();
-//
-//    // Draw the dotted line down the middle
-//    glColor3f(1.0, 1.0, 1.0);  // Set color to white for the line
-//    glLineStipple(1, 0xAAAA);  // Set line stipple pattern for dots
-//    glEnable(GL_LINE_STIPPLE);  // Enable line stipple
-//    glBegin(GL_LINES);
-//    // Draw the dotted line in the middle of the road
-//    float middleY = y + height / 2.0;
-//    glVertex2f(x, middleY);
-//    glVertex2f(x + width, middleY);
-//    glEnd();
-//    glDisable(GL_LINE_STIPPLE);  // Disable line stipple
-//
-//    for (const auto& obj : movingObjects) {
-//        obj->draw();
-//    }
-//}
-//
-//// There is collision on a River when a moving object is not touched while in River
-//bool River::collided(Character player) {
-//    // check is player is in River
-//    if (player.collidesWith(*this)) {
-//        
-//    }
-//    // No river
-//    return false;
-//}
+#include "River.h"
+
+// Constructor
+River::River(float riverY, float riverWidth) 
+    : Path(riverY, riverWidth, "../OpenGL\ Setup/textures/river.bmp", 3, 120) 
+{
+    initMovingObjects();
+}
+
+// Generates a template moving object for the path
+MovingObject River::createMovingObj(float initX, float initY, float speed) {
+    return MovingObject(initX, initY, getObjWidth(), 50, "../OpenGL\ Setup/textures/trunk.bmp", speed, width);
+}
+
+bool River::getsKilled(Character* player) {
+    // If player is on the river
+    if (player->collidesWith(*this)) {
+        bool death = true;
+        // Check for collision with trunks, which would keep player alive
+        for (MovingObject& obj : movingObjects) {
+            // If player is on trunk, then all good
+            if (player->collidesWith(obj)) {
+                death = false;
+                //player->move(obj.getSpeed()*0.007,0);
+                break;
+            }
+        }
+        return death;
+    }
+    return false;
+}
