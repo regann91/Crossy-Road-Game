@@ -37,41 +37,25 @@ MovingObject Path::createMovingObj(float initX, float initY, float speed) {
 }
 
 void Path::initMovingObjects() {
-    const float spacing = width / nbObjPerLane;
-    const float objSpacing = 30;  // Ensure at least 30.0 spacing between cars
+    const float baseSpacing = width / nbObjPerLane;  // Base spacing between cars
 
-    std::vector<float> xPositions;
     // LANE GENERATION LOOP : 2 lanes
     for (int l = 0; l < 2; l++) {
-        // Repeat the process for the second lane
-        xPositions.clear();  // Clear the vector for the next set of x positions
-
-        // Generate initial x positions with a larger range
-        for (int i = 0; i < nbObjPerLane; ++i) {
-            xPositions.push_back(i * spacing + (rand() % static_cast<int>(width)));
-        }
-
-        // Shuffle the x positions randomly
-        std::shuffle(xPositions.begin(), xPositions.end(), std::default_random_engine(std::random_device{}()));
-
         // Generate a single speed for the lane
         float laneSpeed = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 4.0 + 2;
 
         // Add cars to the road using randomized x positions and the same speed for the lane
         for (int i = 0; i < nbObjPerLane; ++i) {
-            float initialX = xPositions[i];
-
-            // Check for collisions with existing cars
-            for (const auto& existingObj : movingObjects) {
-                if (initialX < existingObj.x + objWidth + objSpacing &&
-                    initialX + objWidth + objSpacing > existingObj.x) {
-                    // Adjust the initialX to ensure at least 30.0 spacing
-                    initialX = existingObj.x + objWidth + objSpacing;
-                }
-            }
-            initialX -= width / 2; // Center on screen
+            // Generate a random offset for the x position
+            float offset = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * baseSpacing - baseSpacing / 2;
+            float initialX = i * baseSpacing + offset - width / 2; // Center on screen
             movingObjects.emplace_back(createMovingObj(initialX, y + (50.0 * l), laneSpeed * std::pow(-1, l)));
         }
+
+        // Shuffle the objects in the lane to further randomize their positions
+        auto lane_begin = movingObjects.begin() + l * nbObjPerLane;
+        auto lane_end = movingObjects.begin() + (l + 1) * nbObjPerLane;
+        std::shuffle(lane_begin, lane_end, std::default_random_engine(std::random_device{}()));
     }
 }
 

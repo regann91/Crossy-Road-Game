@@ -1,7 +1,7 @@
 #pragma once
 #include "GameObject.h"
 
-const int STEP = 8;
+const int STEP = 50;
 
 class Character : public GameObject {
 public:
