@@ -31,6 +31,27 @@ void GameObject::draw() const {
     glDisable(GL_TEXTURE_2D);
 }
 
+// Draw fixed on screen (object to pass is character)
+void GameObject::drawFixed(GameObject* object) const {
+    glColor4ub(255, 255, 255, 255);  // Set color to white
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, tex);
+
+    float posX = x;
+    float posY = y + object->y;
+
+    glBegin(GL_QUADS);
+        glVertex2f(posX, posY);
+        glVertex2f(posX + 150, posY);
+        glVertex2f(posX + 150, posY + 20);
+        glVertex2f(posX, posY + 20);
+    glEnd();
+
+    glDisable(GL_TEXTURE_2D);
+}
+
+
 // Collision check between 2 objects
 bool GameObject::collidesWith(GameObject other) const
 {

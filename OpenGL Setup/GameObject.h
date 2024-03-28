@@ -20,6 +20,9 @@ public:
     // Function for drawing the object
     virtual void draw() const;
 
+    // Function for drawing the object in a fixed place on screen (relative to character position)
+    void drawFixed(GameObject* object) const;
+
     // Collision check between 2 objects
     bool collidesWith(GameObject obj) const;
 };

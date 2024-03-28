@@ -5,19 +5,22 @@
 #include "TextureManager.h"
 #include <time.h>
 #include <iostream>
+#include "TextDisplayer.h"
 
 float RANDOM(float range = RAND_MAX) { return (float)rand() / (float)RAND_MAX * range; }
+TextDisplayer* textdisplay;
 
 // Destructor
-Game::~Game() { 
-    delete playerChar; 
+Game::~Game() {
+    delete playerChar;
+    delete textdisplay;
 }
 
 // Constructor
 Game::Game() {}
 
 // Initializes all instances
-void Game::init() 
+void Game::init()
 {
     // Use current time as seed for random generator 
     srand(time(0));
@@ -39,11 +42,14 @@ void Game::init()
 
     // Load BG texture
     backgroundTex = TextureManager::instance()->getTexture("../OpenGL\ Setup/textures/ground.bmp");
-    
+
+    // Load text font
+    textdisplay = new TextDisplayer("../OpenGL\ Setup/textures/fontMap.bmp", 7, 9, 18, 7, ' ');
+
     // Init paths and cars
     paths = {
         std::make_shared<Road>(125, VIEW_WIDTH),
-        std::make_shared<Road>(425, VIEW_WIDTH),
+        std::make_shared<River>(425, VIEW_WIDTH),
         std::make_shared<River>(675, VIEW_WIDTH),
     };
 
@@ -55,7 +61,7 @@ void Game::init()
 }
 
 // Draw all objects
-void Game::drawScene() 
+void Game::drawScene()
 {
     // Render BG
     glColor4ub(255, 255, 255, 255);  // Set color to white
@@ -85,8 +91,8 @@ void Game::drawScene()
     playerChar->draw();
 
     // Render all powerups
-    for (const auto& powerup : powerups) {
-        powerup.draw();
+    for (const auto& powerup : collectibles) {
+        powerup->draw();
     }
 
     // Render all trees
@@ -98,10 +104,13 @@ void Game::drawScene()
     if (activeShoes && activeShoes->time > 0) {
         activeShoes->drawBar(playerChar);
     }
+
+    // Render height on screen
+    textdisplay->drawScreen(std::to_string(score), 2, 0, 250, playerChar);
 }
 
 void Game::movePlayer(float deltaX, float deltaY)
-{ 
+{
     // Try to move 
     playerChar->move(deltaX, deltaY);
     // Check move would get us into a tree
@@ -111,6 +120,10 @@ void Game::movePlayer(float deltaX, float deltaY)
             playerChar->move(-deltaX, -deltaY);
         }
     }
+    // Update score
+    if (deltaY > 0 && playerChar->y / playerChar->height > score) 
+        score = playerChar->y / playerChar->height;
+
     updateCamera();
 }
 
@@ -134,25 +147,31 @@ void Game::update() {
         if (path->getsKilled(playerChar)) exit(0);
     }
 
-    // Update powerups
-    // Generate new powerup
-    spawnPowerUps();
+    // Update collectibles
+    // Generate new collectibles
+    spawnCollectibles();
 
-    // Check for end of powerup presence and activation
+    // Check for end of collectible presence and activation
     if (activeShoes && activeShoes->time > 0) activeShoes->update(DELTA_TIME, playerChar);
-    for (auto& powerup : powerups) {
-        powerup.update(DELTA_TIME, playerChar);
-        if (powerup.activated) activeShoes = std::make_shared<Shoes>(powerup);
+    for (auto& collect : collectibles) {
+        collect->update(DELTA_TIME, playerChar);
+        // Check for collection
+        if (collect->collected) {
+            // IF SHOES
+            auto shoePtr = std::dynamic_pointer_cast<Shoes>(collect);
+            if (shoePtr == nullptr)
+                activeShoes = shoePtr;
+        }
     }
 
     // Delete expired and activated powerups
-    for (int i = 0; i < powerups.size(); i++) {
-        if (powerups[i].time < 0 || powerups[i].activated) {
-            powerups[i] = powerups.back();
-            powerups.pop_back();
+    for (int i = 0; i < collectibles.size(); i++) {
+        if (collectibles[i]->time < 0 || collectibles[i]->collected) {
+            collectibles[i] = collectibles.back();
+            collectibles.pop_back();
         }
     }
-    
+
     // Update powerup effects
     playerChar->speed = activeShoes && activeShoes->time > 0 ? 2 : 1;
 
@@ -160,7 +179,7 @@ void Game::update() {
 }
 
 // Spawns powerup with a certain probability
-void Game::spawnPowerUps() {
+void Game::spawnCollectibles() {
     float random = RANDOM() * RANDOM();
 
     // Spawn shoes
@@ -172,6 +191,6 @@ void Game::spawnPowerUps() {
             Shoes::MAX_TIME
         );
 
-        if(!playerChar->collidesWith(shoes)) powerups.push_back(shoes);
+        if (!playerChar->collidesWith(shoes)) collectibles.push_back(std::make_shared<Collectible>(shoes));
     }
 }
