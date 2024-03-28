@@ -164,6 +164,7 @@
     <ClCompile Include="Shoes.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Tree.cpp" />
+    <ClCompile Include="Wheel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Character.h" />
@@ -177,6 +178,7 @@
     <ClInclude Include="Shoes.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Tree.h" />
+    <ClInclude Include="Wheel.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="flatVertex.glsl" />

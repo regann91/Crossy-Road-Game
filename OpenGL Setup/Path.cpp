@@ -8,6 +8,7 @@ Path::Path(float roadY, float roadWidth, std::string texPath, int nbObj, float o
 
 // Override the draw function
 void Path::draw() const {
+
     // Draw the path itself
     glColor4ub(255, 255, 255, 255);  // Set color to white
     glEnable(GL_TEXTURE_2D);

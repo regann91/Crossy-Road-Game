@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include "Wheel.h"
 
 class MovingObject : public GameObject {
 public:
@@ -13,6 +14,8 @@ public:
 
     // Returns speed
     float getSpeed() const { return speed; }
+    Wheel leftWheel;
+    Wheel rightWheel;
 
 private:
     // Speed of moving object
