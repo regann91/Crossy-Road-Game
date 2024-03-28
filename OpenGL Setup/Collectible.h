@@ -15,7 +15,7 @@ public:
     static const float MAX_TIME;
 
     // Constructor
-    Collectible(float startX = 0, float startY = 0, std::string texPath = 0, float time = MAX_TIME);
+    Collectible(float startX = 0, float startY = 0, std::string texPath = "", float time = MAX_TIME);
 
     // Update function for time and collection
     void update(float deltaTime, Character* player);

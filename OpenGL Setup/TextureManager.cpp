@@ -70,8 +70,8 @@ GLuint TextureManager::loadTexture(const std::string filename)
     for (int i = 0; i < width * height; ++i)
     {
         index = i * 4;
-        B = data[index]; G = data[index + 1]; R = data[index + 2]; 
-        A = data[index + 3] = ((int)R == 255 && (int)G == 0 && (int)B == 255) ? 0 : 255;
+        B = data[index]; G = data[index + 1]; R = data[index + 2];
+        A = ((int)R == 255 && (int)G == 0 && (int)B == 255) ? 0 : 255;
         data[index] = R; data[index + 1] = G; data[index + 2] = B; data[index + 3] = A;
     }
 

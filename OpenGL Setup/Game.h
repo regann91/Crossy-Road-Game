@@ -12,6 +12,7 @@
 const float VIEW_WIDTH = 800.0;
 const float VIEW_HEIGHT = 600.0;
 const float DELTA_TIME = 0.01;
+const float MAX_COLLECTIBLES = 3;
 
 class Game {
 public:

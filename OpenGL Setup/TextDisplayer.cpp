@@ -9,7 +9,7 @@ TextDisplayer::TextDisplayer(std::string fontPath, int wChar, int hChar, int nbP
 }
 
 // Draws text somewhere in the world
-void TextDisplayer::drawWorld(std::string text, float size, float x, float y) const {
+void TextDisplayer::drawWorld(std::string text, float size, float x, float y, bool centered) const {
     glColor4ub(255, 255, 255, 255);  // Set color to white
 
     glEnable(GL_TEXTURE_2D);
@@ -18,7 +18,7 @@ void TextDisplayer::drawWorld(std::string text, float size, float x, float y) co
     // Start drawing all characters from string
     glBegin(GL_QUADS);
 
-    float posX = x - widthChar * text.length() / 2;
+    float posX = centered ? x - size * widthChar * text.length() / 2 : x;
     for (const auto& ch : text) {
         drawChar(ch, size, posX, y);
         posX += widthChar;
@@ -29,7 +29,7 @@ void TextDisplayer::drawWorld(std::string text, float size, float x, float y) co
 }
 
 // Draws text fixed on screen, relatve to character position
-void TextDisplayer::drawScreen(std::string text, float size, float x, float y, Character* player) const {
+void TextDisplayer::drawScreen(std::string text, float size, float x, float y, Character* player, bool centered) const {
     //std::cout << x << "     " << y << std::endl;
     glColor4ub(255, 255, 255, 255);  // Set color to white
 
@@ -39,7 +39,7 @@ void TextDisplayer::drawScreen(std::string text, float size, float x, float y, C
     // Start drawing all characters from string
     glBegin(GL_QUADS);
 
-    float posX = x - size*widthChar * text.length() / 2;
+    float posX = centered ? x - size * widthChar * text.length() / 2 : x;
     float posY = y + player->y;
     for (const auto& ch : text) {
         drawChar(ch, size, posX, posY);

@@ -10,10 +10,10 @@ public:
     TextDisplayer(std::string fontPath, int wChar, int hChar, int nbPerLine, int nbPerColumn, char first);
 
     // Draws text somewhere in the world
-    void drawWorld(std::string text, float size, float x, float y) const;
+    void drawWorld(std::string text, float size, float x, float y, bool centered = true) const;
 
     // Draws text fixed on screen, relatve to character position
-    void drawScreen(std::string text, float size, float x, float y, Character* player) const;
+    void drawScreen(std::string text, float size, float x, float y, Character* player, bool centered = true) const;
    
 private:
     // Bitmap font texture

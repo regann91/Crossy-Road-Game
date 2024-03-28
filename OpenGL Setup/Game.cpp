@@ -1,14 +1,18 @@
 #pragma once
+#include <time.h>
+#include <iostream>
+
+#include "TextureManager.h"
+#include "TextDisplayer.h"
 #include "Game.h"
 #include "River.h"
 #include "Road.h"
-#include "TextureManager.h"
-#include <time.h>
-#include <iostream>
-#include "TextDisplayer.h"
+#include "Coin.h"
+
 
 float RANDOM(float range = RAND_MAX) { return (float)rand() / (float)RAND_MAX * range; }
 TextDisplayer* textdisplay;
+GameObject coinSprite;
 
 // Destructor
 Game::~Game() {
@@ -42,6 +46,9 @@ void Game::init()
 
     // Load BG texture
     backgroundTex = TextureManager::instance()->getTexture("../OpenGL\ Setup/textures/ground.bmp");
+   
+    // Load coin sprite
+    coinSprite = GameObject(-350, 250, 50, 50, "../OpenGL\ Setup/textures/coin.bmp");
 
     // Load text font
     textdisplay = new TextDisplayer("../OpenGL\ Setup/textures/fontMap.bmp", 7, 9, 18, 7, ' ');
@@ -105,8 +112,12 @@ void Game::drawScene()
         activeShoes->drawBar(playerChar);
     }
 
-    // Render height on screen
-    textdisplay->drawScreen(std::to_string(score), 2, 0, 250, playerChar);
+    // Render score on screen
+    textdisplay->drawScreen(std::to_string(score), 3, 0, 250, playerChar);
+
+    // Render coins 
+    coinSprite.drawFixed(playerChar);
+    textdisplay->drawScreen(std::to_string(coins), 2, -310, 250, playerChar, false);
 }
 
 void Game::movePlayer(float deltaX, float deltaY)
@@ -148,8 +159,8 @@ void Game::update() {
     }
 
     // Update collectibles
-    // Generate new collectibles
-    spawnCollectibles();
+    // Generate new collectibles if there is room
+    if(collectibles.size() <= MAX_COLLECTIBLES) spawnCollectibles();
 
     // Check for end of collectible presence and activation
     if (activeShoes && activeShoes->time > 0) activeShoes->update(DELTA_TIME, playerChar);
@@ -159,11 +170,19 @@ void Game::update() {
         if (collect->collected) {
             // IF SHOES
             auto shoePtr = std::dynamic_pointer_cast<Shoes>(collect);
-            if (shoePtr == nullptr)
-                activeShoes = shoePtr;
+            if (shoePtr != nullptr) {
+                activeShoes = shoePtr; 
+                break;
+            }
+            // IF COINS
+            auto coinPtr = std::dynamic_pointer_cast<Coin>(collect);
+            std::cout << coinPtr << std::endl;
+            if (coinPtr != nullptr) {
+                coins++;
+                break;
+            }
         }
     }
-
     // Delete expired and activated powerups
     for (int i = 0; i < collectibles.size(); i++) {
         if (collectibles[i]->time < 0 || collectibles[i]->collected) {
@@ -171,26 +190,38 @@ void Game::update() {
             collectibles.pop_back();
         }
     }
-
     // Update powerup effects
     playerChar->speed = activeShoes && activeShoes->time > 0 ? 2 : 1;
-
     glutPostRedisplay();
 }
 
 // Spawns powerup with a certain probability
 void Game::spawnCollectibles() {
-    float random = RANDOM() * RANDOM();
+    int random = RANDOM() * RANDOM();
 
-    // Spawn shoes
-    if (random < Shoes::SPAWN_RATE && random > 0) {
-        // Create random shoes in visible world
-        Shoes shoes = Shoes(
-            RANDOM(VIEW_WIDTH) - VIEW_WIDTH / 2,
-            RANDOM(VIEW_HEIGHT) - VIEW_HEIGHT / 2 + playerChar->y,
-            Shoes::MAX_TIME
-        );
+    // Spawn check
+    if (random < Collectible::SPAWN_RATE && random > 0) {
 
-        if (!playerChar->collidesWith(shoes)) collectibles.push_back(std::make_shared<Collectible>(shoes));
+        // Choose randomly between the different collectibles
+        random = RANDOM();
+        std::shared_ptr<Collectible> collectible;
+        
+        // Create random shoes in visible world (coins more frequent)
+        switch (random % 3) {
+            // Spawn shoes
+        case 0: collectible = std::make_shared<Shoes>(
+                RANDOM(VIEW_WIDTH) - VIEW_WIDTH / 2,
+                RANDOM(VIEW_HEIGHT) - VIEW_HEIGHT / 2 + playerChar->y,
+                Collectible::MAX_TIME
+            );
+                break;
+        default: collectible = std::make_shared<Coin>(
+                RANDOM(VIEW_WIDTH) - VIEW_WIDTH / 2,
+                RANDOM(VIEW_HEIGHT) - VIEW_HEIGHT / 2 + playerChar->y,
+                Collectible::MAX_TIME);
+                break;
+        }
+        
+        collectibles.push_back(collectible);
     }
 }
