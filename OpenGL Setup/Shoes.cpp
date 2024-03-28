@@ -1,10 +1,7 @@
 #include "Shoes.h"
 
-const float Shoes::SPAWN_RATE = 60;
-const float Shoes::MAX_TIME = 500000;
-
 Shoes::Shoes(float startX, float startY, float time) 
-	: GameObject(startX, startY, 50, 50, "../OpenGL\ Setup/textures/shoes.bmp"), time(time), activated(false) {}
+	: Collectible(startX, startY, "../OpenGL\ Setup/textures/shoes.bmp") {}
 
 // This draws a bar relative to player Y position
 void Shoes::drawBar(Character* player) const {
@@ -32,14 +29,11 @@ void Shoes::drawBar(Character* player) const {
 	glEnd();
 }
 
-void Shoes::update(float deltaTime, Character* player) {
-	// Update time
-	time -= deltaTime;
-
+void Shoes::tryCollect(Character* player) {
 	// Checks activation
-	if (!activated && player->collidesWith(*this)) {
+	if (!collected && player->collidesWith(*this)) {
 		// Activates and reset time
-		activated = true;
+		collected = true;
 		time = MAX_TIME/2;
 	}
 }

@@ -1,23 +1,30 @@
 #pragma once
-#include "Game.h"
-#include "River.h"
-#include "Road.h"
-#include "TextureManager.h"
 #include <time.h>
 #include <iostream>
 
+#include "TextureManager.h"
+#include "TextDisplayer.h"
+#include "Game.h"
+#include "River.h"
+#include "Road.h"
+#include "Coin.h"
+
+
 float RANDOM(float range = RAND_MAX) { return (float)rand() / (float)RAND_MAX * range; }
+TextDisplayer* textdisplay;
+GameObject coinSprite;
 
 // Destructor
-Game::~Game() { 
-    delete playerChar; 
+Game::~Game() {
+    delete playerChar;
+    delete textdisplay;
 }
 
 // Constructor
 Game::Game() {}
 
 // Initializes all instances
-void Game::init() 
+void Game::init()
 {
     // Use current time as seed for random generator 
     srand(time(0));
@@ -39,11 +46,17 @@ void Game::init()
 
     // Load BG texture
     backgroundTex = TextureManager::instance()->getTexture("../OpenGL\ Setup/textures/ground.bmp");
-    
+   
+    // Load coin sprite
+    coinSprite = GameObject(-350, 250, 50, 50, "../OpenGL\ Setup/textures/coin.bmp");
+
+    // Load text font
+    textdisplay = new TextDisplayer("../OpenGL\ Setup/textures/fontMap.bmp", 7, 9, 18, 7, ' ');
+
     // Init paths and cars
     paths = {
         std::make_shared<Road>(125, VIEW_WIDTH),
-        std::make_shared<Road>(425, VIEW_WIDTH),
+        std::make_shared<River>(425, VIEW_WIDTH),
         std::make_shared<River>(675, VIEW_WIDTH),
     };
 
@@ -55,7 +68,7 @@ void Game::init()
 }
 
 // Draw all objects
-void Game::drawScene() 
+void Game::drawScene()
 {
     // Render BG
     glColor4ub(255, 255, 255, 255);  // Set color to white
@@ -85,8 +98,8 @@ void Game::drawScene()
     playerChar->draw();
 
     // Render all powerups
-    for (const auto& powerup : powerups) {
-        powerup.draw();
+    for (const auto& powerup : collectibles) {
+        powerup->draw();
     }
 
     // Render all trees
@@ -98,10 +111,17 @@ void Game::drawScene()
     if (activeShoes && activeShoes->time > 0) {
         activeShoes->drawBar(playerChar);
     }
+
+    // Render score on screen
+    textdisplay->drawScreen(std::to_string(score), 3, 0, 250, playerChar);
+
+    // Render coins 
+    coinSprite.drawFixed(playerChar);
+    textdisplay->drawScreen(std::to_string(coins), 2, -310, 250, playerChar, false);
 }
 
 void Game::movePlayer(float deltaX, float deltaY)
-{ 
+{
     // Try to move 
     playerChar->move(deltaX, deltaY);
     // Check move would get us into a tree
@@ -111,6 +131,10 @@ void Game::movePlayer(float deltaX, float deltaY)
             playerChar->move(-deltaX, -deltaY);
         }
     }
+    // Update score
+    if (deltaY > 0 && playerChar->y / playerChar->height > score) 
+        score = playerChar->y / playerChar->height;
+
     updateCamera();
 }
 
@@ -134,44 +158,70 @@ void Game::update() {
         if (path->getsKilled(playerChar)) exit(0);
     }
 
-    // Update powerups
-    // Generate new powerup
-    spawnPowerUps();
+    // Update collectibles
+    // Generate new collectibles if there is room
+    if(collectibles.size() <= MAX_COLLECTIBLES) spawnCollectibles();
 
-    // Check for end of powerup presence and activation
+    // Check for end of collectible presence and activation
     if (activeShoes && activeShoes->time > 0) activeShoes->update(DELTA_TIME, playerChar);
-    for (auto& powerup : powerups) {
-        powerup.update(DELTA_TIME, playerChar);
-        if (powerup.activated) activeShoes = std::make_shared<Shoes>(powerup);
-    }
-
-    // Delete expired and activated powerups
-    for (int i = 0; i < powerups.size(); i++) {
-        if (powerups[i].time < 0 || powerups[i].activated) {
-            powerups[i] = powerups.back();
-            powerups.pop_back();
+    for (auto& collect : collectibles) {
+        collect->update(DELTA_TIME, playerChar);
+        // Check for collection
+        if (collect->collected) {
+            // IF SHOES
+            auto shoePtr = std::dynamic_pointer_cast<Shoes>(collect);
+            if (shoePtr != nullptr) {
+                activeShoes = shoePtr; 
+                break;
+            }
+            // IF COINS
+            auto coinPtr = std::dynamic_pointer_cast<Coin>(collect);
+            std::cout << coinPtr << std::endl;
+            if (coinPtr != nullptr) {
+                coins++;
+                break;
+            }
         }
     }
-    
+    // Delete expired and activated powerups
+    for (int i = 0; i < collectibles.size(); i++) {
+        if (collectibles[i]->time < 0 || collectibles[i]->collected) {
+            collectibles[i] = collectibles.back();
+            collectibles.pop_back();
+        }
+    }
     // Update powerup effects
     playerChar->speed = activeShoes && activeShoes->time > 0 ? 2 : 1;
-
     glutPostRedisplay();
 }
 
 // Spawns powerup with a certain probability
-void Game::spawnPowerUps() {
-    float random = RANDOM() * RANDOM();
+void Game::spawnCollectibles() {
+    int random = RANDOM() * RANDOM();
 
-    // Spawn shoes
-    if (random < Shoes::SPAWN_RATE && random > 0) {
-        // Create random shoes in visible world
-        Shoes shoes = Shoes(
-            RANDOM(VIEW_WIDTH) - VIEW_WIDTH / 2,
-            RANDOM(VIEW_HEIGHT) - VIEW_HEIGHT / 2 + playerChar->y,
-            Shoes::MAX_TIME
-        );
+    // Spawn check
+    if (random < Collectible::SPAWN_RATE && random > 0) {
 
-        if(!playerChar->collidesWith(shoes)) powerups.push_back(shoes);
+        // Choose randomly between the different collectibles
+        random = RANDOM();
+        std::shared_ptr<Collectible> collectible;
+        
+        // Create random shoes in visible world (coins more frequent)
+        switch (random % 3) {
+            // Spawn shoes
+        case 0: collectible = std::make_shared<Shoes>(
+                RANDOM(VIEW_WIDTH) - VIEW_WIDTH / 2,
+                RANDOM(VIEW_HEIGHT) - VIEW_HEIGHT / 2 + playerChar->y,
+                Collectible::MAX_TIME
+            );
+                break;
+        default: collectible = std::make_shared<Coin>(
+                RANDOM(VIEW_WIDTH) - VIEW_WIDTH / 2,
+                RANDOM(VIEW_HEIGHT) - VIEW_HEIGHT / 2 + playerChar->y,
+                Collectible::MAX_TIME);
+                break;
+        }
+        
+        collectibles.push_back(collectible);
     }
 }

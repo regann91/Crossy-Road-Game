@@ -11,7 +11,8 @@
 
 const float VIEW_WIDTH = 800.0;
 const float VIEW_HEIGHT = 600.0;
-const float DELTA_TIME = 0.03;
+const float DELTA_TIME = 0.01;
+const float MAX_COLLECTIBLES = 3;
 
 class Game {
 public:
@@ -40,17 +41,20 @@ public:
     Character* player() const { return playerChar; }
 
 private:
-    void spawnPowerUps();
+    void spawnCollectibles();
 
     // Background texture
     GLuint backgroundTex;
     // Player
     Character* playerChar;
+    // Score (computed by current best height)
+    int score;
     // Trees
     std::vector<Tree> trees;
     // Paths
     std::vector<std::shared_ptr<Path>> paths;
-    // Powerup shoes
-    std::vector<Shoes> powerups;
+    // Collectibles : Shoes and Coins
+    std::vector<std::shared_ptr<Collectible>> collectibles;
     std::shared_ptr<Shoes> activeShoes;
+    unsigned int coins;
 };
