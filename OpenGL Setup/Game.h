@@ -1,7 +1,18 @@
 #pragma once
+#include <GL/glew.h>
+#include <GL/freeglut.h>
 #include <vector>
-#include "Way.h"
+#include <memory>
+
+#include "Character.h"
 #include "Tree.h"
+#include "Path.h"
+#include "Shoes.h"
+
+const float VIEW_WIDTH = 800.0;
+const float VIEW_HEIGHT = 600.0;
+const float DELTA_TIME = 0.01;
+const float MAX_COLLECTIBLES = 3;
 
 class Game {
 public:
@@ -11,24 +22,39 @@ public:
     // Constructor
     Game();
 
-    // Get all game objects (except player)
-    std::vector<std::shared_ptr<Way>> getWays() const { return ways; }
-    std::vector<Tree> getTrees() const { return trees; }
-
     // Initializes all instances
     void init();
 
     // Draw all objects
-    void drawObjects();
+    void drawScene();
 
-    // Updates all moving objects positions
-    void updateWays();
+    // Update camera position
+    void updateCamera();
+
+    // Update game state
+    void update();
+
+    // Move player
+    void movePlayer(float deltaX, float deltaY);
+
+    // Getters
+    Character* player() const { return playerChar; }
 
 private:
-    // Background
-    GameObject bg;
-    // Non moving objects
+    void spawnCollectibles();
+
+    // Background texture
+    GLuint backgroundTex;
+    // Player
+    Character* playerChar;
+    // Score (computed by current best height)
+    int score;
+    // Trees
     std::vector<Tree> trees;
-    // Moving objects on ways
-    std::vector<std::shared_ptr<Way>> ways;
+    // Paths
+    std::vector<std::shared_ptr<Path>> paths;
+    // Collectibles : Shoes and Coins
+    std::vector<std::shared_ptr<Collectible>> collectibles;
+    std::shared_ptr<Shoes> activeShoes;
+    unsigned int coins;
 };

@@ -39,17 +39,14 @@ void Way::initMovingObjects() {
 
     // Number of objects per lane
     int numObj;
-    // Colors
-    glm::vec3 colors;
-
+    glm::vec3 colors = colors = glm::vec3(84, 100, 102);
 
     switch (type) {
-        case RIVER:
-            numObj = 3;
-            colors = glm::vec3(84,100,102);
-        default:
+        case ROAD:
             numObj = 5;
-            colors = glm::vec3(165,134,148);
+        default:
+            numObj = 3;
+            
     }
 
     const float initialXRange = 800.0;  // Adjust the range of initial x positions

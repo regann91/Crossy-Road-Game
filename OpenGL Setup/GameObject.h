@@ -1,18 +1,37 @@
 #pragma once
-#include <memory>
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <glm/vec3.hpp>
+#include <string>
+#include <iostream>
 
 class GameObject {
 public:
     float x, y;  // Position
     float width, height;  // Dimensions
-    glm::vec3 color;   // Color
+    float rotation;
+    GLuint tex;   // Texture
 
-    // Constructor 1 (color in 0 to 255 RGB format
-    GameObject(float startX = 400, float startY = 50, float objWidth = 50, float objHeight = 50, glm::vec3 color = {1,1,1});
+    // Constructor
+    GameObject(float startX, float startY, float objWidth, float objHeight, std::string texpath);
 
-    // Virtual function for drawing the object
-    void draw() const;
+    // Constructor
+    GameObject() {}
+
+    // Function for drawing the object
+    virtual void draw() const;
+
+    // Function for drawing the object in a fixed place on screen (relative to character position)
+    void drawFixed(GameObject* object) const;
+
+    // Collision check between 2 objects
+    bool collidesWith(GameObject obj) const;
+
+    virtual void rotate(float speed);
+
+    void setPosition(float newX, float newY);
+
+    void setRotation(float newRotation);
+
+    void rotateWithinRange(float speed, float deltaTime, float minRotation, float maxRotation);
 };
