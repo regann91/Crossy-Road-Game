@@ -28,40 +28,74 @@ void Path::draw() const {
     glDisable(GL_TEXTURE_2D);
 
     // Draw all objects on it
-    for (const auto& obj : movingObjects) {
+    for (const auto& obj : RoadMovingObjects) {
+        obj.draw();
+    }
+    for (const auto& obj : RiverMovingObjects) {
         obj.draw();
     }
 }
 
-MovingObject Path::createMovingObj(float initX, float initY, float speed) {
-    return MovingObject(initX, initY, objWidth, 50.0, "../OpenGL\ Setup/textures/car.bmp", speed, width);
+RoadMovingObject Path::createRoadMovingObj(float initX, float initY, float speed) {
+    return RoadMovingObject(initX, initY, objWidth, 50.0, "../OpenGL\ Setup/textures/car.bmp", speed, width);
 }
 
-void Path::initMovingObjects() {
+RiverMovingObject Path::createRiverMovingObj(float initX, float initY, float speed) {
+    return RiverMovingObject(initX, initY, objWidth, 50.0, "../OpenGL\ Setup/textures/trunk.bmp", speed, width);
+}
+
+void Path::initRoadMovingObjects() {
     const float baseSpacing = width / nbObjPerLane;  // Base spacing between cars
 
     // LANE GENERATION LOOP : 2 lanes
     for (int l = 0; l < 2; l++) {
         // Generate a single speed for the lane
-        float laneSpeed = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 4.0 + 2;
+        float laneSpeed = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 5.0 + 8.0;
 
         // Add cars to the road using randomized x positions and the same speed for the lane
         for (int i = 0; i < nbObjPerLane; ++i) {
             // Generate a random offset for the x position
             float offset = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * baseSpacing - baseSpacing / 2;
             float initialX = i * baseSpacing + offset - width / 2; // Center on screen
-            movingObjects.emplace_back(createMovingObj(initialX, y + (50.0 * l), laneSpeed * std::pow(-1, l)));
+            RoadMovingObjects.emplace_back(createRoadMovingObj(initialX, y + (50.0 * l), laneSpeed * std::pow(-1, l)));
         }
 
         // Shuffle the objects in the lane to further randomize their positions
-        auto lane_begin = movingObjects.begin() + l * nbObjPerLane;
-        auto lane_end = movingObjects.begin() + (l + 1) * nbObjPerLane;
+        auto lane_begin = RoadMovingObjects.begin() + l * nbObjPerLane;
+        auto lane_end = RoadMovingObjects.begin() + (l + 1) * nbObjPerLane;
+        std::shuffle(lane_begin, lane_end, std::default_random_engine(std::random_device{}()));
+    }
+}
+
+void Path::initRiverMovingObjects() {
+    const float baseSpacing = width / nbObjPerLane;  // Base spacing between cars
+
+    // LANE GENERATION LOOP : 2 lanes
+    for (int l = 0; l < 2; l++) {
+        // Generate a single speed for the lane
+        float laneSpeed = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 5.0 + 8.0;
+
+        // Add cars to the road using randomized x positions and the same speed for the lane
+        for (int i = 0; i < nbObjPerLane; ++i) {
+            // Generate a random offset for the x position
+            float offset = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * baseSpacing - baseSpacing / 2;
+            float initialX = i * baseSpacing + offset - width / 2; // Center on screen
+            RiverMovingObjects.emplace_back(createRiverMovingObj(initialX, y + (50.0 * l), laneSpeed * std::pow(-1, l)));
+        }
+
+        // Shuffle the objects in the lane to further randomize their positions
+        auto lane_begin = RiverMovingObjects.begin() + l * nbObjPerLane;
+        auto lane_end = RiverMovingObjects.begin() + (l + 1) * nbObjPerLane;
         std::shuffle(lane_begin, lane_end, std::default_random_engine(std::random_device{}()));
     }
 }
 
 void Path::update(float deltaTime) {
-    for (auto& obj : movingObjects) {
+    for (auto& obj : RoadMovingObjects) {
+        obj.update(deltaTime * 0.001);  // Adjust the deltaTime as needed
+    }
+
+    for (auto& obj : RiverMovingObjects) {
         obj.update(deltaTime * 0.001);  // Adjust the deltaTime as needed
     }
 }

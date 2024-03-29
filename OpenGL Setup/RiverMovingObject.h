@@ -1,10 +1,10 @@
+#pragma once
 #include "GameObject.h"
-#include "Wheel.h"
 
-class MovingObject : public GameObject {
+class RiverMovingObject : public GameObject {
 public:
     // Constructor
-    MovingObject(float startX, float startY, float movingWidth, float movingHeight, std::string texPath, float movingSpeed, float laneW);
+    RiverMovingObject(float startX, float startY, float movingWidth, float movingHeight, std::string texPath, float movingSpeed, float laneW);
 
     // Override draw function
     void draw() const override;
@@ -14,8 +14,6 @@ public:
 
     // Returns speed
     float getSpeed() const { return speed; }
-    Wheel leftWheel;
-    Wheel rightWheel;
 
 private:
     // Speed of moving object

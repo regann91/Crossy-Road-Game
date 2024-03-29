@@ -9,6 +9,7 @@ class GameObject {
 public:
     float x, y;  // Position
     float width, height;  // Dimensions
+    float rotation;
     GLuint tex;   // Texture
 
     // Constructor
@@ -25,4 +26,9 @@ public:
 
     // Collision check between 2 objects
     bool collidesWith(GameObject obj) const;
+
+    virtual void rotate(float speed);
+
+    void setPosition(float newX, float newY);
+
 };

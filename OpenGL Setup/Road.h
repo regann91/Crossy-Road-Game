@@ -10,5 +10,5 @@ public:
 
 private:
     // Generates a template moving object for the path
-    MovingObject createMovingObj(float initX, float initY, float speed) override;
+    RoadMovingObject createRoadMovingObj(float initX, float initY, float speed) override;
 };

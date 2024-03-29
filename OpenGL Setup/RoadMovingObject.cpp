@@ -1,15 +1,16 @@
-#include "MovingObject.h"
+#include "RoadMovingObject.h"
 #include "Wheel.h"
 
 
-MovingObject::MovingObject(float startX, float startY, float movingWidth, float movingHeight, std::string texPath, float movingSpeed, float laneW)
+RoadMovingObject::RoadMovingObject(float startX, float startY, float movingWidth, float movingHeight, std::string texPath, float movingSpeed, float laneW)
     : GameObject(startX, startY - movingHeight/2, movingWidth, movingHeight, texPath), speed(movingSpeed), laneWidth(laneW),
-    leftWheel(startX - movingWidth / 2 + 12, startY - movingHeight / 2 + 10, 15, 15),
-    rightWheel(startX + movingWidth / 2 - 12, startY - movingHeight / 2 + 10, 15, 15) {}
+    leftWheel(startX - movingWidth / 2 + 12, startY - movingHeight / 2 + 8, 18, 18, "../OpenGL\ Setup/textures/wheel.bmp"),
+    rightWheel(startX + movingWidth / 2 - 12, startY - movingHeight / 2 + 8, 18, 18, "../OpenGL\ Setup/textures/wheel.bmp")
+{}
 
 
 // Draw implementation
-void MovingObject::draw() const {
+void RoadMovingObject::draw() const {
     glColor4ub(255, 255, 255, 255);  // Set color to white
 
     // Orientation depending on speed : is either 0 or 1
@@ -36,7 +37,7 @@ void MovingObject::draw() const {
 }
 
 // Update function implementation
-void MovingObject::update(float deltaTime) {
+void RoadMovingObject::update(float deltaTime) {
     // Update the car position based on speed and elapsed time
     x += speed * deltaTime;
 
@@ -47,8 +48,12 @@ void MovingObject::update(float deltaTime) {
     else if (x < -laneWidth/2) {
         x = laneWidth/2;  // Move to the right side
     }
-    leftWheel.setPosition(x - width / 2 + 12, y - height / 2 + 10);
-    rightWheel.setPosition(x + width / 2 - 12, y - height / 2 + 10);
-    leftWheel.rotate(speed);
-    rightWheel.rotate(speed);
+    // Update the wheel positions
+    leftWheel.setPosition(x - width / 2 + 12, y - height / 2 + 8);
+    rightWheel.setPosition(x + width / 2 - 12, y - height / 2 + 8);
+
+    // Rotate the wheels
+    float wheelRotationSpeed = speed * deltaTime * 360;  // Adjust this value as needed
+    leftWheel.rotate(wheelRotationSpeed);
+    rightWheel.rotate(wheelRotationSpeed);
 }

@@ -4,7 +4,7 @@
 
 // Constructor implementation
 GameObject::GameObject(float startX, float startY, float objWidth, float objHeight, std::string texpath)
-    : x(startX), y(startY), width(objWidth), height(objHeight)
+    : x(startX), y(startY), width(objWidth), height(objHeight), rotation(0.0f)
 {
     // Load texture
     tex = TextureManager::instance()->getTexture(texpath);
@@ -62,4 +62,21 @@ bool GameObject::collidesWith(GameObject other) const
         y - height/2 < other.y + other.height/2 &&
         y + height/2 > other.y - other.height /2
     );
+}
+
+void GameObject::rotate(float speed) {
+    rotation += speed;  // Increment the rotation angle
+
+// Keep the rotation angle within [0, 360)
+    if (rotation >= 360.0f) {
+        rotation -= 360.0f;
+    }
+    else if (rotation < 0.0f) {
+        rotation += 360.0f;
+    }
+}
+
+void GameObject::setPosition(float newX, float newY) {
+    x = newX;
+    y = newY;
 }

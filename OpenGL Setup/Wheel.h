@@ -6,13 +6,16 @@
 
 class Wheel : public GameObject {
 public:
-    Wheel(float x, float y, float width, float height);
 
-    void draw() const;
+    Wheel() : GameObject() {}
+
+    Wheel(float x, float y, float width, float height, std::string texPath);
+
+    void draw() const override;
 
     void setPosition(float newX, float newY);
 
-    void rotate(float speed);
-
     float rotation;
+
+    void rotate(float speed) override;
 };

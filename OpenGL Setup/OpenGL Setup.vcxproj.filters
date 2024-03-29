@@ -7,7 +7,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="MovingObject.cpp" />
+    <ClCompile Include="RoadMovingObject.cpp" />
     <ClCompile Include="Path.cpp" />
     <ClCompile Include="River.cpp" />
     <ClCompile Include="Road.cpp" />
@@ -17,7 +17,7 @@
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Tree.cpp" />
     <ClCompile Include="Wheel.cpp" />
-    <ClCompile Include="MovingObjectWithWheels.cpp" />
+    <ClCompile Include="RiverMovingObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Character.h" />
@@ -25,7 +25,7 @@
     <ClInclude Include="Collectible.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
-    <ClInclude Include="MovingObject.h" />
+    <ClInclude Include="RoadMovingObject.h" />
     <ClInclude Include="Path.h" />
     <ClInclude Include="River.h" />
     <ClInclude Include="Road.h" />
@@ -35,7 +35,7 @@
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Tree.h" />
     <ClInclude Include="Wheel.h" />
-    <ClInclude Include="MovingObjectWithWheels.h" />
+    <ClInclude Include="RiverMovingObject.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="flatVertex.glsl" />

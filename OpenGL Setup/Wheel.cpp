@@ -5,16 +5,20 @@
 #include <glm/vec3.hpp>
 #include <vector>
 
-Wheel::Wheel(float x, float y, float width, float height)
+Wheel::Wheel(float x, float y, float width, float height, std::string texPath)
     : GameObject(x, y, width, height, "../OpenGL\ Setup/textures/wheel.bmp"), rotation(0.0f) {}
 
 void Wheel::draw() const {
     glColor4ub(255, 255, 255, 255);  // Set color to white
     glPushMatrix();  // Save the current transformation matrix
-    // Translate to the center of the wheel, rotate, then translate back
-    glTranslatef(x, y, 0.0f);
-    glRotatef(rotation, 0.0f, 0.0f, 1.0f);
-    glTranslatef(-x, -y, 0.0f);
+        // Translate to the object's position
+    glTranslatef(x, y, 0);
+
+    // Apply the rotation
+    glRotatef(rotation, 0, 0, 1);
+
+    // Translate back to the original position
+    glTranslatef(-x, -y, 0);
 
     GameObject::draw();  // Draw the wheel
 
@@ -27,6 +31,13 @@ void Wheel::setPosition(float newX, float newY) {
 }
 
 void Wheel::rotate(float speed) {
-    // Adjust the rotation based on the speed
-    rotation -= speed * 0.0001f;
+    rotation -= speed * 0.01f;  // Increment the rotation angle
+
+    // Keep the rotation angle within [0, 360)
+    if (rotation >= 360.0f) {
+        rotation -= 360.0f;
+    }
+    else if (rotation < 0.0f) {
+        rotation += 360.0f;
+    }
 }

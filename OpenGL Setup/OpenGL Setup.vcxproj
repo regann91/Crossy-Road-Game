@@ -158,7 +158,8 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="MovingObject.cpp" />
+    <ClCompile Include="RiverMovingObject.cpp" />
+    <ClCompile Include="RoadMovingObject.cpp" />
     <ClCompile Include="Path.cpp" />
     <ClCompile Include="River.cpp" />
     <ClCompile Include="Road.cpp" />
@@ -175,7 +176,8 @@
     <ClInclude Include="Collectible.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
-    <ClInclude Include="MovingObject.h" />
+    <ClInclude Include="RiverMovingObject.h" />
+    <ClInclude Include="RoadMovingObject.h" />
     <ClInclude Include="Path.h" />
     <ClInclude Include="River.h" />
     <ClInclude Include="Road.h" />
