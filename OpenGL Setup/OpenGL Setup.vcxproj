@@ -155,6 +155,7 @@
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="Coin.cpp" />
     <ClCompile Include="Collectible.cpp" />
+    <ClCompile Include="CoverPlate.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -174,6 +175,7 @@
     <ClInclude Include="Character.h" />
     <ClInclude Include="Coin.h" />
     <ClInclude Include="Collectible.h" />
+    <ClInclude Include="CoverPlate.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="RiverMovingObject.h" />

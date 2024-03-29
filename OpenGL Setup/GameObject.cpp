@@ -16,6 +16,11 @@ void GameObject::draw() const {
 
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D,tex);
+    glPushMatrix();
+    // Translate the object to the origin, rotate it, and then translate it back
+    glTranslatef(x, y, 0);
+    glRotatef(rotation, 0, 0, 1);
+    glTranslatef(-x, -y, 0);
 
     glBegin(GL_QUADS);
         glTexCoord2d(0.0, 0.0);
@@ -27,6 +32,8 @@ void GameObject::draw() const {
         glTexCoord2d(0.0, 1.0);
         glVertex2f(x - width / 2, y + height/2);
     glEnd();
+
+    glPopMatrix();
 
     glDisable(GL_TEXTURE_2D);
 }
@@ -79,4 +86,20 @@ void GameObject::rotate(float speed) {
 void GameObject::setPosition(float newX, float newY) {
     x = newX;
     y = newY;
+}
+
+void GameObject::setRotation(float newRotation) {
+    rotation = newRotation;
+}
+
+void GameObject::rotateWithinRange(float speed, float deltaTime, float minRotation, float maxRotation) {
+    rotation += speed * deltaTime;  // Increment the rotation angle
+
+    // Keep the rotation angle within [minRotation, maxRotation)
+    if (rotation >= maxRotation) {
+        rotation -= (maxRotation - minRotation);
+    }
+    else if (rotation < minRotation) {
+        rotation += (maxRotation - minRotation);
+    }
 }

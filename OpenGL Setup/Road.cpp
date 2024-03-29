@@ -17,11 +17,11 @@ RoadMovingObject Road::createRoadMovingObj(float initX, float initY, float speed
 
     if (dis(gen) == 0) {
         // Create a car
-        return RoadMovingObject(initX, initY, getObjWidth(), 50, "../OpenGL\ Setup/textures/car.bmp", speed, width);
+        return RoadMovingObject(initX, initY, getObjWidth(), 50, "../OpenGL\ Setup/textures/car.bmp", speed, width, false);
     }
     else {
         // Create a truck
-        return RoadMovingObject(initX, initY, getObjWidth(), 50, "../OpenGL\ Setup/textures/truck.bmp", speed, width);
+        return RoadMovingObject(initX, initY, getObjWidth(), 50, "../OpenGL\ Setup/textures/truck.bmp", speed, width, true);
     }
 }
 

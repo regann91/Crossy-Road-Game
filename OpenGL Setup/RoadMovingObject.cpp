@@ -1,11 +1,13 @@
 #include "RoadMovingObject.h"
 #include "Wheel.h"
+#include <chrono>
 
 
-RoadMovingObject::RoadMovingObject(float startX, float startY, float movingWidth, float movingHeight, std::string texPath, float movingSpeed, float laneW)
-    : GameObject(startX, startY - movingHeight/2, movingWidth, movingHeight, texPath), speed(movingSpeed), laneWidth(laneW),
+RoadMovingObject::RoadMovingObject(float startX, float startY, float movingWidth, float movingHeight, std::string texPath, float movingSpeed, float laneW, bool isTruck)
+    : GameObject(startX, startY - movingHeight/2, movingWidth, movingHeight, texPath), speed(movingSpeed), laneWidth(laneW), isTruck(isTruck), 
     leftWheel(startX - movingWidth / 2 + 12, startY - movingHeight / 2 + 8, 18, 18, "../OpenGL\ Setup/textures/wheel.bmp"),
-    rightWheel(startX + movingWidth / 2 - 12, startY - movingHeight / 2 + 8, 18, 18, "../OpenGL\ Setup/textures/wheel.bmp")
+    rightWheel(startX + movingWidth / 2 - 12, startY - movingHeight / 2 + 8, 18, 18, "../OpenGL\ Setup/textures/wheel.bmp"),
+    coverPlate(startX + 10, startY, 30, 30, "../OpenGL\ Setup/textures/coverplate.bmp", 0)
 {}
 
 
@@ -15,6 +17,7 @@ void RoadMovingObject::draw() const {
 
     // Orientation depending on speed : is either 0 or 1
     bool orient = speed < 0;
+
 
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, tex);
@@ -33,6 +36,10 @@ void RoadMovingObject::draw() const {
     glDisable(GL_TEXTURE_2D);
     leftWheel.draw();
     rightWheel.draw();
+
+    if (isTruck) {
+        coverPlate.draw();
+    }
 
 }
 
@@ -56,4 +63,17 @@ void RoadMovingObject::update(float deltaTime) {
     float wheelRotationSpeed = speed * deltaTime * 360;  // Adjust this value as needed
     leftWheel.rotate(wheelRotationSpeed);
     rightWheel.rotate(wheelRotationSpeed);
+
+    // Update the cover plate position and rotation
+    if (isTruck) {
+        coverPlate.orient = speed < 0;
+        if (coverPlate.orient) {
+            coverPlate.setPosition(x + 10, y);
+            coverPlate.rotateWithinRange(speed, deltaTime, 0.0f, 45.0f);
+        }
+        else {
+            coverPlate.setPosition(x - 10, y);
+            coverPlate.rotateWithinRange(-speed, deltaTime, -45.0f, 0.0f);
+        }
+    }
 }

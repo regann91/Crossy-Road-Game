@@ -37,7 +37,7 @@ void Path::draw() const {
 }
 
 RoadMovingObject Path::createRoadMovingObj(float initX, float initY, float speed) {
-    return RoadMovingObject(initX, initY, objWidth, 50.0, "../OpenGL\ Setup/textures/car.bmp", speed, width);
+    return RoadMovingObject(initX, initY, objWidth, 50.0, "../OpenGL\ Setup/textures/car.bmp", speed, width, false);
 }
 
 RiverMovingObject Path::createRiverMovingObj(float initX, float initY, float speed) {

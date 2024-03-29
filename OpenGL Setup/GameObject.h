@@ -31,4 +31,7 @@ public:
 
     void setPosition(float newX, float newY);
 
+    void setRotation(float newRotation);
+
+    void rotateWithinRange(float speed, float deltaTime, float minRotation, float maxRotation);
 };
