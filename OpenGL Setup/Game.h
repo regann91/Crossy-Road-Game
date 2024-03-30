@@ -4,10 +4,18 @@
 #include <vector>
 #include <memory>
 
+#include "TextureManager.h"
+#include "TextDisplayer.h"
+#include "GameObject.h"
 #include "Character.h"
 #include "Tree.h"
 #include "Path.h"
+#include "Road.h"
+#include "River.h"
+#include "Collectible.h"
 #include "Shoes.h"
+#include "Coin.h"
+
 
 const float VIEW_WIDTH = 800.0;
 const float VIEW_HEIGHT = 600.0;
@@ -16,44 +24,24 @@ const float MAX_COLLECTIBLES = 3;
 
 class Game {
 public:
-    // Destructor
-    ~Game();
-
-    // Constructor
-    Game();
-
-    // Initializes all instances
+    ~Game();     // Destructor
+    Game();    // Constructor
     void init();
-
-    // Draw all objects
     void drawScene();
-
-    // Update camera position
     void updateCamera();
-
-    // Update game state
     void update();
-
-    // Move player
     void movePlayer(float deltaX, float deltaY);
-
-    // Getters
+    void handleInput(char input);
     Character* player() const { return playerChar; }
 
 private:
     void spawnCollectibles();
-
-    // Background texture
+    bool cheatMode;
     GLuint backgroundTex;
-    // Player
     Character* playerChar;
-    // Score (computed by current best height)
-    int score;
-    // Trees
+    int score;      // computed by current best height
     std::vector<Tree> trees;
-    // Paths
     std::vector<std::shared_ptr<Path>> paths;
-    // Collectibles : Shoes and Coins
     std::vector<std::shared_ptr<Collectible>> collectibles;
     std::shared_ptr<Shoes> activeShoes;
     unsigned int coins;

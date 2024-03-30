@@ -63,6 +63,10 @@ void specialKeys(int key, int x, int y) {
     }
 }
 
+void asciiKeys(unsigned char key, int x, int y) {
+    game.handleInput(static_cast<char>(key));
+}
+
 // Timer update function with a single int parameter
 void timerUpdate(int value) {
     game.update();  // Call the update function
@@ -97,6 +101,7 @@ int main(int argc, char** argv)
     glutDisplayFunc(display);
     glutIdleFunc(update);
     glutSpecialFunc(specialKeys);
+    glutKeyboardFunc(asciiKeys);
     glutTimerFunc(0, timerUpdate, 0);  // Call timerUpdate function immediately and set up timer
     // Update loop
     glutMainLoop();
