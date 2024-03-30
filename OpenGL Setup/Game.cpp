@@ -33,12 +33,12 @@ void Game::init()
     trees = {
         // Init trees
         Tree(-200.0, 350.0),
-        Tree(-200.0, 750.0),
+        Tree(-200.0, 800.0),
         Tree(-150.0, 300.0),
         Tree(-150.0, 550.0),
         Tree(-50.0, 400.0),
         Tree(50.0, 250.0),
-        Tree(100.0, 700.0),
+        Tree(100.0, 650.0),
         Tree(150.0, 100.0),
         Tree(200.0, 350.0),
         Tree(300.0, 300.0)
@@ -136,6 +136,19 @@ void Game::movePlayer(float deltaX, float deltaY)
     // Update score
     if (deltaY > 0 && playerChar->y / playerChar->height > score)
         score = playerChar->y / playerChar->height;
+
+    // Update the player's position
+    playerChar->x += deltaX;
+    playerChar->y += deltaY;
+
+        // Check if the player's current position is beyond or at y = 1000
+    if (playerChar->y >= 1000) {
+        // Print a congratulatory message
+        std::cout << "Congratulations! You have reached the top!\n";
+
+        // Exit the game
+        exit(0);
+    }
 
     updateCamera();
 }
