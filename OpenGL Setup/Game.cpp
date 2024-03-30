@@ -21,7 +21,7 @@ Game::~Game() {
 }
 
 // Constructor
-Game::Game() {}
+Game::Game() : cheatMode(false) {}
 
 // Initializes all instances
 void Game::init()
@@ -125,14 +125,16 @@ void Game::movePlayer(float deltaX, float deltaY)
     // Try to move 
     playerChar->move(deltaX, deltaY);
     // Check move would get us into a tree
-    for (Tree& tree : trees) {
-        // Cancel move if necessary
-        if (playerChar->collidesWith(tree)) {
-            playerChar->move(-deltaX, -deltaY);
+    if (!cheatMode) {
+        for (Tree& tree : trees) {
+            // Cancel move if necessary
+            if (playerChar->collidesWith(tree)) {
+                playerChar->move(-deltaX, -deltaY);
+            }
         }
     }
     // Update score
-    if (deltaY > 0 && playerChar->y / playerChar->height > score) 
+    if (deltaY > 0 && playerChar->y / playerChar->height > score)
         score = playerChar->y / playerChar->height;
 
     updateCamera();
@@ -155,7 +157,7 @@ void Game::update() {
     // Update all paths and check collisions (moving cars and trunks)
     for (const auto& path : paths) {
         path->update(DELTA_TIME);
-        if (path->getsKilled(playerChar)) exit(0);
+        if (!cheatMode && path->getsKilled(playerChar)) exit(0);
     }
 
     // Update collectibles
@@ -223,5 +225,13 @@ void Game::spawnCollectibles() {
         }
         
         collectibles.push_back(collectible);
+    }
+}
+
+
+void Game::handleInput(char input) {
+    if (input == 'p') {
+        std::cout << "Cheat mode enabled" << std::endl;
+        cheatMode = !cheatMode;
     }
 }
