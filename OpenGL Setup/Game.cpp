@@ -170,7 +170,10 @@ void Game::update() {
     // Update all paths and check collisions (moving cars and trunks)
     for (const auto& path : paths) {
         path->update(DELTA_TIME);
-        if (!cheatMode && path->getsKilled(playerChar)) exit(0);
+        if (!cheatMode && path->getsKilled(playerChar)) {
+            std::cout << "Oh no, your character has died! Rerun the program to play again :)\n";
+            exit(0);
+        }
     }
 
     // Update collectibles
