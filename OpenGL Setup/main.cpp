@@ -7,7 +7,6 @@
 #include "Game.h"
 #include "Character.h"
 
-// Adding missing definition in Microsoft headers
 #define GL_CLAMP_TO_EDGE 0x812F
 #define DELTA 50
 
