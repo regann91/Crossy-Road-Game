@@ -143,10 +143,7 @@ void Game::movePlayer(float deltaX, float deltaY)
 
         // Check if the player's current position is beyond or at y = 1000
     if (playerChar->y >= 1000) {
-        // Print a congratulatory message
         std::cout << "Congratulations! You have reached the top!\n";
-
-        // Exit the game
         exit(0);
     }
 
