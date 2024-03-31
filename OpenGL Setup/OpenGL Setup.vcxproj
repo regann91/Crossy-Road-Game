@@ -167,7 +167,6 @@
     <ClCompile Include="Path.cpp" />
     <ClCompile Include="River.cpp" />
     <ClCompile Include="Road.cpp" />
-    <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="Shoes.cpp" />
     <ClCompile Include="TextDisplayer.cpp" />
     <ClCompile Include="TextureManager.cpp" />
@@ -189,18 +188,11 @@
     <ClInclude Include="Path.h" />
     <ClInclude Include="River.h" />
     <ClInclude Include="Road.h" />
-    <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="Shoes.h" />
     <ClInclude Include="TextDisplayer.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Tree.h" />
     <ClInclude Include="Wheel.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="flatVertex.glsl" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="flatFragment.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
