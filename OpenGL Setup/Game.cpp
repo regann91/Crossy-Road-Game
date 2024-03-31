@@ -210,7 +210,7 @@ void Game::update() {
             }
             // IF COINS
             auto coinPtr = std::dynamic_pointer_cast<Coin>(collect);
-            std::cout << coinPtr << std::endl;
+            //std::cout << coinPtr << std::endl;
             if (coinPtr != nullptr) {
                 coins++;
                 break;
