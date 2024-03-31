@@ -67,7 +67,7 @@ GLuint TextureManager::loadTexture(const std::string filename)
 
     // transpose R, G, B values
     int index;
-    std::cout << filename << std::endl;
+    //std::cout << filename << std::endl;
     for (int i = 0; i < width * height; ++i)
     {
         index = i * 4;
