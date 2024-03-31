@@ -154,8 +154,15 @@ void Game::movePlayer(float deltaX, float deltaY)
     if (deltaY > 0 && playerChar->y / playerChar->height > score)
         score = playerChar->y / playerChar->height;
 
+    // Update the player's position
+    playerChar->x += deltaX;
+    playerChar->y += deltaY;
 
-
+    // Check if the player's current position is beyond or at y = 1000
+    if (playerChar->y >= 1000) {
+        std::cout << "Congratulations! You have reached the top!\n";
+        exit(0);
+    }
     updateCamera();
 }
 
