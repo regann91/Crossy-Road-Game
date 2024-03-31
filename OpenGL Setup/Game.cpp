@@ -18,6 +18,7 @@ GameObject coinSprite;
 Game::~Game() {
     delete playerChar;
     delete textdisplay;
+    delete flagEnd;
 }
 
 // Constructor
@@ -62,6 +63,9 @@ void Game::init()
 
     // Instanciate player
     playerChar = new Character();
+
+    // Create end flag
+    flagEnd = new GameObject(0, 1000, 21, 50, "../OpenGL\ Setup/textures/flag.bmp");
 
     // Update camera
     updateCamera();
@@ -115,6 +119,9 @@ void Game::drawScene()
     // Render score on screen
     textdisplay->drawScreen(std::to_string(score), 3, 0, 250, playerChar);
 
+    // Render end flag
+    flagEnd->draw();
+
     // Render coins 
     coinSprite.drawFixed(playerChar);
     textdisplay->drawScreen(std::to_string(coins), 2, -310, 250, playerChar, false);
@@ -124,6 +131,16 @@ void Game::movePlayer(float deltaX, float deltaY)
 {
     // Try to move 
     playerChar->move(deltaX, deltaY);
+
+    // Check if the player collides with end flag
+    if (playerChar->collidesWith(*flagEnd)) {
+        // Print a congratulatory message
+        std::cout << "Congratulations! You have reached the top!\n";
+
+        // Exit the game
+        exit(0);
+    }
+
     // Check move would get us into a tree
     if (!cheatMode) {
         for (Tree& tree : trees) {
@@ -141,12 +158,11 @@ void Game::movePlayer(float deltaX, float deltaY)
     playerChar->x += deltaX;
     playerChar->y += deltaY;
 
-        // Check if the player's current position is beyond or at y = 1000
+    // Check if the player's current position is beyond or at y = 1000
     if (playerChar->y >= 1000) {
         std::cout << "Congratulations! You have reached the top!\n";
         exit(0);
     }
-
     updateCamera();
 }
 
@@ -164,11 +180,14 @@ void Game::updateCamera() {
 
 // Update function for game logic (e.g., character and car movement, collision detection)
 void Game::update() {
+    // Update character animation
+    playerChar->update(DELTA_TIME);
+
     // Update all paths and check collisions (moving cars and trunks)
     for (const auto& path : paths) {
         path->update(DELTA_TIME);
         if (!cheatMode && path->getsKilled(playerChar)) {
-            std::cout << "Oh no, your character has died! Rerun the program to play again :)\n";
+            std::cout << "Oh no, your character has died! Your score was " << score << "! Rerun the program to play again :)\n";
             exit(0);
         }
     }
