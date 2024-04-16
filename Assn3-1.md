@@ -8,8 +8,8 @@ Use the fixed pipeline of OpenGL, i.e., use traditional OpenGL APIs
 - 3rd-person view (Default): the camera is placed somewhere behind the player (following the player).
 - 1st-person view: The camera is placed right in front of the character. You cannot see the character, but you can see the character’s perspective.
 - Side view: the camera is looking toward a diagonal of the map.
-  *change viewing mode by pressing ‘v’ key
+- *change viewing mode by pressing ‘v’ key
 ## Rendering modes:
 - Mode 1 (Default): wire-frame without hidden line removal
 - Mode 2: wire-frame with hidden line removal
-  *change rendering mode by pressing ‘r’ key
+- *change rendering mode by pressing ‘r’ key
