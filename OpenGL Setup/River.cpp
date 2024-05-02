@@ -7,17 +7,12 @@ River::River(float riverY, float riverWidth)
     initRiverMovingObjects();
 }
 
-// Generates a template moving object for the path
-RiverMovingObject River::createRiverMovingObj(float initX, float initY, float speed) {
-    return RiverMovingObject(initX, initY, getObjWidth(), 50, "../OpenGL\ Setup/textures/trunk.bmp", speed, width);
-}
-
 bool River::getsKilled(Character* player) {
     // If player is on the river
     if (player->collidesWith(*this)) {
         bool death = true;
         // Check for collision with trunks, which would keep player alive
-        for (RiverMovingObject& obj : RiverMovingObjects) {
+        for (MovingObject& obj : movingObjects) {
             // If player is on trunk, then all good
             if (player->collidesWith(obj)) {
                 death = false;

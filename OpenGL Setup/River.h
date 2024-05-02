@@ -7,8 +7,4 @@ public:
     River(float roadY, float roadWidth);
 
     bool getsKilled(Character* player) override;
-
-private:
-    // Generates a template moving object for the path
-    RiverMovingObject createRiverMovingObj(float initX, float initY, float speed) override;
 };

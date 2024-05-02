@@ -13,6 +13,7 @@
 float RANDOM(float range = RAND_MAX) { return (float)rand() / (float)RAND_MAX * range; }
 TextDisplayer* textdisplay;
 GameObject coinSprite;
+std::shared_ptr<ShaderProgram> flatShader;
 
 // Destructor
 Game::~Game() {
@@ -29,6 +30,9 @@ void Game::init()
 {
     // Use current time as seed for random generator 
     srand(time(0));
+
+    // Load shader
+    flatShader = std::make_shared<ShaderProgram>("../OpenGL\ Setup/shaders/flatVertex.glsl", "../OpenGL\ Setup/shaders/flatFragment.glsl");
 
     // Instanciate trees
     trees = {
@@ -50,22 +54,37 @@ void Game::init()
    
     // Load coin sprite
     coinSprite = GameObject(-350, 250, 50, 50, "../OpenGL\ Setup/textures/coin.bmp");
+    coinSprite.renderable->shader = flatShader;
 
     // Load text font
     textdisplay = new TextDisplayer("../OpenGL\ Setup/textures/fontMap.bmp", 7, 9, 18, 7, ' ');
 
-    // Init paths and cars
+    // Init paths and cars - all paths are 2 lanes wide (100 wide)
+    // When rendering the ground, we will assume the paths are sorted 
     paths = {
         std::make_shared<Road>(125, VIEW_WIDTH),
         std::make_shared<River>(425, VIEW_WIDTH),
         std::make_shared<River>(675, VIEW_WIDTH),
     };
 
+    for (auto& path : paths) {
+        path->renderable->shader = flatShader;
+        for (auto& obj : path->renderable->children) {
+            obj->shader = flatShader;
+        }
+    }
+
+    for (auto& tree : trees) {
+        tree.renderable->shader = flatShader;
+    }
+
     // Instanciate player
     playerChar = new Character();
+    playerChar->renderable->shader = flatShader;
 
     // Create end flag
     flagEnd = new GameObject(0, 1000, 21, 50, "../OpenGL\ Setup/textures/flag.bmp");
+    flagEnd->renderable->shader = flatShader;
 
     // Update camera
     updateCamera();
@@ -93,6 +112,7 @@ void Game::drawScene()
     glBindTexture(GL_TEXTURE_2D, backgroundTex);
     glDisable(GL_TEXTURE_2D);
 
+
     // Render roads
     for (const auto& path : paths) {
         path->draw();
@@ -108,7 +128,7 @@ void Game::drawScene()
 
     // Render all trees
     for (const auto& tree : trees) {
-        tree.draw();
+        tree.renderable->draw();
     }
 
     // Render powerup bar
@@ -123,8 +143,9 @@ void Game::drawScene()
     flagEnd->draw();
 
     // Render coins 
-    coinSprite.drawFixed(playerChar);
+    coinSprite.drawFixed(playerChar->renderable);
     textdisplay->drawScreen(std::to_string(coins), 2, -310, 250, playerChar, false);
+   
 }
 
 void Game::movePlayer(float deltaX, float deltaY)
@@ -171,9 +192,6 @@ void Game::updateCamera() {
 
 // Update function for game logic (e.g., character and car movement, collision detection)
 void Game::update() {
-    // Update character animation
-    playerChar->update(DELTA_TIME);
-
     // Update all paths and check collisions (moving cars and trunks)
     for (const auto& path : paths) {
         path->update(DELTA_TIME);
@@ -248,6 +266,7 @@ void Game::spawnCollectibles() {
         }
         
         collectibles.push_back(collectible);
+        collectible->renderable->shader = flatShader;
     }
 }
 

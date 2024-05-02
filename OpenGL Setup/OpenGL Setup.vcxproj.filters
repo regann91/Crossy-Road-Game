@@ -10,9 +10,6 @@
     <ClCompile Include="Collectible.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="CoverPlate.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="Game.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
@@ -28,13 +25,10 @@
     <ClCompile Include="River.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="RiverMovingObject.cpp">
+    <ClCompile Include="MovingObject.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="Road.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="RoadMovingObject.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="Shoes.cpp">
@@ -49,16 +43,10 @@
     <ClCompile Include="Tree.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Wheel.cpp">
+    <ClCompile Include="Renderable.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Leg.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="BodyPart.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Arm.cpp">
+    <ClCompile Include="ShaderProgram.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -70,9 +58,6 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Collectible.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="CoverPlate.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
@@ -87,12 +72,6 @@
     <ClInclude Include="Road.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="RiverMovingObject.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="RoadMovingObject.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="Shoes.h">
       <Filter>Headers</Filter>
     </ClInclude>
@@ -105,19 +84,16 @@
     <ClInclude Include="Tree.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Wheel.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="GameObject.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Leg.h">
+    <ClInclude Include="Renderable.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Arm.h">
+    <ClInclude Include="MovingObject.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="BodyPart.h">
+    <ClInclude Include="ShaderProgram.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -128,5 +104,16 @@
     <Filter Include="Sources">
       <UniqueIdentifier>{806b9d5a-abf3-482e-9710-5a9a54961174}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{7e611f1a-dbc6-4363-a653-edfe4bc25ea4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\flatFragment.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\flatVertex.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -4,34 +4,28 @@
 #include <glm/vec3.hpp>
 #include <string>
 #include <iostream>
+#include "Renderable.h"
 
 class GameObject {
 public:
     float x, y;  // Position
     float width, height;  // Dimensions
-    float rotation;
-    GLuint tex;   // Texture
-
+    std::shared_ptr<Renderable> renderable;
+    
     // Constructor
     GameObject(float startX, float startY, float objWidth, float objHeight, std::string texpath);
 
     // Constructor
     GameObject() {}
 
-    // Function for drawing the object
-    virtual void draw() const;
+    // Moving functions
+    void move(float dx, float dy);
+    void setPosition(float newX, float newY);
 
-    // Function for drawing the object in a fixed place on screen (relative to character position)
-    void drawFixed(GameObject* object) const;
+    // Calls draw from renderable
+    void draw();
+    void drawFixed(std::shared_ptr<Renderable> r);
 
     // Collision check between 2 objects
     bool collidesWith(GameObject obj) const;
-
-    virtual void rotate(float speed);
-
-    void setPosition(float newX, float newY);
-
-    void setRotation(float newRotation);
-
-    void rotateWithinRange(float speed, float deltaTime, float minRotation, float maxRotation);
 };
