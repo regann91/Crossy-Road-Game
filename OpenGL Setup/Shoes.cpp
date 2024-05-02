@@ -1,7 +1,7 @@
 #include "Shoes.h"
 
 Shoes::Shoes(float startX, float startY, float time) 
-	: Collectible(startX, startY, "../OpenGL\ Setup/textures/shoes.bmp") {}
+	: Collectible(startX, startY, MAX_TIME, glm::vec4(1, 0.5, 0.1, 1)) {}
 
 // This draws a bar relative to player Y position
 void Shoes::drawBar(Character* player) const {

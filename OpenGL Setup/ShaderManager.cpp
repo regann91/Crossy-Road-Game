@@ -1,7 +1,39 @@
-#include "ShaderProgram.h"
+#include "ShaderManager.h"
 
-// Constructor of shader
-ShaderProgram::ShaderProgram(std::string vertexPath, std::string fragmentPath)
+
+// Private constructor - INITIALIZES SHADERS
+ShaderManager::ShaderManager() {
+    loadedShaders = {
+        { "", getShader("", "flatVertex.glsl", "flatFragment.glsl") }
+    };
+}
+
+// Init to null
+ShaderManager* ShaderManager::INSTANCE = NULL;
+
+
+// Returns the (single) instance of ShaderManager
+ShaderManager* ShaderManager::instance()
+{
+    // Create and return instance if it doesnt exist
+    if (INSTANCE == NULL) {
+        INSTANCE = new ShaderManager();
+        return INSTANCE;
+    }
+    return INSTANCE;
+}
+
+GLuint ShaderManager::getShader(std::string name, std::string vertex, std::string fragment) {
+    // If already loaded in map, then return it
+    auto it = loadedShaders.find(name);
+    if (it != loadedShaders.end()) {
+        return it->second;
+    }
+    // Else load it
+    return loadShader(name, vertex, fragment);
+}
+
+GLuint ShaderManager::loadShader(std::string name, std::string vertexPath, std::string fragmentPath)
 {
     // LOADING THE SHADERS
     // Load the vertex and fragment shaders from their respective paths
@@ -14,12 +46,18 @@ ShaderProgram::ShaderProgram(std::string vertexPath, std::string fragmentPath)
     fileVertex.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     fileFragment.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
+    // Complete paths
+    std::string vertexFullPath = "../OpenGL\ Setup/shaders/" + vertexPath;
+    std::string fragmentFullPath = "../OpenGL\ Setup/shaders/" + fragmentPath;
+
+    std::cout << vertexFullPath << " et puis " << fragmentFullPath << std::endl;
+
     // Loading of code files into memory
     try
     {
         // Open the files
-        fileVertex.open(vertexPath);
-        fileFragment.open(fragmentPath);
+        fileVertex.open(vertexFullPath);
+        fileFragment.open(fragmentFullPath);
         // Temp streams to read from the files
         std::stringstream vertexStream, fragmentStream;
         vertexStream << fileVertex.rdbuf();
@@ -71,7 +109,7 @@ ShaderProgram::ShaderProgram(std::string vertexPath, std::string fragmentPath)
     };
 
     // shader Program
-    shaderId = glCreateProgram();
+    GLuint shaderId = glCreateProgram();
     glAttachShader(shaderId, vertex);
     glAttachShader(shaderId, fragment);
     glLinkProgram(shaderId);
@@ -86,33 +124,36 @@ ShaderProgram::ShaderProgram(std::string vertexPath, std::string fragmentPath)
     // Delete the shaders as they're linked into our program now and no longer necessary
     glDeleteShader(vertex);
     glDeleteShader(fragment);
+
+    // Store in map
+    loadedShaders.emplace(name, shaderId);
+    return shaderId;
 }
 
-void ShaderProgram::bind()
+void ShaderManager::bind(GLuint id)
 {
-    glUseProgram(shaderId);
+    glUseProgram(id);
 }
 
-
-void ShaderProgram::unbind()
+void ShaderManager::unbind()
 {
     glUseProgram(0);
 }
 
-void ShaderProgram::setBool(const std::string& name, bool value) const
+void ShaderManager::setBool(GLuint id, const std::string& name, bool value) const
 {
-    glUniform1i(glGetUniformLocation(shaderId, name.c_str()), (int)value);
+    glUniform1i(glGetUniformLocation(id, name.c_str()), (int)value);
 }
-void ShaderProgram::setInt(const std::string& name, int value) const
+void ShaderManager::setInt(GLuint id, const std::string& name, int value) const
 {
-    glUniform1i(glGetUniformLocation(shaderId, name.c_str()), value);
+    glUniform1i(glGetUniformLocation(id, name.c_str()), value);
 }
-void ShaderProgram::setFloat(const std::string& name, float value) const
+void ShaderManager::setFloat(GLuint id, const std::string& name, float value) const
 {
-    glUniform1f(glGetUniformLocation(shaderId, name.c_str()), value);
+    glUniform1f(glGetUniformLocation(id, name.c_str()), value);
 }
 
-void ShaderProgram::setVec4(const std::string& name, float r, float g, float b, float a) const
+void ShaderManager::setVec4(GLuint id, const std::string& name, glm::vec4 color) const
 {
-    glUniform4f(glGetUniformLocation(shaderId, name.c_str()), r, g, b, a);
+    glUniform4f(glGetUniformLocation(id, name.c_str()), color.r, color.g, color.b, color.a);
 }

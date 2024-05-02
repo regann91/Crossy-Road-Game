@@ -4,7 +4,7 @@
 class MovingObject : public GameObject {
 public:
     // Constructor
-    MovingObject(float startX, float startY, float movingWidth, float movingHeight, std::string texPath, float movingSpeed, float laneW);
+    MovingObject(float startX, float startY, float movingWidth, float movingHeight, glm::vec4 color, float movingSpeed, float laneW);
 
     // Update function for movement
     void update(float deltaTime);

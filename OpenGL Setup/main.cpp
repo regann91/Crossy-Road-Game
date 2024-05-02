@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "TextureManager.h"
+#include "Renderer.h"
 #include "GameObject.h"
 #include "Game.h"
 #include "Character.h"
@@ -31,16 +32,15 @@ void myReshape(int w, int h) {
     glViewport(margin_x, margin_y, VIEW_WIDTH * scale, VIEW_HEIGHT * scale);
 }
 
-
 // Display function to render the game
 void display() {
     glClear(GL_COLOR_BUFFER_BIT);  // Clear the color buffer
 
-    game.drawScene();
+    // Draw scene
+    Renderer::instance()->drawScene(game);
 
     glutSwapBuffers();  // Swap the front and back buffers to display the rendered image
 }
-
 
 // Keyboard input handling function
 void specialKeys(int key, int x, int y) {

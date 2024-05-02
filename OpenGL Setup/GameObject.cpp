@@ -1,12 +1,14 @@
 #include "GameObject.h"
 #include "TextureManager.h"
 #include <iostream>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 // Constructor implementation
-GameObject::GameObject(float startX, float startY, float objWidth, float objHeight, std::string texpath)
+GameObject::GameObject(float startX, float startY, float objWidth, float objHeight, glm::vec4 color)
     : x(startX), y(startY), width(objWidth), height(objHeight)
 {
-    renderable = std::make_shared<Renderable>(startX, startY, objWidth, objHeight, texpath);
+    renderable = std::make_shared<Renderable>(color);
 }
 
 // Collision check between 2 objects
@@ -26,8 +28,6 @@ void GameObject::move(float dx, float dy) {
     y += dy;
 
     // Move the renderable
-    renderable->x = x;
-    renderable->y = y;
 }
 
 void GameObject::setPosition(float newX, float newY) {
@@ -36,14 +36,4 @@ void GameObject::setPosition(float newX, float newY) {
     y = newY;
 
     // Move the renderable
-    renderable->x = newX;
-    renderable->y = newY;
-}
-
-void GameObject::draw() {
-    renderable->draw();
-}
-
-void GameObject::drawFixed(std::shared_ptr<Renderable> r) {
-    renderable->drawFixed(r);
 }

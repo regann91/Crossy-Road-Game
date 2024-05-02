@@ -11,16 +11,8 @@
 
 
 float RANDOM(float range = RAND_MAX) { return (float)rand() / (float)RAND_MAX * range; }
-TextDisplayer* textdisplay;
+//TextDisplayer* textdisplay;
 GameObject coinSprite;
-std::shared_ptr<ShaderProgram> flatShader;
-
-// Destructor
-Game::~Game() {
-    delete playerChar;
-    delete textdisplay;
-    delete flagEnd;
-}
 
 // Constructor
 Game::Game() : cheatMode(false) {}
@@ -31,33 +23,17 @@ void Game::init()
     // Use current time as seed for random generator 
     srand(time(0));
 
-    // Load shader
-    flatShader = std::make_shared<ShaderProgram>("../OpenGL\ Setup/shaders/flatVertex.glsl", "../OpenGL\ Setup/shaders/flatFragment.glsl");
-
     // Instanciate trees
     trees = {
         // Init trees
-        Tree(-200.0, 350.0),
-        Tree(-200.0, 800.0),
-        Tree(-150.0, 300.0),
-        Tree(-150.0, 550.0),
-        Tree(-50.0, 400.0),
-        Tree(50.0, 250.0),
-        Tree(100.0, 650.0),
-        Tree(150.0, 100.0),
-        Tree(200.0, 350.0),
-        Tree(300.0, 300.0)
+        std::make_shared<Tree>(-200.0, 350.0),
     };
-
-    // Load BG texture
-    backgroundTex = TextureManager::instance()->getTexture("../OpenGL\ Setup/textures/ground.bmp");
    
     // Load coin sprite
-    coinSprite = GameObject(-350, 250, 50, 50, "../OpenGL\ Setup/textures/coin.bmp");
-    coinSprite.renderable->shader = flatShader;
+    
 
     // Load text font
-    textdisplay = new TextDisplayer("../OpenGL\ Setup/textures/fontMap.bmp", 7, 9, 18, 7, ' ');
+    //textdisplay = new TextDisplayer("../OpenGL\ Setup/textures/fontMap.bmp", 7, 9, 18, 7, ' ');
 
     // Init paths and cars - all paths are 2 lanes wide (100 wide)
     // When rendering the ground, we will assume the paths are sorted 
@@ -67,86 +43,16 @@ void Game::init()
         std::make_shared<River>(675, VIEW_WIDTH),
     };
 
-    for (auto& path : paths) {
-        path->renderable->shader = flatShader;
-        for (auto& obj : path->renderable->children) {
-            obj->shader = flatShader;
-        }
-    }
-
-    for (auto& tree : trees) {
-        tree.renderable->shader = flatShader;
-    }
-
     // Instanciate player
-    playerChar = new Character();
-    playerChar->renderable->shader = flatShader;
+    playerChar = std::make_shared<Character>();
 
     // Create end flag
-    flagEnd = new GameObject(0, 1000, 21, 50, "../OpenGL\ Setup/textures/flag.bmp");
-    flagEnd->renderable->shader = flatShader;
+    flagEnd = std::make_shared<GameObject>(0, 1000, 21, 50, glm::vec4(0.6, 0.45, 0.4, 1));
 
     // Update camera
     updateCamera();
 }
 
-// Draw all objects
-void Game::drawScene()
-{
-    // Render BG
-    glColor4ub(255, 255, 255, 255);  // Set color to white
-
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, backgroundTex);
-
-    glBegin(GL_QUADS);
-        glTexCoord2d(0.0, 0.0);
-        glVertex2f(-600, -600);
-        glTexCoord2d(16.0, 0.0);
-        glVertex2f(600, -600);
-        glTexCoord2d(16, 16);
-        glVertex2f(600, 1500);
-        glTexCoord2d(0.0, 16);
-        glVertex2f(-600, 1500);
-    glEnd();
-    glBindTexture(GL_TEXTURE_2D, backgroundTex);
-    glDisable(GL_TEXTURE_2D);
-
-
-    // Render roads
-    for (const auto& path : paths) {
-        path->draw();
-    }
-
-    // Render player
-    playerChar->draw();
-
-    // Render all powerups
-    for (const auto& powerup : collectibles) {
-        powerup->draw();
-    }
-
-    // Render all trees
-    for (const auto& tree : trees) {
-        tree.renderable->draw();
-    }
-
-    // Render powerup bar
-    if (activeShoes && activeShoes->time > 0) {
-        activeShoes->drawBar(playerChar);
-    }
-
-    // Render score on screen
-    textdisplay->drawScreen(std::to_string(score), 3, 0, 250, playerChar);
-
-    // Render end flag
-    flagEnd->draw();
-
-    // Render coins 
-    coinSprite.drawFixed(playerChar->renderable);
-    textdisplay->drawScreen(std::to_string(coins), 2, -310, 250, playerChar, false);
-   
-}
 
 void Game::movePlayer(float deltaX, float deltaY)
 {
@@ -164,9 +70,9 @@ void Game::movePlayer(float deltaX, float deltaY)
 
     // Check move would get us into a tree
     if (!cheatMode) {
-        for (Tree& tree : trees) {
+        for (auto& tree : trees) {
             // Cancel move if necessary
-            if (playerChar->collidesWith(tree)) {
+            if (tree->collidesWith(*playerChar)) {
                 playerChar->move(-deltaX, -deltaY);
             }
         }
@@ -195,7 +101,7 @@ void Game::update() {
     // Update all paths and check collisions (moving cars and trunks)
     for (const auto& path : paths) {
         path->update(DELTA_TIME);
-        if (!cheatMode && path->getsKilled(playerChar)) {
+        if (!cheatMode && path->getsKilled(playerChar.get())) {
             std::cout << "Oh no, your character has died! Your score was " << score << "! Rerun the program to play again :)\n";
             exit(0);
         }
@@ -206,9 +112,9 @@ void Game::update() {
     if(collectibles.size() <= MAX_COLLECTIBLES) spawnCollectibles();
 
     // Check for end of collectible presence and activation
-    if (activeShoes && activeShoes->time > 0) activeShoes->update(DELTA_TIME, playerChar);
+    if (activeShoes && activeShoes->time > 0) activeShoes->update(DELTA_TIME, playerChar.get());
     for (auto& collect : collectibles) {
-        collect->update(DELTA_TIME, playerChar);
+        collect->update(DELTA_TIME, playerChar.get());
         // Check for collection
         if (collect->collected) {
             // IF SHOES
@@ -266,7 +172,6 @@ void Game::spawnCollectibles() {
         }
         
         collectibles.push_back(collectible);
-        collectible->renderable->shader = flatShader;
     }
 }
 

@@ -3,7 +3,7 @@
 
 // Constructor
 Road::Road(float riverY, float riverWidth)
-    : Path(riverY, riverWidth, "../OpenGL\ Setup/textures/road.bmp", 5, 50) 
+    : Path(riverY, riverWidth, glm::vec4(0.65, 0.55, 0.5, 1), 5, 50)
 {
     initRoadMovingObjects();
 }

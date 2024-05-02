@@ -2,7 +2,7 @@
 
 // Constructor
 River::River(float riverY, float riverWidth) 
-    : Path(riverY, riverWidth, "../OpenGL\ Setup/textures/river.bmp", 3, 120) 
+    : Path(riverY, riverWidth, glm::vec4(0.05, 0.8, 1, 1), 3, 120)
 {
     initRiverMovingObjects();
 }

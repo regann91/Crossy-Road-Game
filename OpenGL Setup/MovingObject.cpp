@@ -1,8 +1,8 @@
 #include "MovingObject.h"
 
 
-MovingObject::MovingObject(float startX, float startY, float movingWidth, float movingHeight, std::string texPath, float movingSpeed, float laneW)
-    : GameObject(startX, startY - movingHeight / 2, movingWidth, movingHeight, texPath), speed(movingSpeed), laneWidth(laneW) {}
+MovingObject::MovingObject(float startX, float startY, float movingWidth, float movingHeight, glm::vec4 color, float movingSpeed, float laneW)
+    : GameObject(startX, startY - movingHeight / 2, movingWidth, movingHeight, color), speed(movingSpeed), laneWidth(laneW) {}
 
 
 // Update function implementation

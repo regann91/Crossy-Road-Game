@@ -158,12 +158,14 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="ModelManager.cpp" />
     <ClCompile Include="Renderable.cpp" />
     <ClCompile Include="MovingObject.cpp" />
     <ClCompile Include="Path.cpp" />
+    <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="River.cpp" />
     <ClCompile Include="Road.cpp" />
-    <ClCompile Include="ShaderProgram.cpp" />
+    <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="Shoes.cpp" />
     <ClCompile Include="TextDisplayer.cpp" />
     <ClCompile Include="TextureManager.cpp" />
@@ -175,16 +177,18 @@
     <ClInclude Include="Collectible.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="ModelManager.h" />
+    <ClInclude Include="Tree.h" />
     <ClInclude Include="MovingObject.h" />
     <ClInclude Include="Renderable.h" />
     <ClInclude Include="Path.h" />
+    <ClInclude Include="Renderer.h" />
     <ClInclude Include="River.h" />
     <ClInclude Include="Road.h" />
-    <ClInclude Include="ShaderProgram.h" />
+    <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="Shoes.h" />
     <ClInclude Include="TextDisplayer.h" />
     <ClInclude Include="TextureManager.h" />
-    <ClInclude Include="Tree.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\flatFragment.glsl" />
