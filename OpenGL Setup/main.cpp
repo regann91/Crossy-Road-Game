@@ -7,6 +7,7 @@
 #include "GameObject.h"
 #include "Game.h"
 #include "Character.h"
+#include "Renderer.h"
 
 #define GL_CLAMP_TO_EDGE 0x812F
 #define DELTA 50
@@ -88,6 +89,7 @@ int main(int argc, char** argv)
     glEnable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     // Init of GLEW
     GLenum err = glewInit();

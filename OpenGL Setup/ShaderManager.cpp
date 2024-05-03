@@ -1,4 +1,5 @@
 #include "ShaderManager.h"
+#include <glm/gtc/type_ptr.hpp>
 
 
 // Private constructor - INITIALIZES SHADERS
@@ -128,6 +129,7 @@ GLuint ShaderManager::loadShader(std::string name, std::string vertexPath, std::
     return shaderId;
 }
 
+// BIND AND UNBIND
 void ShaderManager::bind(GLuint id)
 {
     glUseProgram(id);
@@ -137,6 +139,16 @@ void ShaderManager::unbind()
 {
     glUseProgram(0);
 }
+
+// UTILITY UNIFORMS
+void ShaderManager::sendMatrices(glm::mat4& proj, glm::mat4& view) {
+    for (auto shader : loadedShaders) {
+        std::cout << shader.second << std::endl;
+        setMat4(shader.second, "projMat", proj);
+        setMat4(shader.second, "viewMat", view);
+    }
+}
+
 
 void ShaderManager::setBool(GLuint id, const std::string& name, bool value) const
 {
@@ -151,7 +163,12 @@ void ShaderManager::setFloat(GLuint id, const std::string& name, float value) co
     glUniform1f(glGetUniformLocation(id, name.c_str()), value);
 }
 
-void ShaderManager::setVec4(GLuint id, const std::string& name, glm::vec4 color) const
+void ShaderManager::setVec4(GLuint id, const std::string& name, const glm::vec4& color) const
 {
     glUniform4f(glGetUniformLocation(id, name.c_str()), color.r, color.g, color.b, color.a);
+}
+
+void ShaderManager::setMat4(GLuint id, const std::string& name, const glm::mat4& matrix) const
+{
+    glUniformMatrix4fv(glGetUniformLocation(id, name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
 }

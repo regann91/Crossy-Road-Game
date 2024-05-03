@@ -55,6 +55,9 @@
     <ClCompile Include="MeshManager.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Character.h">
@@ -107,6 +110,9 @@
     </ClInclude>
     <ClInclude Include="ShaderManager.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

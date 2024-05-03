@@ -1,4 +1,5 @@
 #include "Renderer.h"
+#include <glm/geometric.hpp>
 
 // Default constructor implementation with shader map init
 Renderer::Renderer() {}
@@ -22,7 +23,8 @@ void Renderer::drawScene(Game game)
 {
     // Render BG
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+
+    // Send info to the shader
 
     // Render roads
     for (const auto& path : game.paths) {
@@ -58,4 +60,5 @@ void Renderer::drawScene(Game game)
     // Render coins 
     //coinSprite.drawFixed(playerChar->renderable);
     //textdisplay->drawScreen(std::to_string(coins), 2, -310, 250, playerChar, false);
+
 }

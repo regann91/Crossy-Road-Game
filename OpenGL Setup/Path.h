@@ -10,7 +10,7 @@ public:
     std::vector<MovingObject> movingObjects;
 
     // Constructor
-    Path(float roadY, float roadWidth, glm::vec4 color, int nbObj = 3, float objW = 50.0);
+    Path(float roadZ, float roadDepth, glm::vec4 color, int nbObj = 3, float objD = 50.0);
 
     // Creates and initializes moving objects positions
     void initRoadMovingObjects();

@@ -11,7 +11,6 @@
 
 
 float RANDOM(float range = RAND_MAX) { return (float)rand() / (float)RAND_MAX * range; }
-//TextDisplayer* textdisplay;
 GameObject coinSprite;
 
 // Constructor
@@ -47,17 +46,17 @@ void Game::init()
     playerChar = std::make_shared<Character>();
 
     // Create end flag
-    flagEnd = std::make_shared<GameObject>(0, 1000, 21, 50, glm::vec4(0.6, 0.45, 0.4, 1));
+    flagEnd = std::make_shared<GameObject>(0, 0, 1000, 10, 50, 10, glm::vec4(0.6, 0.45, 0.4, 1));
 
     // Update camera
     updateCamera();
 }
 
 
-void Game::movePlayer(float deltaX, float deltaY)
+void Game::movePlayer(float deltaX, float deltaZ)
 {
     // Try to move 
-    playerChar->move(deltaX, deltaY);
+    playerChar->move(deltaX, 0, deltaZ);
 
     // Check if the player collides with end flag
     if (playerChar->collidesWith(*flagEnd)) {
@@ -73,12 +72,12 @@ void Game::movePlayer(float deltaX, float deltaY)
         for (auto& tree : trees) {
             // Cancel move if necessary
             if (tree->collidesWith(*playerChar)) {
-                playerChar->move(-deltaX, -deltaY);
+                playerChar->move(-deltaX, 0, -deltaZ);
             }
         }
     }
     // Update score
-    if (deltaY > 0 && playerChar->y / playerChar->height > score)
+    if (deltaZ > 0 && playerChar->y / playerChar->height > score)
         score = playerChar->y / playerChar->height;
 
     updateCamera();

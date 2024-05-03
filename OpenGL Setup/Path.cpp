@@ -3,19 +3,19 @@
 #include <random>     // Include the random header for std::default_random_engine
 
 // Constructor implementation
-Path::Path(float roadY, float roadWidth, glm::vec4 color, int nbObj, float objW)
-    : GameObject(0, roadY+50, roadWidth, 100, color), nbObjPerLane(nbObj), objWidth(objW) {}
+Path::Path(float roadZ, float roadWidth, glm::vec4 color, int nbObj, float objD)
+    : GameObject(0, 0, roadZ+50, roadWidth, 10, 100, color), nbObjPerLane(nbObj), objWidth(objD) {}
 
-void Path::createRoadMovingObj(float initX, float initY, float speed) {
+void Path::createRoadMovingObj(float initX, float initZ, float speed) {
     movingObjects.emplace_back(
-        MovingObject(initX, initY, objWidth, 50.0, glm::vec4(0.7, 0.7, 0.7, 1), speed, width)
+        MovingObject(initX, 25, initZ, objWidth, 50.0, 50, glm::vec4(0.7, 0.7, 0.7, 1), speed, width)
     );
     renderable->addChildRenderable(movingObjects.back().renderable);
 }
 
-void Path::createRiverMovingObj(float initX, float initY, float speed) {
+void Path::createRiverMovingObj(float initX, float initZ, float speed) {
     movingObjects.emplace_back(
-        MovingObject(initX, initY, objWidth, 50.0, glm::vec4(0.5, 0.4, 0.3, 1), speed, width)
+        MovingObject(initX, 0, initZ, objWidth, 20, 50.0, glm::vec4(0.5, 0.4, 0.3, 1), speed, width)
     );
     renderable->addChildRenderable(movingObjects.back().renderable);
 }
