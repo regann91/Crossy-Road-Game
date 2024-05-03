@@ -34,7 +34,7 @@ void myReshape(int w, int h) {
 
 // Display function to render the game
 void display() {
-    glClear(GL_COLOR_BUFFER_BIT);  // Clear the color buffer
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);    // Clear the color buffer
 
     // Draw scene
     Renderer::instance()->drawScene(game);
@@ -86,6 +86,7 @@ int main(int argc, char** argv)
     glutCreateWindow("Crossy Roads!");
     glShadeModel(GL_FLAT);
     glEnable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // Init of GLEW

@@ -50,8 +50,6 @@ GLuint ShaderManager::loadShader(std::string name, std::string vertexPath, std::
     std::string vertexFullPath = "../OpenGL\ Setup/shaders/" + vertexPath;
     std::string fragmentFullPath = "../OpenGL\ Setup/shaders/" + fragmentPath;
 
-    std::cout << vertexFullPath << " et puis " << fragmentFullPath << std::endl;
-
     // Loading of code files into memory
     try
     {

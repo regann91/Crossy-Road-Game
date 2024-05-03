@@ -6,6 +6,7 @@
 #include "Renderable.h"
 #include "GameObject.h"
 #include "Game.h"
+#include <glm/glm.hpp>
 
 // Singleton class that manages the drawing
 class Renderer {
