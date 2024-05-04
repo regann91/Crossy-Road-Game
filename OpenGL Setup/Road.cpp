@@ -2,8 +2,8 @@
 #include <random>
 
 // Constructor
-Road::Road(float riverY, float riverWidth)
-    : Path(riverY, riverWidth, glm::vec4(1, 0.68, 0.83, 1), 5, 50)
+Road::Road(float riverZ, float riverWidth)
+    : Path(-12, riverZ, riverWidth, glm::vec4(1, 0.68, 0.83, 1), 5, 50)
 {
     initRoadMovingObjects();
 }

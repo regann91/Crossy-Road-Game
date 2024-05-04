@@ -27,7 +27,7 @@ public:
     Game();         // Constructor
     void init();
     void update();
-    bool movePlayer(float deltaX, float deltaZ);
+    int movePlayer(float deltaX, float deltaZ);
     void toggleCheatMode();
     std::shared_ptr<Character> player() const { return playerChar; }
 

@@ -58,36 +58,53 @@ void Game::init()
     flagEnd = std::make_shared<GameObject>(0, 0, 1000, 10, 150, 10, glm::vec4(0.6, 0.45, 0.4, 1));
 }
 
-
-bool Game::movePlayer(float deltaX, float deltaZ)
+// Return amount of moves done
+int Game::movePlayer(float deltaX, float deltaZ)
 {
-    // Try to move 
-    playerChar->move(deltaX, 0, deltaZ);
+    int movesSucceeded = 0;
 
-    // Check if the player collides with end flag
-    if (flagEnd->collidesWith(playerChar)) {
-        // Print a congratulatory message
-        std::cout << "Congratulations! You have reached the top!\n";
+    // Try to move as many times as the speed (to not miss an item or pass through an object)
+    for (int i = 0; i < playerChar->speed; i++) {
+        playerChar->move(deltaX, 0, deltaZ);
 
-        // Exit the game
-        exit(0);
-    }
+        // Check if the player collides with end flag
+        if (flagEnd->collidesWith(playerChar)) {
+            // Print a congratulatory message
+            std::cout << "Congratulations! You have reached the top!\n";
 
-    // Check if move would get us into a tree
-    if (!cheatMode) {
-        for (auto& tree : trees) {
-            // Cancel move if necessary
-            if (playerChar->collidesWith(tree)) {
-                playerChar->move(-deltaX, 0, -deltaZ);
-                return false;
+            // Exit the game
+            exit(0);
+        }
+        // Check if move would get us out of bounds
+        if (playerChar->x + playerChar->width/2 > 400 || 
+            playerChar->x - playerChar->width / 2 < -400 || 
+            playerChar->z + playerChar->depth / 2 > 1200 || 
+            playerChar->z - playerChar->depth / 2 < -150 ) 
+        {
+            // Cancel last iteration
+            playerChar->move(-deltaX, 0, -deltaZ);
+            return movesSucceeded;
+        }
+
+        // Check if move would get us into a tree
+        if (!cheatMode) {
+            for (auto& tree : trees) {
+                // Cancel move if necessary
+                if (playerChar->collidesWith(tree)) {
+                    // Cancel last iteration
+                    playerChar->move(-deltaX, 0, -deltaZ);
+                    return movesSucceeded;
+                }
             }
         }
-    }
-    // Move successful : update score
-    if (deltaZ > 0 && playerChar->z / playerChar->depth > score)
-        score = playerChar->z / playerChar->depth;
+        // Move successful : update score
+        if (deltaZ > 0 && playerChar->z / playerChar->depth > score)
+            score = playerChar->z / playerChar->depth;
 
-    return true;
+        movesSucceeded++;
+    }
+
+    return movesSucceeded;
 
 }
 

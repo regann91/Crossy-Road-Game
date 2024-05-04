@@ -1,8 +1,8 @@
 #include "River.h"
 
 // Constructor
-River::River(float riverY, float riverWidth) 
-    : Path(riverY, riverWidth, glm::vec4(0.5, 0.85, 1, 1), 3, 120)
+River::River(float riverZ, float riverWidth) 
+    : Path(-22, riverZ, riverWidth, glm::vec4(0.5, 0.85, 1, 1), 3, 120)
 {
     initRiverMovingObjects();
 }

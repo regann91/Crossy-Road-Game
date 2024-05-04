@@ -9,10 +9,10 @@ Character::Character(float startX, float startZ)
 
 void Character::move(float dx, float dy, float dz) {
     // Move the object
-    x += dx*speed;
-    y += dy*speed;
-    z += dz*speed;
+    x += dx;
+    y += dy;
+    z += dz;
 
     // Move the renderable
-    renderable->translate(dx * speed / width, dy * speed / height, dz * speed / depth);
+    renderable->translate(dx / width, dy / height, dz / depth);
 }

@@ -18,8 +18,10 @@ public:
     // Returns the (sinzgle) instance of TextureManager
     static Renderer* instance();
 
+    void buildWorld(Game& game);
+
     // Draws the scene
-    void drawScene(Game game);
+    void drawScene(Game& game);
     
 private:
     // Private constructor

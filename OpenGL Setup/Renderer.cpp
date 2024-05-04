@@ -2,24 +2,7 @@
 #include <glm/geometric.hpp>
 
 // Constructor implementation with initialized world (ground)
-Renderer::Renderer() {
-
-    // Construct world (ground)
-    std::vector<Vertex> vertGround = {
-              // Position                // Color                    // Tex Coord    // Normal
-        Vertex(glm::vec3(-0.5, 0, -0.5), glm::vec3(0.66, 0.53, 0.74), glm::vec2(0, 0), glm::vec3(0, 1, 0)),     // Bottom left
-        Vertex(glm::vec3(0.5, 0, -0.5), glm::vec3(0.66, 0.53, 0.74), glm::vec2(1, 0), glm::vec3(0, 1, 0)),      // Bottom right
-        Vertex(glm::vec3(0.5, 0, 0.5), glm::vec3(0.66, 0.53, 0.74), glm::vec2(1, 1), glm::vec3(0, 1, 0)),       // Top right
-        Vertex(glm::vec3(-0.5, 0, 0.5), glm::vec3(0.66, 0.53, 0.74), glm::vec2(0, 0), glm::vec3(0, 1, 0)),      // Top left
-    };
-
-    std::vector<GLuint> indGround = { 
-        0, 1, 2,  // first Triangle
-        0, 2, 3   // second Triangle
-    };
-
-    ground = std::make_shared<Renderable>(MeshManager::instance()->getMesh("ground", vertGround, indGround));
-}
+Renderer::Renderer() {}
 
 // Init to null
 Renderer* Renderer::INSTANCE = NULL;
@@ -35,8 +18,61 @@ Renderer* Renderer::instance()
     return INSTANCE;
 }
 
+
+// Build world
+void Renderer::buildWorld(Game& game) {
+    
+    // CONSTRUCT GROUND
+    glm::vec3 color = glm::vec3(0.66, 0.53, 0.74);
+
+    // Starting vertices
+    std::vector<Vertex> vertGround = {
+                // Position               // Color      // Tex Coord     // Normal
+         Vertex(glm::vec3(-400, 0, -400), color, glm::vec2(0, 0), glm::vec3(0, 1, 0)),     // Bottom left
+         Vertex(glm::vec3(400, 0, -400), color, glm::vec2(1, 0), glm::vec3(0, 1, 0)),      // Bottom right
+    };
+
+    // Iterate over the game paths to add vertices
+    for (auto& path : game.paths) {
+        // BEFORE THE PATH - Ground level (0)
+        vertGround.emplace_back(glm::vec3(-400, 0, path->z - path->depth / 2), color, glm::vec2(0, 0), glm::vec3(0, 1, 0));
+        vertGround.emplace_back(glm::vec3(400, 0, path->z - path->depth / 2), color, glm::vec2(0, 0), glm::vec3(0, 1, 0));
+
+        // Path level (lower)
+        vertGround.emplace_back(glm::vec3(-400, -20, path->z - path->depth / 2), color, glm::vec2(0, 0), glm::vec3(0, 0, 1));
+        vertGround.emplace_back(glm::vec3(400, -20, path->z - path->depth / 2), color, glm::vec2(0, 0), glm::vec3(0, 0, 1));
+
+        // AFTER THE PATH - Path level (lower)
+        vertGround.emplace_back(glm::vec3(-400, -20, path->z + path->depth / 2), color, glm::vec2(0, 0), glm::vec3(0, 0, -1));
+        vertGround.emplace_back(glm::vec3(400, -20, path->z + path->depth / 2), color, glm::vec2(0, 0), glm::vec3(0, 0, -1));
+
+        // Ground level (0)
+        vertGround.emplace_back(glm::vec3(-400, 0, path->z + path->depth / 2), color, glm::vec2(0, 0), glm::vec3(0, 1, 0));
+        vertGround.emplace_back(glm::vec3(400, 0, path->z + path->depth / 2), color, glm::vec2(0, 0), glm::vec3(0, 1, 0));
+    }
+
+    // Ending vertices
+    vertGround.emplace_back(glm::vec3(-400, 0, 1400), color, glm::vec2(0, 0), glm::vec3(0, 1, 0));
+    vertGround.emplace_back(glm::vec3(400, 0, 1400), color, glm::vec2(0, 0), glm::vec3(0, 1, 0));
+
+
+    // Iterate over the constructed vertices to build all of the triangles
+    // One quad is composed of 4 vertices -> 6 indices
+    std::vector<GLuint> indGround = {};
+
+    for (unsigned int i = 0; i < vertGround.size() / 2 - 1; i++) {
+        // FIRST QUAD
+        indGround.insert(indGround.end(), { 2*i, 2*i+1, 2*i+2 });     // 1st triangle
+        indGround.insert(indGround.end(), { 2*i+1, 2*i+2, 2*i+3 });   // 2nd triangle
+    }
+
+    ground = std::make_shared<Renderable>(MeshManager::instance()->getMesh("ground", vertGround, indGround));
+}
+
+
+
 // Draw all objects
-void Renderer::drawScene(Game game)
+void Renderer::drawScene(Game& game)
 {
     // Render BG
     // Draw ground

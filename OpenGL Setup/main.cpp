@@ -43,24 +43,29 @@ void display() {
     glutSwapBuffers();  // Swap the front and back buffers to display the rendered image
 }
 
-// Keyboard input handling function
+// Keyboard input handling function for movement
 void handleInputSpecialKeys(int key, int x, int y) {
+    int moves;
     switch (key) {
     case GLUT_KEY_UP:
         // Move character up
-        if (game.movePlayer(0, STEP)) Camera::instance()->moveCamera(0, 0, STEP*game.playerChar->speed);  
+        moves = game.movePlayer(0, STEP); 
+        Camera::instance()->moveCamera(0, 0, STEP * moves);
         break;
     case GLUT_KEY_LEFT:
         // Move character left
-        if (game.movePlayer(STEP, 0)) Camera::instance()->moveCamera(STEP * game.playerChar->speed, 0, 0);
+        moves = game.movePlayer(STEP, 0);
+        Camera::instance()->moveCamera(STEP * moves, 0, 0);
         break;
     case GLUT_KEY_RIGHT:
         // Move character right
-        if (game.movePlayer(-STEP, 0)) Camera::instance()->moveCamera(-STEP * game.playerChar->speed, 0, 0);
+        moves = game.movePlayer(-STEP, 0);
+        Camera::instance()->moveCamera(-STEP * moves, 0, 0);
         break;
     case GLUT_KEY_DOWN:
         // Move character down
-        if (game.movePlayer(0, -STEP)) Camera::instance()->moveCamera(0, 0, -STEP * game.playerChar->speed);
+        moves = game.movePlayer(0, -STEP); 
+        Camera::instance()->moveCamera(0, 0, -STEP * moves);
         break;
     default:
         break;
@@ -115,7 +120,7 @@ void update() {
 
 int main(int argc, char** argv)
 {
-    // Initialization
+    // INITIALIZATION of OpenGL
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
     glutCreateWindow("Crossy Roads!");
@@ -125,20 +130,24 @@ int main(int argc, char** argv)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    // Init of GLEW
+    // INITIALIZATION of GLEW
     GLenum err = glewInit();
     if (err) {
         std::cout << "GLEW Init failed" << std::endl;
     }
 
+    // INITIALIZATION of instances
     game.init();
+    Renderer::instance()->buildWorld(game);
     
+    // INITIALIZATION of glut Loop 
     glutReshapeFunc(myReshape);
     glutDisplayFunc(display);
     glutIdleFunc(update);
     glutSpecialFunc(handleInputSpecialKeys);
     glutKeyboardFunc(handleInputCharKeys);
     glutTimerFunc(0, timerUpdate, 0);  // Call timerUpdate function immediately and set up timer
+
     // Update loop
     glutMainLoop();
 
