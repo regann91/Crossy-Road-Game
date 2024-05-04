@@ -6,10 +6,12 @@
 #include "Renderable.h"
 #include "GameObject.h"
 #include "Game.h"
+#include "Camera.h"
 
 // Singleton class that manages the drawing
 class Renderer {
 public:
+
     // Deleting copy constructor
     Renderer(const Renderer& obj) = delete;
 
@@ -25,4 +27,6 @@ private:
 
     // Single instance of manager
     static Renderer* INSTANCE;
+
+    std::shared_ptr<Renderable> ground;
 };

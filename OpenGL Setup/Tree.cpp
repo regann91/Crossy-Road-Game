@@ -6,4 +6,4 @@
 #include <vector>
 
 Tree::Tree(float x, float z, float width, float height, float depth)
-    : GameObject(x, height/2, z, width, height, depth, glm::vec4(0.5, 1, 0.3, 1)) {}
+    : GameObject(x, height/2, z, width, height, depth, glm::vec4(0.13,0.41,0.64, 1)) {}

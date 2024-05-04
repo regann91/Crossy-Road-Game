@@ -11,5 +11,5 @@ public:
     //void drawBar(Character* player) const;
 
     // Override collect function
-    void tryCollect(Character* player) override;
+    void tryCollect(std::shared_ptr<Character> player) override;
 };

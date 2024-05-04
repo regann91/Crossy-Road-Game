@@ -31,11 +31,12 @@ void Shoes::drawBar(Character* player) const {
 }
 */
 
-void Shoes::tryCollect(Character* player) {
+void Shoes::tryCollect(std::shared_ptr<Character> player) {
 	// Checks activation
-	if (!collected && player->collidesWith(*this)) {
+	if (!collected && this->collidesWith(player)) {
 		// Activates and reset time
 		collected = true;
 		time = MAX_TIME/2;
+		std::cout << "Shoes collected!" << std::endl;
 	}
 }

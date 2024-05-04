@@ -193,6 +193,7 @@
     <ClInclude Include="TextureManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\colorVertex.glsl" />
     <None Include="shaders\flatFragment.glsl" />
     <None Include="shaders\flatVertex.glsl" />
   </ItemGroup>

@@ -8,14 +8,14 @@ Path::Path(float roadZ, float roadWidth, glm::vec4 color, int nbObj, float objD)
 
 void Path::createRoadMovingObj(float initX, float initZ, float speed) {
     movingObjects.emplace_back(
-        MovingObject(initX, 25, initZ, objWidth, 50.0, 50, glm::vec4(0.7, 0.7, 0.7, 1), speed, width)
+        MovingObject(initX, 25, initZ, objWidth, 50.0, 50, glm::vec4(1, 0.96, 1, 1), speed, width)
     );
     renderable->addChildRenderable(movingObjects.back().renderable);
 }
 
 void Path::createRiverMovingObj(float initX, float initZ, float speed) {
     movingObjects.emplace_back(
-        MovingObject(initX, 0, initZ, objWidth, 20, 50.0, glm::vec4(0.5, 0.4, 0.3, 1), speed, width)
+        MovingObject(initX, 0, initZ, objWidth, 20, 50.0, glm::vec4(1, 0.96, 1, 1), speed, width)
     );
     renderable->addChildRenderable(movingObjects.back().renderable);
 }
@@ -35,7 +35,7 @@ void Path::initRoadMovingObjects() {
             float initialX = i * baseSpacing + offset - width / 2; // Center on screen
 
             // Create and setup new obj
-            createRoadMovingObj(initialX, y + (50.0 * l), laneSpeed * std::pow(-1, l));
+            createRoadMovingObj(initialX, z + (50.0 * l), laneSpeed * std::pow(-1, l));
         }
 
         // Shuffle the objects in the lane to further randomize their positions
@@ -58,7 +58,7 @@ void Path::initRiverMovingObjects() {
             // Generate a random offset for the x position
             float offset = static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * baseSpacing - baseSpacing / 2;
             float initialX = i * baseSpacing + offset - width / 2; // Center on screen
-            createRiverMovingObj(initialX, y + (50.0 * l), laneSpeed * std::pow(-1, l));
+            createRiverMovingObj(initialX, z + (50.0 * l), laneSpeed * std::pow(-1, l));
         }
 
         // Shuffle the objects in the lane to further randomize their positions
@@ -75,6 +75,6 @@ void Path::update(float deltaTime) {
 }
 
 // Default behaviour
-bool Path::getsKilled(Character* player) {
+bool Path::getsKilled(std::shared_ptr<Character> player) {
     return false;
 }

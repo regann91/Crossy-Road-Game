@@ -32,6 +32,19 @@ std::shared_ptr<Mesh> MeshManager::getMesh(std::string name) {
     return loadMesh("../OpenGL\ Setup/models/" + name);
 }
 
+std::shared_ptr<Mesh> MeshManager::getMesh(std::string name, std::vector<Vertex>& vertices, std::vector<GLuint>& indices) {
+
+    auto it = loadedMeshes.find(name);
+    if (it != loadedMeshes.end()) {
+        return it->second;
+    }
+
+    auto mesh = std::make_shared<Mesh>(vertices, indices);
+
+    loadedMeshes.emplace(name, mesh);
+    return mesh;
+}
+
 // Load vertex info into buffers
 std::shared_ptr<Mesh> MeshManager::loadMesh(std::string filename) {
 
@@ -39,49 +52,16 @@ std::shared_ptr<Mesh> MeshManager::loadMesh(std::string filename) {
     //tex = TextureManager::loadTexture("../OpenGL\ Setup/textures/character.bmp");
 
     // New buffer for vertices
-    GLuint VAO, VBO, EBO;
     std::vector<Vertex> vertices;
     std::vector<GLuint> indices;
 
     loadInfoFromFile(filename, vertices, indices);
 
-    // Generate new buffers - VBO is for vertices and EBO for indices
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
-
-    // Bind the Vertex Array Object (buffer) first
-    glBindVertexArray(VAO);
-
-    // Bind and set vertex buffer
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
-
-    // Configure vertex attributes
-    // Position
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, position));
-    glEnableVertexAttribArray(0);
-    // Color
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, color));
-    glEnableVertexAttribArray(1);
-    // TexCoord
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, texCoord));
-    glEnableVertexAttribArray(2);
-    // Normal
-    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, normal));
-    glEnableVertexAttribArray(3);
-
-    // Unbind buffer
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
-    auto mesh = std::make_shared<Mesh>();
-    mesh->buffer = VAO; mesh->indexNb = indices.size();
+    auto mesh = std::make_shared<Mesh>(vertices, indices);
 
     loadedMeshes.emplace(filename, mesh);
     return mesh;
+        
 }
 
 void MeshManager::loadInfoFromFile(std::string filename, std::vector<Vertex>& vertices, std::vector<GLuint>& indices) {
@@ -169,4 +149,48 @@ void MeshManager::loadInfoFromFile(std::string filename, std::vector<Vertex>& ve
     std::iota(std::begin(indices), std::end(indices), 0);
 }
 
+Vertex::Vertex(glm::vec3 pos, glm::vec3 col, glm::vec2 texC, glm::vec3 norm) {
+    position = pos;
+    color = col;
+    texCoord = texC;
+    normal = norm;
+}
 
+Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<GLuint>& indices) {
+    // New buffer for vertices
+    GLuint VAO, VBO, EBO;
+
+    // Generate new buffers - VBO is for vertices and EBO for indices
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+
+    // Bind the Vertex Array Object (buffer) first
+    glBindVertexArray(VAO);
+
+    // Bind and set vertex buffer
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
+
+    // Configure vertex attributes
+    // Position
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, position));
+    glEnableVertexAttribArray(0);
+    // Color
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, color));
+    glEnableVertexAttribArray(1);
+    // TexCoord
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, texCoord));
+    glEnableVertexAttribArray(2);
+    // Normal
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, normal));
+    glEnableVertexAttribArray(3);
+
+    // Unbind buffer
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    buffer = VAO; indexNb = indices.size();
+}

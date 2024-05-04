@@ -20,7 +20,7 @@ public:
     float getObjWidth() const { return objWidth; }
 
     // checks for collisions on way
-    virtual bool getsKilled(Character* player);
+    virtual bool getsKilled(std::shared_ptr<Character> player);
 
     // Updates all object positions
     void update(float deltaTime);

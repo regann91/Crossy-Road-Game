@@ -4,22 +4,26 @@
 
 
 // Constructor implementation
-GameObject::GameObject(float startX, float startY, float startZ, float objWidth, float objHeight, float objDepth, glm::vec4 color)
-    : x(startX), y(startY), width(objWidth), height(objHeight)
+GameObject::GameObject(float startX, float startY, float startZ, float objWidth, float objHeight, float objDepth, glm::vec4 color, float rotation)
+    : x(startX), y(startY), z(startZ), width(objWidth), height(objHeight), depth(objDepth), rotation(rotation)
 {
     renderable = std::make_shared<Renderable>(color);
-    setPosition(x, y, z);
+    renderable->setTransform(
+        Renderable::getTrans(x, y, z) *
+        Renderable::getRot(rotation, glm::vec3(0, 0, 1)) * 
+        Renderable::getScale(width, height, depth)
+    );
 }
 
-// Collision check between 2 objects
-bool GameObject::collidesWith(GameObject other) const
+// Collision check between 2 objects (only check x and z)
+bool GameObject::collidesWith(std::shared_ptr<GameObject> other) const
 {
-    return (x - width/2 < other.x + other.width/2 &&
-        x + width/2 > other.x - other.width/2 &&
-        y - height/2 < other.y + other.height/2 &&
-        y + height/2 > other.y - other.height /2 &&
-        z - height / 2 < other.z + other.depth / 2 &&
-        z + height / 2 > other.z - other.depth / 2
+    //std::cout << this->x << " " << other->x << " et " << this->z << " " << other->z << std::endl;
+    
+    return (x - width/2 < other->x + other->width/2 &&
+        x + width/2 > other->x - other->width/2 &&
+        z - depth / 2 < other->z + other->depth / 2 &&
+        z + depth / 2 > other->z - other->depth / 2
     );
 }
 
@@ -31,19 +35,19 @@ void GameObject::move(float dx, float dy, float dz) {
     z += dz;
 
     // Move the renderable
-    renderable->translate(dx, dy, dz);
+    renderable->translate(dx/width, dy/height, dz/depth);
 }
 
 void GameObject::setPosition(float newX, float newY, float newZ) {
-    // Move renderable to origin
-    renderable->translate(-x, -y, -z);
-
     // Move the object
     x = newX;
     y = newY;
     z = newZ;
 
     // Move the renderable to where it should go
-    renderable->translate(newX, newY, newZ);
-    
+    renderable->setTransform(
+        Renderable::getTrans(x, y, z) *
+        Renderable::getRot(rotation, glm::vec3(0, 0, 1)) * 
+        Renderable::getScale(width, height, depth)
+    );
 }

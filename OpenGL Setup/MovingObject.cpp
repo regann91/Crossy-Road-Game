@@ -7,22 +7,15 @@ MovingObject::MovingObject(float startX, float startY, float startZ, float movin
 
 // Update function implementation
 void MovingObject::update(float deltaTime) {
-    // Update the car position based on speed and elapsed time
+    // Update the position based on speed and elapsed time
     this->move(speed * deltaTime, 0, 0);
-
     // Check if the car is out of the window, reset its position to the opposite side
-    if (x > laneWidth / 2) {
+    if (x > (laneWidth - width) / 2) {
         // Move to the left side
-        this->setPosition(-laneWidth / 2, y, z);
-        this->renderable->scale(-1, 0, 0);
+        this->setPosition(-(laneWidth - width) / 2, y, z);
     }
-    else if (x < -laneWidth / 2) {
+    else if (x < -(laneWidth - width) / 2) {
         // Move to the right side
-        this->setPosition(laneWidth / 2, y, z);
-        this->renderable->scale(-1, 0, 0);
+        this->setPosition((laneWidth - width) / 2, y, z);
     }
-    // Update the wheel positions
-
-    // Rotate the wheels
-    float wheelRotationSpeed = speed * deltaTime * 360;  // Adjust this value as needed
 }

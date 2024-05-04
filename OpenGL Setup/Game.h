@@ -26,10 +26,9 @@ class Game {
 public:
     Game();         // Constructor
     void init();
-    void updateCamera();
     void update();
-    void movePlayer(float deltaX, float deltaY);
-    void handleInput(char input);
+    bool movePlayer(float deltaX, float deltaZ);
+    void toggleCheatMode();
     std::shared_ptr<Character> player() const { return playerChar; }
 
     // GAME OBJECT AND INFO - used for rendering

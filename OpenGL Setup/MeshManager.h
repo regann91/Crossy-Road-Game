@@ -14,11 +14,15 @@ struct Vertex {
     glm::vec3 color;
     glm::vec2 texCoord;
     glm::vec3 normal;
+
+    Vertex(glm::vec3 pos = glm::vec3(0), glm::vec3 col = glm::vec3(0), glm::vec2 texC = glm::vec2(0), glm::vec3 norm = glm::vec3(0));
 };
 
 struct Mesh {
     GLuint indexNb;
     GLuint buffer;
+
+    Mesh(std::vector<Vertex>& vertices, std::vector<GLuint>& indices);
 };
 
 // Singleton class that manages the texture loading
@@ -30,8 +34,11 @@ public:
     // Returns the (single) instance of TextureManager
     static MeshManager* instance();
 
-    // Returns a pointer to a model from the path
+    // Returns a pointer to a mesh from the path
     std::shared_ptr<Mesh> getMesh(const std::string filename);
+
+    // Creates mesh from data
+    std::shared_ptr<Mesh> getMesh(std::string name, std::vector<Vertex>& vertices, std::vector<GLuint>& indices);
 
 private:
     // Private constructor

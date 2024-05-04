@@ -11,9 +11,6 @@ uniform mat4 modelMat;
 uniform mat4 viewMat;
 uniform mat4 projMat;
 
-// Color
-uniform vec4 colorVertex;
-
 // Light direction
 vec3 light = normalize(vec3(-0.7,-1.1,-1));
 
@@ -35,6 +32,5 @@ void main()
 
     float coeff = 1 - dot(light, normal);
     vec4 shadows = clampVec4(vec4(coeff * shadow,1), 0, 1);
-    vColor = shadows * colorVertex;
-
+    vColor = shadows * vec4(color,1);
 }

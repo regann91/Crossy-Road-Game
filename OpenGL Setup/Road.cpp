@@ -3,19 +3,19 @@
 
 // Constructor
 Road::Road(float riverY, float riverWidth)
-    : Path(riverY, riverWidth, glm::vec4(0.65, 0.55, 0.5, 1), 5, 50)
+    : Path(riverY, riverWidth, glm::vec4(1, 0.68, 0.83, 1), 5, 50)
 {
     initRoadMovingObjects();
 }
 
 
 
-bool Road::getsKilled(Character* player) {
+bool Road::getsKilled(std::shared_ptr<Character> player) {
     // If player is on the road
-    if(player->collidesWith(*this)) {
+    if(this->collidesWith(player)) {
         // Check for collision with cars
         for (auto& obj : movingObjects) {
-            if (player->collidesWith(obj)) return true;
+            if (obj.collidesWith(player)) return true;
         }
     }
     return false;

@@ -26,6 +26,15 @@ void Game::init()
     trees = {
         // Init trees
         std::make_shared<Tree>(-200.0, 350.0),
+        std::make_shared<Tree>(-200.0, 800.0),
+        std::make_shared<Tree>(-150.0, 300.0),
+        std::make_shared<Tree>(-150.0, 550.0),
+        std::make_shared<Tree>(-50.0, 400.0),
+        std::make_shared<Tree>(50.0, 250.0),
+        std::make_shared<Tree>(100.0, 650.0),
+        std::make_shared<Tree>(150.0, 100.0),
+        std::make_shared<Tree>(200.0, 350.0),
+        std::make_shared<Tree>(300.0, 300.0)
     };
    
     // Load coin sprite
@@ -46,20 +55,17 @@ void Game::init()
     playerChar = std::make_shared<Character>();
 
     // Create end flag
-    flagEnd = std::make_shared<GameObject>(0, 0, 1000, 10, 50, 10, glm::vec4(0.6, 0.45, 0.4, 1));
-
-    // Update camera
-    updateCamera();
+    flagEnd = std::make_shared<GameObject>(0, 0, 1000, 10, 150, 10, glm::vec4(0.6, 0.45, 0.4, 1));
 }
 
 
-void Game::movePlayer(float deltaX, float deltaZ)
+bool Game::movePlayer(float deltaX, float deltaZ)
 {
     // Try to move 
     playerChar->move(deltaX, 0, deltaZ);
 
     // Check if the player collides with end flag
-    if (playerChar->collidesWith(*flagEnd)) {
+    if (flagEnd->collidesWith(playerChar)) {
         // Print a congratulatory message
         std::cout << "Congratulations! You have reached the top!\n";
 
@@ -67,40 +73,31 @@ void Game::movePlayer(float deltaX, float deltaZ)
         exit(0);
     }
 
-    // Check move would get us into a tree
+    // Check if move would get us into a tree
     if (!cheatMode) {
         for (auto& tree : trees) {
             // Cancel move if necessary
-            if (tree->collidesWith(*playerChar)) {
+            if (playerChar->collidesWith(tree)) {
                 playerChar->move(-deltaX, 0, -deltaZ);
+                return false;
             }
         }
     }
-    // Update score
-    if (deltaZ > 0 && playerChar->y / playerChar->height > score)
-        score = playerChar->y / playerChar->height;
+    // Move successful : update score
+    if (deltaZ > 0 && playerChar->z / playerChar->depth > score)
+        score = playerChar->z / playerChar->depth;
 
-    updateCamera();
+    return true;
+
 }
 
-// Updates the camera according to the Y player position
-void Game::updateCamera() {
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluOrtho2D(-VIEW_WIDTH / 2, VIEW_WIDTH / 2, -VIEW_HEIGHT / 2 + playerChar->y, VIEW_HEIGHT / 2 + playerChar->y);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    glutPostRedisplay();
-}
 
 // Update function for game logic (e.g., character and car movement, collision detection)
 void Game::update() {
     // Update all paths and check collisions (moving cars and trunks)
     for (const auto& path : paths) {
         path->update(DELTA_TIME);
-        if (!cheatMode && path->getsKilled(playerChar.get())) {
+        if (!cheatMode && path->getsKilled(playerChar)) {
             std::cout << "Oh no, your character has died! Your score was " << score << "! Rerun the program to play again :)\n";
             exit(0);
         }
@@ -111,9 +108,16 @@ void Game::update() {
     if(collectibles.size() <= MAX_COLLECTIBLES) spawnCollectibles();
 
     // Check for end of collectible presence and activation
-    if (activeShoes && activeShoes->time > 0) activeShoes->update(DELTA_TIME, playerChar.get());
+    if (activeShoes && activeShoes->time > 0) activeShoes->update(DELTA_TIME, playerChar);          // Update shoes if still active
+    else if (activeShoes && activeShoes->time < 0) {
+        // Else notify player and delete
+        std::cout << "Shoes expired! :(" << std::endl;
+        activeShoes = nullptr;
+    }
+
+    // Iterate over list of collectibles to update them
     for (auto& collect : collectibles) {
-        collect->update(DELTA_TIME, playerChar.get());
+        collect->update(DELTA_TIME, playerChar);
         // Check for collection
         if (collect->collected) {
             // IF SHOES
@@ -127,6 +131,7 @@ void Game::update() {
             //std::cout << coinPtr << std::endl;
             if (coinPtr != nullptr) {
                 coins++;
+                std::cout << "Coin collected! Current amount is: " << coins << std::endl;
                 break;
             }
         }
@@ -174,10 +179,6 @@ void Game::spawnCollectibles() {
     }
 }
 
-
-void Game::handleInput(char input) {
-    if (input == 'p') {
-        std::cout << "Cheat mode enabled" << std::endl;
-        cheatMode = !cheatMode;
-    }
+void Game::toggleCheatMode() {
+    cheatMode = !cheatMode;
 }

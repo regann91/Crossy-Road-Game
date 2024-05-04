@@ -44,28 +44,62 @@ void display() {
 }
 
 // Keyboard input handling function
-void specialKeys(int key, int x, int y) {
+void handleInputSpecialKeys(int key, int x, int y) {
     switch (key) {
     case GLUT_KEY_UP:
-        game.movePlayer(0, STEP);  // Move character up
+        // Move character up
+        if (game.movePlayer(0, STEP)) Camera::instance()->moveCamera(0, 0, STEP*game.playerChar->speed);  
         break;
     case GLUT_KEY_LEFT:
-        game.movePlayer(-STEP, 0);  // Move character left
+        // Move character left
+        if (game.movePlayer(STEP, 0)) Camera::instance()->moveCamera(STEP * game.playerChar->speed, 0, 0);
         break;
     case GLUT_KEY_RIGHT:
-        game.movePlayer(STEP, 0);  // Move character right
+        // Move character right
+        if (game.movePlayer(-STEP, 0)) Camera::instance()->moveCamera(-STEP * game.playerChar->speed, 0, 0);
         break;
     case GLUT_KEY_DOWN:
-        game.movePlayer(0, -STEP);  // Move character down
+        // Move character down
+        if (game.movePlayer(0, -STEP)) Camera::instance()->moveCamera(0, 0, -STEP * game.playerChar->speed);
         break;
     default:
         break;
     }
 }
 
-void asciiKeys(unsigned char key, int x, int y) {
-    game.handleInput(static_cast<char>(key));
+// AZERTY camera control - to change
+void handleInputCharKeys(unsigned char key, int x, int y) {
+    switch (key) {
+    case 'p':
+        std::cout << "Cheat mode enabled" << std::endl;
+        game.toggleCheatMode();
+        break;
+    case 'v':
+        Camera::instance()->toggleViewMode();
+        break;
+    case 'o':
+        Camera::instance()->moveCamera(0, 0, -5);
+        break;
+    case 'l':
+        Camera::instance()->moveCamera(0, 0, 5);
+        break;
+    case 'z':
+        Camera::instance()->rotateCamera(-0.1, glm::vec3(1, 0, 0));
+        break;
+    case 'q':
+        Camera::instance()->rotateCamera(-0.1,glm::vec3(0, 1, 0));
+        break;
+    case 's':
+        Camera::instance()->rotateCamera(0.1, glm::vec3(1, 0, 0));
+        break;
+    case 'd':
+        Camera::instance()->rotateCamera(0.1, glm::vec3(0, 1, 0));
+        break;
+    default:
+        break;
+    }
 }
+
 
 // Timer update function with a single int parameter
 void timerUpdate(int value) {
@@ -102,8 +136,8 @@ int main(int argc, char** argv)
     glutReshapeFunc(myReshape);
     glutDisplayFunc(display);
     glutIdleFunc(update);
-    glutSpecialFunc(specialKeys);
-    glutKeyboardFunc(asciiKeys);
+    glutSpecialFunc(handleInputSpecialKeys);
+    glutKeyboardFunc(handleInputCharKeys);
     glutTimerFunc(0, timerUpdate, 0);  // Call timerUpdate function immediately and set up timer
     // Update loop
     glutMainLoop();

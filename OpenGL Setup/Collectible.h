@@ -18,8 +18,8 @@ public:
     Collectible(float startX = 0, float startZ = 0, float time = MAX_TIME, glm::vec4 color = glm::vec4(1));
 
     // Update function for time and collection
-    void update(float deltaTime, Character* player);
+    void update(float deltaTime, std::shared_ptr<Character> player);
 
     // Checks for collection
-    virtual void tryCollect(Character* player);
+    virtual void tryCollect(std::shared_ptr<Character> player);
 };

@@ -28,6 +28,8 @@ public:
 
     // Constructor - default magenta
     Renderable(glm::vec4 colorVec = glm::vec4(1,0,1,1), std::string path = "cube.obj");
+    // Constructor with manually constructed mesh
+    Renderable(std::shared_ptr<Mesh> mesh);
 
     // Function for drawing the object
     void draw() const;

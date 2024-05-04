@@ -10,16 +10,17 @@ class GameObject {
 public:
     float x, y, z;  // Position
     float width, height, depth;  // Dimensions
+    float rotation;
     std::shared_ptr<Renderable> renderable;
     
     // Constructor
-    GameObject(float startX, float startY, float startZ, float objWidth, float objHeight, float objDepth, glm::vec4 color);
+    GameObject(float startX, float startY, float startZ, float objWidth, float objHeight, float objDepth, glm::vec4 color, float rotation = 0);
 
     // Constructor
     GameObject() {}
 
     // Collision check between 2 objects
-    bool collidesWith(GameObject obj) const;
+    bool collidesWith(std::shared_ptr<GameObject> obj) const;
 
     // Draw from renderable
     void draw() const { renderable->draw(); }

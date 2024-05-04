@@ -1,8 +1,25 @@
 #include "Renderer.h"
 #include <glm/geometric.hpp>
 
-// Default constructor implementation with shader map init
-Renderer::Renderer() {}
+// Constructor implementation with initialized world (ground)
+Renderer::Renderer() {
+
+    // Construct world (ground)
+    std::vector<Vertex> vertGround = {
+              // Position                // Color                    // Tex Coord    // Normal
+        Vertex(glm::vec3(-0.5, 0, -0.5), glm::vec3(0.66, 0.53, 0.74), glm::vec2(0, 0), glm::vec3(0, 1, 0)),     // Bottom left
+        Vertex(glm::vec3(0.5, 0, -0.5), glm::vec3(0.66, 0.53, 0.74), glm::vec2(1, 0), glm::vec3(0, 1, 0)),      // Bottom right
+        Vertex(glm::vec3(0.5, 0, 0.5), glm::vec3(0.66, 0.53, 0.74), glm::vec2(1, 1), glm::vec3(0, 1, 0)),       // Top right
+        Vertex(glm::vec3(-0.5, 0, 0.5), glm::vec3(0.66, 0.53, 0.74), glm::vec2(0, 0), glm::vec3(0, 1, 0)),      // Top left
+    };
+
+    std::vector<GLuint> indGround = { 
+        0, 1, 2,  // first Triangle
+        0, 2, 3   // second Triangle
+    };
+
+    ground = std::make_shared<Renderable>(MeshManager::instance()->getMesh("ground", vertGround, indGround));
+}
 
 // Init to null
 Renderer* Renderer::INSTANCE = NULL;
@@ -22,9 +39,9 @@ Renderer* Renderer::instance()
 void Renderer::drawScene(Game game)
 {
     // Render BG
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-
-    // Send info to the shader
+    // Draw ground
+    glClearColor(0.62, 0.78, 0.91, 1);
+    ground->draw();
 
     // Render roads
     for (const auto& path : game.paths) {

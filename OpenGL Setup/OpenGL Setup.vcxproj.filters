@@ -136,5 +136,8 @@
     <None Include="shaders\flatVertex.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="shaders\colorVertex.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

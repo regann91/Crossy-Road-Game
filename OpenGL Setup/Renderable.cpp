@@ -3,13 +3,23 @@
 #include "Camera.h"
 #include <iostream>
 
-// Constructor implementation
+// Constructor implementations
 Renderable::Renderable(glm::vec4 colorVec, std::string path)
 {
     // Load mesh, shader, set transformation to Id Matrix
     meshInfo = MeshManager::instance()->getMesh(path);
     shaderId = ShaderManager::instance()->getShader();
     color = colorVec;
+    transform = glm::mat4(1);
+}
+
+// Manual mesh loading constructor
+Renderable::Renderable(std::shared_ptr<Mesh> mesh)
+{
+    // Load mesh, shader, set transformation to Id Matrix
+    meshInfo = mesh;
+    shaderId = ShaderManager::instance()->getShader("colorShader","colorVertex.glsl","flatFragment.glsl");
+    color = glm::vec4(1);
     transform = glm::mat4(1);
 }
 
@@ -22,12 +32,11 @@ void Renderable::draw() const {
 
     // Draw from buffer
     ShaderManager::instance()->setVec4(shaderId, "colorVertex", color);
-    ShaderManager::instance()->setMat4(shaderId, "modelMat", transform);
 
-    //ShaderManager::instance()->sendMatrices(Camera::instance()->projectionMatrix, Camera::instance()->viewMatrix);
+    // Send matrix info to buffer
+    ShaderManager::instance()->setMat4(shaderId, "modelMat", transform);
     ShaderManager::instance()->setMat4(shaderId, "projMat", Camera::instance()->projectionMatrix);
     ShaderManager::instance()->setMat4(shaderId, "viewMat", Camera::instance()->viewMatrix);
-
 
     glBindVertexArray(meshInfo->buffer);
     glDrawElements(GL_TRIANGLES, meshInfo->indexNb, GL_UNSIGNED_INT, 0);
@@ -72,5 +81,5 @@ glm::mat4 Renderable::getRot(float theta, glm::vec3 axis) {
     return glm::rotate(glm::mat4(1), theta, axis);
 }
 glm::mat4 Renderable::getScale(float w, float h, float d) {
-    return glm::scale(glm::mat4(1), glm::vec3(w, h, h));
+    return glm::scale(glm::mat4(1), glm::vec3(w, h, d));
 }
