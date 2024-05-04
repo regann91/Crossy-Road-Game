@@ -128,6 +128,9 @@
     <Filter Include="Utils">
       <UniqueIdentifier>{6fbfc3db-b766-4ed6-bd63-9f4253b87f13}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Meshes">
+      <UniqueIdentifier>{208d3f91-c595-457e-8240-e27c6f360e04}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\flatFragment.glsl">
@@ -139,5 +142,10 @@
     <None Include="shaders\colorVertex.glsl">
       <Filter>Shaders</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="models\cube.obj">
+      <Filter>Meshes</Filter>
+    </Object>
   </ItemGroup>
 </Project>
