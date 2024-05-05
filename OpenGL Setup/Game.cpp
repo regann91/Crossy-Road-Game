@@ -55,7 +55,7 @@ void Game::init()
     playerChar = std::make_shared<Character>();
 
     // Create end flag
-    flagEnd = std::make_shared<GameObject>(0, 0, 1000, 10, 150, 10, glm::vec4(0.6, 0.45, 0.4, 1));
+    flagEnd = std::make_shared<GameObject>(0, 50, 1000, 10, 100, 10, glm::vec4(0.6, 0.45, 0.4, 1));
 }
 
 // Return amount of moves done
@@ -76,7 +76,7 @@ int Game::movePlayer(float deltaX, float deltaZ)
             exit(0);
         }
         // Check if move would get us out of bounds
-        if (playerChar->x + playerChar->width/2 > 400 || 
+        if (playerChar->x + playerChar->width / 2 > 400 || 
             playerChar->x - playerChar->width / 2 < -400 || 
             playerChar->z + playerChar->depth / 2 > 1200 || 
             playerChar->z - playerChar->depth / 2 < -150 ) 

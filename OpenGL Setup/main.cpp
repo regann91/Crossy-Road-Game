@@ -82,6 +82,9 @@ void handleInputCharKeys(unsigned char key, int x, int y) {
     case 'v':
         Camera::instance()->toggleViewMode();
         break;
+    case 'r':
+        Renderer::instance()->toggleRenderingMode();
+        break;
     case 'o':
         Camera::instance()->moveCamera(0, 0, -5);
         break;

@@ -4,6 +4,10 @@
 #include <iostream>
 #include <glm/gtx/matrix_decompose.hpp>
 
+float clamp(float nb, float min, float max) {
+    return nb < min ? min : (nb > max ? max : nb);
+}
+
 // Default constructor implementation
 Camera::Camera() {
     // Position
@@ -74,8 +78,8 @@ void Camera::updateCamera() {
     switch (viewMode) {
     case THIRD_PERSON:
         viewMatrix = glm::lookAt(
-            position + glm::vec3(0,0,offset.z),
-            glm::vec3(0, 10, 100 + offset.z), 
+            position + glm::vec3(clamp(offset.x, -200, 200),0,offset.z),
+            glm::vec3(clamp(offset.x, -200, 200), 10, 100 + offset.z),
             glm::vec3(0.0f, 1.0f, 0.0f)
         );
         break;

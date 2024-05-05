@@ -37,9 +37,6 @@
     <ClCompile Include="Renderable.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="Tree.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
@@ -54,6 +51,9 @@
     </ClCompile>
     <ClCompile Include="MeshManager.cpp">
       <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Sources</Filter>
@@ -142,10 +142,5 @@
     <None Include="shaders\colorVertex.glsl">
       <Filter>Shaders</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Object Include="models\cube.obj">
-      <Filter>Meshes</Filter>
-    </Object>
   </ItemGroup>
 </Project>

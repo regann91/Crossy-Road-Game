@@ -2,7 +2,9 @@
 #include <glm/geometric.hpp>
 
 // Constructor implementation with initialized world (ground)
-Renderer::Renderer() {}
+Renderer::Renderer() {
+    renderingMode = COLOR;
+}
 
 // Init to null
 Renderer* Renderer::INSTANCE = NULL;
@@ -16,6 +18,30 @@ Renderer* Renderer::instance()
         return INSTANCE;
     }
     return INSTANCE;
+}
+
+
+void Renderer::toggleRenderingMode() {
+    switch (renderingMode) {
+    case COLOR:
+        renderingMode = WIREFRAME;
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glDisable(GL_DEPTH_TEST);
+        std::cout << "Current rendering mode: Wireframe (without depth removal)" << std::endl;
+        break;
+    case WIREFRAME:
+        renderingMode = WIREFRAME_DEPTH_REMOVAL;
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glEnable(GL_DEPTH_TEST);
+        std::cout << "Current rendering mode: Wireframe (with depth removal)" << std::endl;
+        break;
+    case WIREFRAME_DEPTH_REMOVAL:
+        renderingMode = COLOR;
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glEnable(GL_DEPTH_TEST);
+        std::cout << "Current rendering mode: Wireframe (with depth removal)" << std::endl;
+        break;
+    }
 }
 
 

@@ -22,6 +22,9 @@ public:
 
     // Draws the scene
     void drawScene(Game& game);
+
+    // Toggles between different rendering modes
+    void toggleRenderingMode();
     
 private:
     // Private constructor
@@ -30,5 +33,14 @@ private:
     // Single instance of manager
     static Renderer* INSTANCE;
 
+    // Ground mesh
     std::shared_ptr<Renderable> ground;
+
+    // Rendering mode
+    enum RenderingMode {
+        COLOR,
+        WIREFRAME,
+        WIREFRAME_DEPTH_REMOVAL
+    };
+    RenderingMode renderingMode;
 };
