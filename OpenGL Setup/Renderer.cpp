@@ -27,6 +27,7 @@ void Renderer::toggleRenderingMode() {
         renderingMode = WIREFRAME;
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glDisable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
         std::cout << "Current rendering mode: Wireframe (without depth removal)" << std::endl;
         break;
     case WIREFRAME:
@@ -41,7 +42,7 @@ void Renderer::toggleRenderingMode() {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         glEnable(GL_DEPTH_TEST);
         glDisable(GL_CULL_FACE);
-        std::cout << "Current rendering mode: Wireframe (with depth removal)" << std::endl;
+        std::cout << "Current rendering mode: Color" << std::endl;
         break;
     }
 }

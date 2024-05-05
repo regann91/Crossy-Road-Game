@@ -76,7 +76,6 @@ void handleInputSpecialKeys(int key, int x, int y) {
 void handleInputCharKeys(unsigned char key, int x, int y) {
     switch (key) {
     case 'p':
-        std::cout << "Cheat mode enabled" << std::endl;
         game.toggleCheatMode();
         break;
     case 'v':
@@ -86,22 +85,22 @@ void handleInputCharKeys(unsigned char key, int x, int y) {
         Renderer::instance()->toggleRenderingMode();
         break;
     case 'w':
-        Camera::instance()->moveCameraInWord(0, 0, 5);
+        Camera::instance()->moveCameraOnInput(0, 0, 5);
         break;
     case 's':
-        Camera::instance()->moveCameraInWord(0, 0, -5);
+        Camera::instance()->moveCameraOnInput(0, 0, -5);
         break;
     case 'a':
-        Camera::instance()->moveCameraInWord(5, 0, 0);
+        Camera::instance()->moveCameraOnInput(5, 0, 0);
         break;
     case 'd':
-        Camera::instance()->moveCameraInWord(-5, 0, 0);
+        Camera::instance()->moveCameraOnInput(-5, 0, 0);
         break;
     case 'z':
-        Camera::instance()->moveCameraInWord(0, 5, 0);
+        Camera::instance()->moveCameraOnInput(0, 5, 0);
         break;
     case ' ':
-        Camera::instance()->moveCameraInWord(0, -5, 0);
+        Camera::instance()->moveCameraOnInput(0, -5, 0);
         break;
     case 'c':
         Camera::instance()->resetInputOffset();

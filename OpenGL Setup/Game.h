@@ -29,10 +29,12 @@ public:
     void update();
     int movePlayer(float deltaX, float deltaZ);
     void toggleCheatMode();
+    void endRound(bool roundWon);
     std::shared_ptr<Character> player() const { return playerChar; }
 
     // GAME OBJECT AND INFO - used for rendering
     int score;                              // Current score, computed by current best height
+    float maxHeight;                        // Max height reached in the round
     unsigned int coins;                     // Current amount of money
     std::shared_ptr<Shoes> activeShoes;     // Current powerup shoes state
 
