@@ -19,8 +19,10 @@ public:
     void updateCamera();
 
     // Allows to translate camera
-    void moveCamera(float dx, float dy, float dz);
-    void rotateCamera(float dtheta, glm::vec3 axis);
+    void moveCamera(float dx, float dy, float dz);          // Moves offset (depending on player)
+    void moveCameraInWord(float dx, float dy, float dz);    // Moves position (player input)
+    void resetInputOffset();
+    void rotateCamera(float dtheta, glm::vec3 axis);        // Rotates (player input)
 
 private:
     // Private constructor
@@ -30,8 +32,9 @@ private:
     static Camera* INSTANCE;
 
     // Viewing information and camera position
-    glm::vec3 position;
-    glm::vec3 offset;
+    glm::vec3 position;     // Base position
+    glm::vec3 offset;       // Player movement
+    glm::vec3 offsetInput;   // Player input movement
 
     enum ViewingMode {
         THIRD_PERSON,

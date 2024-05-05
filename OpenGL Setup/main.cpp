@@ -85,23 +85,26 @@ void handleInputCharKeys(unsigned char key, int x, int y) {
     case 'r':
         Renderer::instance()->toggleRenderingMode();
         break;
-    case 'o':
-        Camera::instance()->moveCamera(0, 0, -5);
-        break;
-    case 'l':
-        Camera::instance()->moveCamera(0, 0, 5);
-        break;
-    case 'z':
-        Camera::instance()->rotateCamera(-0.1, glm::vec3(1, 0, 0));
-        break;
-    case 'q':
-        Camera::instance()->rotateCamera(-0.1,glm::vec3(0, 1, 0));
+    case 'w':
+        Camera::instance()->moveCameraInWord(0, 0, 5);
         break;
     case 's':
-        Camera::instance()->rotateCamera(0.1, glm::vec3(1, 0, 0));
+        Camera::instance()->moveCameraInWord(0, 0, -5);
+        break;
+    case 'a':
+        Camera::instance()->moveCameraInWord(5, 0, 0);
         break;
     case 'd':
-        Camera::instance()->rotateCamera(0.1, glm::vec3(0, 1, 0));
+        Camera::instance()->moveCameraInWord(-5, 0, 0);
+        break;
+    case 'z':
+        Camera::instance()->moveCameraInWord(0, 5, 0);
+        break;
+    case ' ':
+        Camera::instance()->moveCameraInWord(0, -5, 0);
+        break;
+    case 'c':
+        Camera::instance()->resetInputOffset();
         break;
     default:
         break;
