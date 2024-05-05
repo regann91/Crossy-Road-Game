@@ -6,5 +6,5 @@
 
 class Tree : public GameObject {
 public:
-    Tree(float x, float y, float width = 50.0, float height = 50.0);
+    Tree(float x, float z, float width = 50.0, float height = 100.0, float depth = 50.0);
 };

@@ -3,9 +3,11 @@
 #include <iostream>
 
 #include "TextureManager.h"
+#include "Renderer.h"
 #include "GameObject.h"
 #include "Game.h"
 #include "Character.h"
+#include "Renderer.h"
 
 #define GL_CLAMP_TO_EDGE 0x812F
 #define DELTA 50
@@ -31,40 +33,84 @@ void myReshape(int w, int h) {
     glViewport(margin_x, margin_y, VIEW_WIDTH * scale, VIEW_HEIGHT * scale);
 }
 
-
 // Display function to render the game
 void display() {
-    glClear(GL_COLOR_BUFFER_BIT);  // Clear the color buffer
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);    // Clear the color buffer
 
-    game.drawScene();
+    // Draw scene
+    Renderer::instance()->drawScene(game);
 
     glutSwapBuffers();  // Swap the front and back buffers to display the rendered image
 }
 
-
-// Keyboard input handling function
-void specialKeys(int key, int x, int y) {
+// Keyboard input handling function for movement
+void handleInputSpecialKeys(int key, int x, int y) {
+    int moves;
     switch (key) {
     case GLUT_KEY_UP:
-        game.movePlayer(0, STEP);  // Move character up
+        // Move character up
+        moves = game.movePlayer(0, STEP); 
+        Camera::instance()->moveCamera(0, 0, STEP * moves);
         break;
     case GLUT_KEY_LEFT:
-        game.movePlayer(-STEP, 0);  // Move character left
+        // Move character left
+        moves = game.movePlayer(STEP, 0);
+        Camera::instance()->moveCamera(STEP * moves, 0, 0);
         break;
     case GLUT_KEY_RIGHT:
-        game.movePlayer(STEP, 0);  // Move character right
+        // Move character right
+        moves = game.movePlayer(-STEP, 0);
+        Camera::instance()->moveCamera(-STEP * moves, 0, 0);
         break;
     case GLUT_KEY_DOWN:
-        game.movePlayer(0, -STEP);  // Move character down
+        // Move character down
+        moves = game.movePlayer(0, -STEP); 
+        Camera::instance()->moveCamera(0, 0, -STEP * moves);
         break;
     default:
         break;
     }
 }
 
-void asciiKeys(unsigned char key, int x, int y) {
-    game.handleInput(static_cast<char>(key));
+// AZERTY camera control - to change
+void handleInputCharKeys(unsigned char key, int x, int y) {
+    switch (key) {
+    case 'p':
+        std::cout << "Cheat mode enabled" << std::endl;
+        game.toggleCheatMode();
+        break;
+    case 'v':
+        Camera::instance()->toggleViewMode();
+        break;
+    case 'r':
+        Renderer::instance()->toggleRenderingMode();
+        break;
+    case 'w':
+        Camera::instance()->moveCameraInWord(0, 0, 5);
+        break;
+    case 's':
+        Camera::instance()->moveCameraInWord(0, 0, -5);
+        break;
+    case 'a':
+        Camera::instance()->moveCameraInWord(5, 0, 0);
+        break;
+    case 'd':
+        Camera::instance()->moveCameraInWord(-5, 0, 0);
+        break;
+    case 'z':
+        Camera::instance()->moveCameraInWord(0, 5, 0);
+        break;
+    case ' ':
+        Camera::instance()->moveCameraInWord(0, -5, 0);
+        break;
+    case 'c':
+        Camera::instance()->resetInputOffset();
+        break;
+    default:
+        break;
+    }
 }
+
 
 // Timer update function with a single int parameter
 void timerUpdate(int value) {
@@ -80,28 +126,34 @@ void update() {
 
 int main(int argc, char** argv)
 {
-    // Initialization
+    // INITIALIZATION of OpenGL
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
     glutCreateWindow("Crossy Roads!");
     glShadeModel(GL_FLAT);
     glEnable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    // Init of GLEW
+    // INITIALIZATION of GLEW
     GLenum err = glewInit();
     if (err) {
         std::cout << "GLEW Init failed" << std::endl;
     }
 
+    // INITIALIZATION of instances
     game.init();
+    Renderer::instance()->buildWorld(game);
     
+    // INITIALIZATION of glut Loop 
     glutReshapeFunc(myReshape);
     glutDisplayFunc(display);
     glutIdleFunc(update);
-    glutSpecialFunc(specialKeys);
-    glutKeyboardFunc(asciiKeys);
+    glutSpecialFunc(handleInputSpecialKeys);
+    glutKeyboardFunc(handleInputCharKeys);
     glutTimerFunc(0, timerUpdate, 0);  // Call timerUpdate function immediately and set up timer
+
     // Update loop
     glutMainLoop();
 

@@ -10,9 +10,6 @@
     <ClCompile Include="Collectible.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="CoverPlate.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="Game.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
@@ -28,37 +25,37 @@
     <ClCompile Include="River.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="RiverMovingObject.cpp">
+    <ClCompile Include="MovingObject.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="Road.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="RoadMovingObject.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="Shoes.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="TextDisplayer.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureManager.cpp">
+    <ClCompile Include="Renderable.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="Tree.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Wheel.cpp">
+    <ClCompile Include="TextDisplayer.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureManager.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderManager.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshManager.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Leg.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="BodyPart.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Arm.cpp">
+    <ClCompile Include="Camera.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -70,9 +67,6 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Collectible.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="CoverPlate.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
@@ -87,37 +81,37 @@
     <ClInclude Include="Road.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="RiverMovingObject.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="RoadMovingObject.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="Shoes.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="TextDisplayer.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureManager.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Tree.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Wheel.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="GameObject.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Leg.h">
+    <ClInclude Include="Renderable.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Arm.h">
+    <ClInclude Include="MovingObject.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="BodyPart.h">
+    <ClInclude Include="Renderer.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Tree.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureManager.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="TextDisplayer.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshManager.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderManager.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -128,5 +122,25 @@
     <Filter Include="Sources">
       <UniqueIdentifier>{806b9d5a-abf3-482e-9710-5a9a54961174}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{7e611f1a-dbc6-4363-a653-edfe4bc25ea4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{6fbfc3db-b766-4ed6-bd63-9f4253b87f13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Meshes">
+      <UniqueIdentifier>{208d3f91-c595-457e-8240-e27c6f360e04}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\flatFragment.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\flatVertex.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\colorVertex.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

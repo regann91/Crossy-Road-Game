@@ -1,8 +1,9 @@
 #include "Shoes.h"
 
-Shoes::Shoes(float startX, float startY, float time) 
-	: Collectible(startX, startY, "../OpenGL\ Setup/textures/shoes.bmp") {}
+Shoes::Shoes(float startX, float startZ, float time) 
+	: Collectible(startX, startZ, MAX_TIME, glm::vec4(1, 0.5, 0.1, 1)) {}
 
+/*
 // This draws a bar relative to player Y position
 void Shoes::drawBar(Character* player) const {
 	glColor4ub(207, 100, 80, 255);  // Set color to orange
@@ -28,12 +29,14 @@ void Shoes::drawBar(Character* player) const {
 		glVertex2f(posX + offset, posY + 20);
 	glEnd();
 }
+*/
 
-void Shoes::tryCollect(Character* player) {
+void Shoes::tryCollect(std::shared_ptr<Character> player) {
 	// Checks activation
-	if (!collected && player->collidesWith(*this)) {
+	if (!collected && this->collidesWith(player)) {
 		// Activates and reset time
 		collected = true;
 		time = MAX_TIME/2;
+		std::cout << "Shoes collected!" << std::endl;
 	}
 }

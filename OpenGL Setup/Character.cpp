@@ -1,41 +1,18 @@
 #include "Character.h"
+#include <glm/gtx/matrix_decompose.hpp>
+
 
 // Constructor implementation
-Character::Character(float startX, float startY)
-    : GameObject(startX, startY, 50, 50, "../OpenGL\ Setup/textures/bodyChar.bmp"), speed(1) 
-{
-    backpack = GameObject(startX, startY, 50, 50, "../OpenGL\ Setup/textures/backpackChar.bmp");
-    head = BodyPart(startX, startY, "../OpenGL\ Setup/textures/headChar.bmp");
-    legR = Leg(startX, startY, false);
-    legL = Leg(startX, startY, true);
-    armR = Arm(startX, startY, false);
-    armL = Arm(startX, startY, true);
-}
+Character::Character(float startX, float startZ)
+    : GameObject(startX, 35, startZ, 50, 70, 50, glm::vec4(0.43, 0.46, 0.77, 1)), speed(1)
+{}
 
-// move implementation
-void Character::move(float deltaX, float deltaY) {
-    x += speed * deltaX;
-    y += speed * deltaY;
-}
+void Character::move(float dx, float dy, float dz) {
+    // Move the object
+    x += dx;
+    y += dy;
+    z += dz;
 
-
-void Character::update(float deltaTime) {
-    legL.update(deltaTime, x, y, speed);
-    legR.update(deltaTime, x, y, speed);
-    armL.update(deltaTime, x, y, speed);
-    armR.update(deltaTime, x, y, speed);
-    head.update(deltaTime, x, y, speed);
-    backpack.setPosition(x, y);
-}
-
-
-// Draw implementation
-void Character::draw() const {
-    backpack.draw();
-    head.draw();
-    legL.draw();
-    legR.draw();
-    armL.draw();
-    armR.draw();
-    GameObject::draw();
+    // Move the renderable
+    renderable->translate(dx / width, dy / height, dz / depth);
 }

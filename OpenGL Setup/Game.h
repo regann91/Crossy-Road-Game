@@ -24,34 +24,26 @@ const float MAX_COLLECTIBLES = 3;
 
 class Game {
 public:
-    ~Game();     // Destructor
-    Game();    // Constructor
+    Game();         // Constructor
     void init();
-    void drawScene();
-    void updateCamera();
     void update();
-    void movePlayer(float deltaX, float deltaY);
-    void handleInput(char input);
-    Character* player() const { return playerChar; }
+    int movePlayer(float deltaX, float deltaZ);
+    void toggleCheatMode();
+    std::shared_ptr<Character> player() const { return playerChar; }
 
-private:
-    // Spawns collectibles randomly
-    void spawnCollectibles();
-    // Activates cheat mode where player passes through obstacles
-    bool cheatMode;
-    // Stores BG tex
-    GLuint backgroundTex;
-    // Current score, computed by current best height
-    int score;
-    // Current amount of money
-    unsigned int coins;
-    // Current powerup shoes state
-    std::shared_ptr<Shoes> activeShoes;
+    // GAME OBJECT AND INFO - used for rendering
+    int score;                              // Current score, computed by current best height
+    unsigned int coins;                     // Current amount of money
+    std::shared_ptr<Shoes> activeShoes;     // Current powerup shoes state
 
     // Game items
-    Character* playerChar;  // Player character
-    std::vector<Tree> trees;   // Trees (obstacles)
-    std::vector<std::shared_ptr<Path>> paths;   // Paths (to cross)
-    std::vector<std::shared_ptr<Collectible>> collectibles;   // Coins and shoes
-    GameObject* flagEnd;   // Makes game end on Collision
+    std::shared_ptr<Character> playerChar;                      // Player character
+    std::vector<std::shared_ptr<Tree>> trees;                   // Trees (obstacles)
+    std::vector<std::shared_ptr<Path>> paths;                   // Paths (to cross)
+    std::vector<std::shared_ptr<Collectible>> collectibles;     // Coins and shoes
+    std::shared_ptr<GameObject> flagEnd;                        // Makes game end on Collision
+
+private:
+    void spawnCollectibles();       // Spawns collectibles randomly
+    bool cheatMode;                 // Activates cheat mode where player passes through obstacles
 };

@@ -1,25 +1,20 @@
 #include "River.h"
 
 // Constructor
-River::River(float riverY, float riverWidth) 
-    : Path(riverY, riverWidth, "../OpenGL\ Setup/textures/river.bmp", 3, 120) 
+River::River(float riverZ, float riverWidth) 
+    : Path(-22, riverZ, riverWidth, glm::vec4(0.5, 0.85, 1, 1), 3, 120)
 {
     initRiverMovingObjects();
 }
 
-// Generates a template moving object for the path
-RiverMovingObject River::createRiverMovingObj(float initX, float initY, float speed) {
-    return RiverMovingObject(initX, initY, getObjWidth(), 50, "../OpenGL\ Setup/textures/trunk.bmp", speed, width);
-}
-
-bool River::getsKilled(Character* player) {
+bool River::getsKilled(std::shared_ptr<Character> player) {
     // If player is on the river
-    if (player->collidesWith(*this)) {
+    if (this->collidesWith(player)) {
         bool death = true;
         // Check for collision with trunks, which would keep player alive
-        for (RiverMovingObject& obj : RiverMovingObjects) {
+        for (MovingObject& obj : movingObjects) {
             // If player is on trunk, then all good
-            if (player->collidesWith(obj)) {
+            if (obj.collidesWith(player)) {
                 death = false;
                 //player->move(obj.getSpeed()*0.007,0);
                 break;

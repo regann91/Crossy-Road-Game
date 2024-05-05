@@ -1,37 +1,31 @@
 #pragma once
 #include <GL/glew.h>
 #include <GL/freeglut.h>
-#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 #include <string>
 #include <iostream>
+#include "Renderable.h"
 
 class GameObject {
 public:
-    float x, y;  // Position
-    float width, height;  // Dimensions
+    float x, y, z;  // Position
+    float width, height, depth;  // Dimensions
     float rotation;
-    GLuint tex;   // Texture
-
+    std::shared_ptr<Renderable> renderable;
+    
     // Constructor
-    GameObject(float startX, float startY, float objWidth, float objHeight, std::string texpath);
+    GameObject(float startX, float startY, float startZ, float objWidth, float objHeight, float objDepth, glm::vec4 color, float rotation = 0);
 
     // Constructor
     GameObject() {}
 
-    // Function for drawing the object
-    virtual void draw() const;
-
-    // Function for drawing the object in a fixed place on screen (relative to character position)
-    void drawFixed(GameObject* object) const;
-
     // Collision check between 2 objects
-    bool collidesWith(GameObject obj) const;
+    bool collidesWith(std::shared_ptr<GameObject> obj) const;
 
-    virtual void rotate(float speed);
+    // Draw from renderable
+    void draw() const { renderable->draw(); }
 
-    void setPosition(float newX, float newY);
-
-    void setRotation(float newRotation);
-
-    void rotateWithinRange(float speed, float deltaTime, float minRotation, float maxRotation);
+    // Moving functions
+    void move(float dx, float dy, float dz);
+    void setPosition(float newX, float newY, float newZ);
 };
