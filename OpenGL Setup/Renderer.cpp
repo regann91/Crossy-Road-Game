@@ -33,12 +33,14 @@ void Renderer::toggleRenderingMode() {
         renderingMode = WIREFRAME_DEPTH_REMOVAL;
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE); 
         std::cout << "Current rendering mode: Wireframe (with depth removal)" << std::endl;
         break;
     case WIREFRAME_DEPTH_REMOVAL:
         renderingMode = COLOR;
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         glEnable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
         std::cout << "Current rendering mode: Wireframe (with depth removal)" << std::endl;
         break;
     }
