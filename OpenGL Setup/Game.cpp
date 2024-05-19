@@ -8,6 +8,7 @@
 #include "River.h"
 #include "Road.h"
 #include "Coin.h"
+#include "Camera.h"
 
 
 float RANDOM(float range = RAND_MAX) { return (float)rand() / (float)RAND_MAX * range; }
@@ -70,10 +71,10 @@ int Game::movePlayer(float deltaX, float deltaZ)
         // Check if the player collides with end flag
         if (flagEnd->collidesWith(playerChar)) {
             // Print a congratulatory message
-            std::cout << "Congratulations! You have reached the top!\n";
+            std::cout << "Congratulations! You have reached the top! Current score is " << score << "!" << std::endl;
 
             // Exit the game
-            exit(0);
+            endRound(true);
         }
         // Check if move would get us out of bounds
         if (playerChar->x + playerChar->width / 2 > 400 || 
@@ -98,8 +99,10 @@ int Game::movePlayer(float deltaX, float deltaZ)
             }
         }
         // Move successful : update score
-        if (deltaZ > 0 && playerChar->z / playerChar->depth > score)
-            score = playerChar->z / playerChar->depth;
+        if (playerChar->z > maxHeight) {
+            score += (playerChar->z - maxHeight) / STEP;    // Adds points to current total score
+            maxHeight = playerChar->z;                      // Updates current best height
+        }
 
         movesSucceeded++;
     }
@@ -115,8 +118,8 @@ void Game::update() {
     for (const auto& path : paths) {
         path->update(DELTA_TIME);
         if (!cheatMode && path->getsKilled(playerChar)) {
-            std::cout << "Oh no, your character has died! Your score was " << score << "! Rerun the program to play again :)\n";
-            exit(0);
+            std::cout << "Oh no, your character has died :( Your score was " << score << "!\n";
+            endRound(false);
         }
     }
 
@@ -198,4 +201,17 @@ void Game::spawnCollectibles() {
 
 void Game::toggleCheatMode() {
     cheatMode = !cheatMode;
+    std::cout << "Cheat mode " << (cheatMode ? "On!" : "Off!") << std::endl;
+}
+
+void Game::endRound(bool roundWon) {
+    // Reinitialize player andposition
+    Camera::instance()->moveCameraTo(0,0,0);
+    playerChar->setPosition(0, playerChar->y, 0);
+
+    // Reinitialize player items and scores
+    maxHeight = 0;
+    activeShoes = nullptr;
+
+    if (!roundWon) score = 0;
 }

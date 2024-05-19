@@ -16,6 +16,7 @@ struct Vertex {
     glm::vec3 normal;
 
     Vertex(glm::vec3 pos = glm::vec3(0), glm::vec3 col = glm::vec3(0), glm::vec2 texC = glm::vec2(0), glm::vec3 norm = glm::vec3(0));
+    bool operator==(const Vertex& other) const;
 };
 
 struct Mesh {

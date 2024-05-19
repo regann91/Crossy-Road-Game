@@ -46,7 +46,7 @@ void Camera::toggleViewMode() {
     // Switching to SIDE VIEW
     else if (viewMode == FIRST_PERSON) {
         viewMode = SIDE_VIEW;
-        position = glm::vec3(-425, 200, -70);
+        position = glm::vec3(-425, 270, -70);
         resetInputOffset();
         projectionMatrix = glm::ortho(-400.0f, 400.0f, -300.0f, 300.0f, 0.1f, 1200.0f);
         std::cout << "Current viewing mode: Side View" << std::endl;
@@ -78,7 +78,15 @@ void Camera::moveCamera(float dx, float dy, float dz) {
     instance()->updateCamera();
 }
 
-void Camera::moveCameraInWord(float dx, float dy, float dz) {
+void Camera::moveCameraTo(float x, float y, float z) {
+    offset.x = x;
+    offset.y = y;
+    offset.z = z;
+
+    instance()->updateCamera();
+}
+
+void Camera::moveCameraOnInput(float dx, float dy, float dz) {
     offsetInput.x += dx;
     offsetInput.y += dy;
     offsetInput.z += dz;
@@ -110,7 +118,7 @@ void Camera::updateCamera() {
     case SIDE_VIEW:
         viewMatrix = glm::lookAt(
             position + glm::vec3(0, 0, offset.z) + offsetInput,
-            glm::vec3(0, -10, 100 + offset.z) + offsetInput,
+            glm::vec3(0, 60, 100 + offset.z) + offsetInput,
             glm::vec3(0.0f, 1.0f, 0.0f)
         );
         break;

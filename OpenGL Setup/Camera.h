@@ -20,7 +20,8 @@ public:
 
     // Allows to translate camera
     void moveCamera(float dx, float dy, float dz);          // Moves offset (depending on player)
-    void moveCameraInWord(float dx, float dy, float dz);    // Moves position (player input)
+    void moveCameraTo(float x, float y, float z);        // Sets offset (depending on player)
+    void moveCameraOnInput(float dx, float dy, float dz);   // Moves position (player input)
     void resetInputOffset();
     void rotateCamera(float dtheta, glm::vec3 axis);        // Rotates (player input)
 
