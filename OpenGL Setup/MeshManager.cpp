@@ -3,6 +3,8 @@
 #include <fstream>
 #include <sstream>
 #include <numeric>
+#include <map> 
+
 
 // Default constructor implementation with empty map creation
 MeshManager::MeshManager() {}
@@ -72,9 +74,9 @@ void MeshManager::loadInfoFromFile(std::string filename, std::vector<Vertex>& ve
     std::vector<glm::vec2> vertTexCoord;
 
     // Face vectors
-    std::vector<GLint> posIndices;
-    std::vector<GLint> normIndices;
-    std::vector<GLint> texCoordIndices;
+    std::vector<GLuint> posIndices;
+    std::vector<GLuint> normIndices;
+    std::vector<GLuint> texCoordIndices;
 
     std::stringstream ss;
     std::ifstream file(filename);
@@ -133,20 +135,30 @@ void MeshManager::loadInfoFromFile(std::string filename, std::vector<Vertex>& ve
                 }
             }
         }
-        // Build final vertex array 
-        vertices.resize(posIndices.size(), Vertex());
-
-        // Load in all vertices
-        for (size_t i = 0; i < vertices.size(); ++i) {
-            vertices[i].position = vertPos[posIndices[i]-1];
-            vertices[i].texCoord = vertTexCoord[texCoordIndices[i]-1];
-            vertices[i].normal = vertNorm[normIndices[i]-1];
-            vertices[i].color = glm::vec3(i%2,(i+1)%2,(i*3)%2);
-        }
     }
+    // Build final vertex array 
+    vertices.resize(vertPos.size(), Vertex());
+
+    // Used for average computing
+    std::vector<unsigned int> countEachVertex;
+    countEachVertex.resize(vertPos.size(), 0);
+
+    // Load in all vertices
+    for (size_t i = 0; i < posIndices.size(); ++i) {
+        vertices[posIndices[i] - 1].position = vertPos[posIndices[i]-1];
+        vertices[posIndices[i] - 1].texCoord = vertTexCoord[texCoordIndices[i]-1];
+        vertices[posIndices[i] - 1].normal += vertNorm[normIndices[i]-1];
+        vertices[posIndices[i] - 1].color = glm::vec3(0);
+
+        // Update count 
+        countEachVertex[posIndices[i] - 1]++;
+    }
+    // Compute average of normal
+    for (int i = 0; i < vertices.size(); i++) vertices[i].normal /= countEachVertex[i];
+
     // Build index 
-    indices.resize(vertices.size(), 0);
-    std::iota(std::begin(indices), std::end(indices), 0);
+    indices = posIndices;
+    for (GLuint& i : indices) i--;
 }
 
 Vertex::Vertex(glm::vec3 pos, glm::vec3 col, glm::vec2 texC, glm::vec3 norm) {
@@ -154,6 +166,10 @@ Vertex::Vertex(glm::vec3 pos, glm::vec3 col, glm::vec2 texC, glm::vec3 norm) {
     color = col;
     texCoord = texC;
     normal = norm;
+}
+
+bool Vertex::operator==(const Vertex& other) const {
+    return position == other.position;
 }
 
 Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<GLuint>& indices) {
