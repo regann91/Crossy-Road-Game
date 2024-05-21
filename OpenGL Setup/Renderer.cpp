@@ -26,10 +26,6 @@ Renderer* Renderer::instance()
     return INSTANCE;
 }
 
-void Renderer::setShaderProgram(GLuint shaderId) {
-    this->shaderId = shaderId;
-}
-
 void Renderer::toggleRenderingMode() {
     switch (renderingMode) {
     case COLOR:
