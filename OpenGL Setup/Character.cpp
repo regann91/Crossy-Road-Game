@@ -19,3 +19,22 @@ void Character::move(float dx, float dy, float dz) {
     Renderer::instance()->pointLight.position.x += dx;
     Renderer::instance()->pointLight.position.z += dz;
 }
+
+void Character::setPosition(float newX, float newY, float newZ) {
+    // Move the point light
+    Renderer::instance()->pointLight.position.x += newX - x;
+    Renderer::instance()->pointLight.position.y += newY - y;
+    Renderer::instance()->pointLight.position.z += newZ - z;
+
+    // Move the object
+    x = newX;
+    y = newY;
+    z = newZ;
+
+    // Move the renderable to where it should go
+    renderable->setTransform(
+        Renderable::getTrans(x, y, z) *
+        Renderable::getRot(rotation, glm::vec3(0, 0, 1)) *
+        Renderable::getScale(width, height, depth)
+    );
+}
