@@ -21,13 +21,24 @@ public:
     // Information
     std::shared_ptr<Mesh> meshInfo;
     GLuint shaderId;
-    glm::vec4 color;
+
+    // Material
+    struct Material {
+        glm::vec3 ambient;
+        glm::vec3 diffuse;
+        glm::vec3 specular;
+        float shininess;
+
+        Material(glm::vec3 amb = glm::vec3(1), glm::vec3 diff = glm::vec3(1), glm::vec3 spec = glm::vec3(1), float shine = 10)
+            : ambient(amb), diffuse(diff), specular(spec), shininess(shine) {}
+
+    } material;
     
     // Hierarchical children
     std::vector<std::shared_ptr<Renderable>> children;
 
     // Constructor - default magenta
-    Renderable(glm::vec4 colorVec = glm::vec4(1,0,1,1), std::string path = "cube.obj");
+    Renderable(glm::vec3 colorVec = glm::vec4(1,0,1,1), std::string path = "cube.obj");
     // Constructor with manually constructed mesh
     Renderable(std::shared_ptr<Mesh> mesh);
 
@@ -47,4 +58,7 @@ public:
     static glm::mat4 getTrans(float x, float y, float z);
     static glm::mat4 getRot(float theta, glm::vec3 axis);
     static glm::mat4 getScale(float w, float h, float d);
+
+private:
+    void sendMaterialToShader() const;
 };

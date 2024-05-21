@@ -2,14 +2,15 @@
 #include "TextureManager.h"
 #include "Camera.h"
 #include <iostream>
+#include "Renderer.h"
 
 // Constructor implementations
-Renderable::Renderable(glm::vec4 colorVec, std::string path)
+Renderable::Renderable(glm::vec3 colorVec, std::string path)
 {
     // Load mesh, shader, set transformation to Id Matrix
     meshInfo = MeshManager::instance()->getMesh(path);
-    shaderId = ShaderManager::instance()->getShader();
-    color = colorVec;
+    shaderId = ShaderManager::instance()->getShader("phong", "phongVertex.glsl", "phongFragment.glsl");
+    material = Material(colorVec * glm::vec3(0.35, 0.3, 0.40), colorVec, glm::vec3(0.3), 11.36);
     transform = glm::mat4(1);
 }
 
@@ -18,8 +19,8 @@ Renderable::Renderable(std::shared_ptr<Mesh> mesh)
 {
     // Load mesh, shader, set transformation to Id Matrix
     meshInfo = mesh;
-    shaderId = ShaderManager::instance()->getShader("colorShader","colorVertex.glsl","flatFragment.glsl");
-    color = glm::vec4(1);
+    shaderId = ShaderManager::instance()->getShader("phong","phongVertex.glsl","phongFragment.glsl");
+    material = Material(glm::vec3(0.35, 0.3, 0.40), glm::vec3(1), glm::vec3(0.3), 11.36);
     transform = glm::mat4(1);
 }
 
@@ -30,13 +31,14 @@ void Renderable::draw() const {
     // Activate shader
     ShaderManager::bind(shaderId);
 
-    // Draw from buffer
-    ShaderManager::instance()->setVec4(shaderId, "colorVertex", color);
-
     // Send matrix info to buffer
     ShaderManager::instance()->setMat4(shaderId, "modelMat", transform);
     ShaderManager::instance()->setMat4(shaderId, "projMat", Camera::instance()->projectionMatrix);
     ShaderManager::instance()->setMat4(shaderId, "viewMat", Camera::instance()->viewMatrix);
+
+    // Send lighting info to shader
+    sendMaterialToShader();
+    Renderer::instance()->sendLightsToShader(shaderId);
 
     glBindVertexArray(meshInfo->buffer);
     glDrawElements(GL_TRIANGLES, meshInfo->indexNb, GL_UNSIGNED_INT, 0);
@@ -82,4 +84,11 @@ glm::mat4 Renderable::getRot(float theta, glm::vec3 axis) {
 }
 glm::mat4 Renderable::getScale(float w, float h, float d) {
     return glm::scale(glm::mat4(1), glm::vec3(w, h, d));
+}
+
+void Renderable::sendMaterialToShader() const {
+    ShaderManager::instance()->setVec3(shaderId, "material.ambient", material.ambient);
+    ShaderManager::instance()->setVec3(shaderId, "material.diffuse", material.diffuse);
+    ShaderManager::instance()->setVec3(shaderId, "material.specular", material.specular);
+    ShaderManager::instance()->setFloat(shaderId, "material.shininess", material.shininess);
 }

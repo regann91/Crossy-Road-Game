@@ -6,7 +6,7 @@ public:
     // Constructor
     MovingObject(float startX, float startY, float startZ, 
         float movingWidth, float movingHeight, float movingDepth, 
-        glm::vec4 color, float movingSpeed, float laneW);
+        glm::vec3 color, float movingSpeed, float laneW);
 
     // Update function for movement
     void update(float deltaTime);

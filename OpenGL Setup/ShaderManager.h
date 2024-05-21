@@ -7,6 +7,7 @@
 #include <iostream>
 #include <map>
 #include <glm/glm.hpp>
+#include "Renderable.h"
 
 
 class ShaderManager {
@@ -31,6 +32,7 @@ public:
     void setInt(GLuint id, const std::string& name, int value) const;
     void setFloat(GLuint id, const std::string& name, float value) const;
     void setVec4(GLuint id, const std::string& name, const glm::vec4& color) const;
+    void setVec3(GLuint id, const std::string& name, const glm::vec3& vec) const;
     void setMat4(GLuint id, const std::string& name, const glm::mat4& matrix) const;
 
     // Send view/projection matrices to shaders

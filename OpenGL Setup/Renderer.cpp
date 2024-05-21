@@ -1,6 +1,8 @@
 #include "Renderer.h"
 #include <glm/geometric.hpp>
 
+const float rotationRate = -0.001;
+
 // Constructor implementation with initialized world (ground)
 Renderer::Renderer() {
     renderingMode = COLOR;
@@ -96,8 +98,29 @@ void Renderer::buildWorld(Game& game) {
     }
 
     ground = std::make_shared<Renderable>(MeshManager::instance()->getMesh("ground", vertGround, indGround));
-}
+    ground->shaderId = ShaderManager::instance()->getShader("phongShader", "phongVertex.glsl", "phongFragment.glsl");
+    ground->material = Renderable::Material(glm::vec3(0.35, 0.3, 0.40) * color, color, glm::vec3(0.3), 11.36);
 
+    // ADD LIGHTS
+    //Define a directional light for the whole scene
+    dirLight = DirectionalLight(
+        glm::vec3(0.0, 5.0, 8.0),   // Position
+        glm::vec3(1.0, 0, 0),       // Direction
+        glm::vec3(0.2, 0.4, 0.5),   // Ambient
+        glm::vec3(0.5, 0.7, 0.8),   // Diffuse
+        glm::vec3(0.2, 0.2, 0.2)    // Specular
+    );
+
+    pointLight = PointLight(
+        glm::vec3(0, 80, 50),       // Position
+        glm::vec3(1, 1, 0.7),       // Ambient
+        glm::vec3(0, 0, 0),         // Diffuse
+        glm::vec3(0.3, 0.3, 0.3),   // Specular
+        0.05,                        // Constant
+        0.01,                       // Linear
+        0.00001                     // Quadratic
+    );
+}
 
 
 // Draw all objects
@@ -105,8 +128,13 @@ void Renderer::drawScene(Game& game)
 {
     // Render BG
     // Draw ground
-    glClearColor(0.62, 0.78, 0.91, 1);
+    glClearColor(0.05, 0.08, 0.1, 1);
     ground->draw();
+
+    // Update lights
+    float rate = dirLight.direction.y > 0 ? 5 : 1;
+    dirLight.direction.x = dirLight.direction.x * cos(rotationRate * rate) - dirLight.direction.y * sin(rotationRate * rate);
+    dirLight.direction.y = dirLight.direction.x * sin(rotationRate * rate) + dirLight.direction.y * cos(rotationRate * rate);
 
     // Render roads
     for (const auto& path : game.paths) {
@@ -143,4 +171,26 @@ void Renderer::drawScene(Game& game)
     //coinSprite.drawFixed(playerChar->renderable);
     //textdisplay->drawScreen(std::to_string(coins), 2, -310, 250, playerChar, false);
 
+}
+
+void Renderer::sendLightsToShader(GLuint shaderId) {
+    float rate = dirLight.direction.y > 0
+        ? (1 - 12*dirLight.direction.y < 0 ? 0 : 1 - 12 * dirLight.direction.y)
+        : 1
+    ;
+    // SEND DIR LIGHT INFO
+    ShaderManager::instance()->setVec3(shaderId, "dirLight.position", dirLight.position);
+    ShaderManager::instance()->setVec3(shaderId, "dirLight.direction", dirLight.direction);
+    ShaderManager::instance()->setVec3(shaderId, "dirLight.ambient", dirLight.ambient);
+    ShaderManager::instance()->setVec3(shaderId, "dirLight.diffuse", dirLight.diffuse * rate);
+    ShaderManager::instance()->setVec3(shaderId, "dirLight.specular", dirLight.specular);
+
+    // SEND POINT LIGHT INFO
+    ShaderManager::instance()->setVec3(shaderId, "pointLight.position", pointLight.position);
+    ShaderManager::instance()->setVec3(shaderId, "pointLight.ambient", pointLight.ambient);
+    ShaderManager::instance()->setVec3(shaderId, "pointLight.diffuse", pointLight.diffuse);
+    ShaderManager::instance()->setVec3(shaderId, "pointLight.specular", pointLight.specular);
+    ShaderManager::instance()->setFloat(shaderId, "pointLight.constant", pointLight.constant);
+    ShaderManager::instance()->setFloat(shaderId, "pointLight.linear", pointLight.linear);
+    ShaderManager::instance()->setFloat(shaderId, "pointLight.quadratic", pointLight.quadratic);
 }

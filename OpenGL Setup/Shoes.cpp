@@ -1,7 +1,7 @@
 #include "Shoes.h"
 
 Shoes::Shoes(float startX, float startZ, float time) 
-	: Collectible(startX, startZ, MAX_TIME, glm::vec4(1, 0.5, 0.1, 1)) {}
+	: Collectible(startX, startZ, MAX_TIME, glm::vec3(1, 0.5, 0.1)) {}
 
 /*
 // This draws a bar relative to player Y position

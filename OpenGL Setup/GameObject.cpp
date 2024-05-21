@@ -4,10 +4,10 @@
 
 
 // Constructor implementation
-GameObject::GameObject(float startX, float startY, float startZ, float objWidth, float objHeight, float objDepth, glm::vec4 color, float rotation)
+GameObject::GameObject(float startX, float startY, float startZ, float objWidth, float objHeight, float objDepth, glm::vec3 color, float rotation)
     : x(startX), y(startY), z(startZ), width(objWidth), height(objHeight), depth(objDepth), rotation(rotation)
 {
-    renderable = std::make_shared<Renderable>(color);
+    renderable = std::make_shared<Renderable>(color, "cube.obj");
     renderable->setTransform(
         Renderable::getTrans(x, y, z) *
         Renderable::getRot(rotation, glm::vec3(0, 0, 1)) * 

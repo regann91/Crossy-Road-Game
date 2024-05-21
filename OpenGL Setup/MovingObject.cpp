@@ -1,7 +1,7 @@
 #include "MovingObject.h"
 
 
-MovingObject::MovingObject(float startX, float startY, float startZ, float movingWidth, float movingHeight, float movingDepth, glm::vec4 color, float movingSpeed, float laneW)
+MovingObject::MovingObject(float startX, float startY, float startZ, float movingWidth, float movingHeight, float movingDepth, glm::vec3 color, float movingSpeed, float laneW)
     : GameObject(startX, startY, startZ - movingDepth / 2, movingWidth, movingHeight, movingDepth, color), speed(movingSpeed), laneWidth(laneW) {}
 
 
