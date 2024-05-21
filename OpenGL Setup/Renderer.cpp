@@ -26,10 +26,6 @@ Renderer* Renderer::instance()
     return INSTANCE;
 }
 
-void Renderer::setShaderProgram(GLuint shaderId) {
-    this->shaderId = shaderId;
-}
-
 void Renderer::toggleRenderingMode() {
     switch (renderingMode) {
     case COLOR:
@@ -56,17 +52,36 @@ void Renderer::toggleRenderingMode() {
     }
 }
 
-//void Renderer::toggleShadingMode() {
-//    useGouraudShading = !useGouraudShading;
-//    if (useGouraudShading) {
-//        std::cout << "Current shading mode: Gouraud" << std::endl;
-//        shaderId = ShaderManager::instance()->getShader("gouraud", "gouraudVertex.glsl", "gouraudFragment.glsl");
-//    }
-//    else {
-//        std::cout << "Current shading mode: Phong" << std::endl;
-//        shaderId = ShaderManager::instance()->getShader("phong", "phongVertex.glsl", "phongFragment.glsl");
-//    }
-//}
+void Renderer::toggleShadingMode() {
+    shadingType = !shadingType;
+    if (shadingType) {
+        std::cout << "Current shading mode: Gouraud" << std::endl;
+    }
+    else {
+        std::cout << "Current shading mode: Phong" << std::endl;
+    }
+}
+
+void Renderer::toggleNormalMapping() {
+    normalMapping = !normalMapping;
+    if (normalMapping) {
+        std::cout << "Normal mapping: Enabled" << std::endl;
+    }
+    else {
+        std::cout << "Normal mapping: Disabled" << std::endl;
+    }
+}
+
+void Renderer::toggleTexturing() {
+    texturing = !texturing;
+    if (texturing) {
+        std::cout << "Texturing: Enabled" << std::endl;
+    }
+    else {
+        std::cout << "Texturing: Disabled" << std::endl;
+    }
+}
+
 // Build world
 void Renderer::buildWorld(Game& game) {
     

@@ -26,7 +26,9 @@ public:
     // Toggles between different rendering modes
     void toggleRenderingMode();
 
-    //void toggleShadingMode();
+    void toggleShadingMode();
+    void toggleNormalMapping();
+    void toggleTexturing();
 
     // Send light info to a shader
     void sendLightsToShader(GLuint shaderId);

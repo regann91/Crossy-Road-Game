@@ -2,7 +2,7 @@
 
 // Constructor
 River::River(float riverZ, float riverWidth) 
-    : Path(-22, riverZ, riverWidth, glm::vec3(0.5, 0.85, 1), 3, 120, "riverTex.bmp")
+    : Path(-22, riverZ, riverWidth, glm::vec3(0.5, 0.85, 1), 3, 120, "riverTex.bmp", "riverNormals.bmp")
 {
     initRiverMovingObjects();
 }

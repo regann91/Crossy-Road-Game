@@ -1,10 +1,32 @@
 #include "Path.h"
 #include <algorithm>  // Include the algorithm header for std::shuffle
 #include <random>     // Include the random header for std::default_random_engine
+#include "NormalMappedRenderable.h"
 
 // Constructor implementation
-Path::Path(float roadY, float roadZ, float roadWidth, glm::vec3 color, int nbObj, float objD, std::string tex)
+Path::Path(float roadY, float roadZ, float roadWidth, glm::vec3 color, int nbObj, float objD, std::string tex, std::string normals)
     : GameObject(0, roadY, roadZ+50, roadWidth, 10, 100, color, 0, tex), nbObjPerLane(nbObj), objWidth(objD) {
+    renderable = std::make_shared<NormalMappedRenderable>(*renderable.get(), normals);
+
+    // CONSTRUCTION OF MESH
+    // Ratio of terrain, used for texture mapping (total length of mesh/width of mesh)
+    float ratio = 1.0 / 8.0;
+    // Amount of texture tiles per width
+    float tiles = 5;
+
+    // Starting vertices
+    std::vector<Vertex> vertices = {
+        // Position                      // Color      // Tex Coord        // Normal
+         Vertex(glm::vec3(-0.5, 0.5, -0.5), color, tiles * glm::vec2(0, 0), glm::vec3(0, 1, 0)),       // Bottom left
+         Vertex(glm::vec3(0.5, 0.5, -0.5), color, tiles * glm::vec2(1, 0), glm::vec3(0, 1, 0)),        // Bottom right
+         Vertex(glm::vec3(-0.5, 0.5, 0.5), color, tiles * glm::vec2(0, ratio), glm::vec3(0, 1, 0)),    // Top left
+         Vertex(glm::vec3(0.5, 0.5, 0.5), color, tiles * glm::vec2(1, ratio), glm::vec3(0, 1, 0)),     // Top right
+    };
+
+    // One quad is composed of 4 vertices -> 6 indices
+    std::vector<GLuint> indices = { 0,1,2,  1,2,3 };
+
+    renderable->meshInfo = MeshManager::instance()->getMesh("path", vertices, indices);
 }
 
 void Path::createRoadMovingObj(float initX, float initZ, float speed) {

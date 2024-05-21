@@ -4,7 +4,8 @@ layout (location = 1) in vec3 color;
 layout (location = 2) in vec2 texCoord;
 layout (location = 3) in vec3 normal;
 
-out vec4 elemColor;
+out vec3 elemColor;
+out vec2 elemTexCoord;
 
 // Matrices
 uniform mat4 modelMat;
@@ -102,7 +103,8 @@ void main()
     tmpColor += computeDirectionalLight(dirLight, elemToCamera, elemNormal);
     tmpColor += computePointLight(pointLight, elemToCamera, elemPosition, elemNormal);
 
-    elemColor = vec4(tmpColor, 1.0);
-    
+    elemColor = tmpColor;
+    elemTexCoord = texCoord;
+
     gl_Position = projMat * viewMat * vec4(elemPosition, 1.0f);
 }
