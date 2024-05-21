@@ -148,11 +148,5 @@
     <None Include="shaders\phongFragment.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="gouraudVertex.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="gouraudFragment.glsl">
-      <Filter>Shaders</Filter>
-    </None>
   </ItemGroup>
 </Project>

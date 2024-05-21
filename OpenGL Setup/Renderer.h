@@ -24,12 +24,14 @@ public:
     void drawScene(Game& game);
 
     // Toggles between different rendering modes
-    void toggleRenderingMode(GLuint shaderId);
+    void toggleRenderingMode();
 
     void toggleShadingMode();
 
     // Send light info to a shader
     void sendLightsToShader(GLuint shaderId);
+
+    void setShaderProgram(GLuint shaderId);
 
     // Lights
     struct DirectionalLight {
@@ -79,5 +81,7 @@ private:
     RenderingMode renderingMode;
 
     bool useGouraudShading = false; // Start with Phong shading
+    GLuint shaderId;
+
 
 };

@@ -22,6 +22,9 @@ Renderer* Renderer::instance()
     return INSTANCE;
 }
 
+void Renderer::setShaderProgram(GLuint shaderId) {
+    this->shaderId = shaderId;
+}
 
 void Renderer::toggleRenderingMode() {
     switch (renderingMode) {
@@ -49,9 +52,16 @@ void Renderer::toggleRenderingMode() {
     }
 }
 
-void Renderer::toggleShadingMode(GLuint shaderId) {
+void Renderer::toggleShadingMode() {
     useGouraudShading = !useGouraudShading;
+    if (useGouraudShading) {
+        std::cout << "Current shading mode: Gouraud" << std::endl;
+    }
+    else {
+        std::cout << "Current shading mode: Phong" << std::endl;
+    }
     // Update the uniform in the shader
+    glUseProgram(shaderId);
     GLint useGouraudShadingLocation = glGetUniformLocation(shaderId, "useGouraudShading");
     glUniform1i(useGouraudShadingLocation, useGouraudShading ? GL_TRUE : GL_FALSE);
 }

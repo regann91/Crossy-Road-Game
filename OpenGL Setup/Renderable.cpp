@@ -4,8 +4,6 @@
 #include <iostream>
 #include "Renderer.h"
 
-bool shadingMode = true;
-
 // Constructor implementations
 Renderable::Renderable(glm::vec3 colorVec, std::string path)
 {
