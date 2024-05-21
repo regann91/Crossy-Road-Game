@@ -5,7 +5,6 @@
 class NormalMappedRenderable : public Renderable {
 public:
     // Normal map info
-    GLuint normalMapShaderId;
     GLuint normalMap;
 
     // Constructor - default magenta

@@ -57,6 +57,13 @@ public:
             position(pos), ambient(amb), diffuse(diff), specular(spec), constant(c), linear(l), quadratic(q) {}
 
     } pointLight;
+
+    // Shader mode (true is Phong/false is Gouraud)
+    bool shadingType;
+    // Texturing activated or not
+    bool texturing;
+    // Normal mapping activated or not
+    bool normalMapping;
     
 private:
     // Private constructor
@@ -75,7 +82,4 @@ private:
         WIREFRAME_DEPTH_REMOVAL
     };
     RenderingMode renderingMode;
-
-    // Shader mode (true is Phong/false is Gouraud)
-    bool shadingType;
 };

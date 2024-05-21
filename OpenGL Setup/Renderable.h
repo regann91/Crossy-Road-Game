@@ -20,7 +20,7 @@ public:
 
     // Information
     std::shared_ptr<Mesh> meshInfo;
-    GLuint shaderId;
+    GLuint phongShaderId, gouraudShaderId;
     GLuint texture;
 
     // Material
@@ -45,7 +45,7 @@ public:
 
     // Function for drawing the object
     virtual void draw() const;
-    void sendMaterialToShader() const;
+    void sendMaterialToShader(GLuint activeShader) const;
 
     // Function to add a child Renderable
     void addChildRenderable(std::shared_ptr<Renderable> r);

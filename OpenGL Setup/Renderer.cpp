@@ -7,6 +7,9 @@ const float rotationRate = -0.001;
 // Constructor implementation with initialized world (ground)
 Renderer::Renderer() {
     renderingMode = COLOR;
+    // Starts on Phong with shading and normal mapping
+    texturing = true;
+    shadingType = true;
 }
 
 // Init to null

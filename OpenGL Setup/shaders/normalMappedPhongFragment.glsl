@@ -35,6 +35,10 @@ uniform Material material;
 uniform DirectionalLight dirLight;
 uniform PointLight pointLight;
 
+// Rendering parameters
+uniform bool texturingActive;
+uniform bool normalMappingActive;
+
 uniform sampler2D tex;
 uniform sampler2D normals;
 
@@ -47,7 +51,8 @@ in vec2 elemTexCoord;
 // Camera position in world space
 in vec3 cameraPos;
 
-const float normalWeight = 1;
+const float normalWeight = 3;
+
 
 vec3 computeDirectionalLight(DirectionalLight light, vec3 elemToCamera, vec3 normal)
 {
@@ -86,8 +91,8 @@ vec3 computePointLight(PointLight light, vec3 elemToCamera, vec3 normal)
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * pow(distance, 2));
 
     // Combine results    
-    vec3 ambient  = attenuation * light.ambient * material.ambient ;
-    vec3 diffuse  = attenuation * diffuseFactor * light.diffuse  * material.diffuse ;
+    vec3 ambient  = attenuation * light.ambient * material.ambient;
+    vec3 diffuse  = attenuation * diffuseFactor * light.diffuse * material.diffuse;
     vec3 specular = attenuation * specularFactor * light.specular * material.specular;
 
     return (ambient + diffuse + specular);
@@ -130,19 +135,24 @@ void main()
 
     vec3 normal = texture(normals, elemTexCoord).xyz;
 
-    // Calculate normal from normal map
-    normal = normal - vec3(0.5,0.5, 0);
-    normal.xy = normalWeight * normal.xy;
-    normal = normalize(normal);
+    if(!normalMappingActive) {
+        // Calculate normal from normal map
+        normal = normal - vec3(0.5,0.5, 0);
+        normal.xy = normalWeight * normal.xy;
+        normal = normalize(normal);
 
-    // Align modified normal on elem normal using quaternion
-    vec4 quaternion = two_dirs_to_quat(vec3(0,0,1), elemNormal);
-    vec3 newNormal = rotate(quaternion, normal);
+        // Align modified normal on elem normal using quaternion
+        vec4 quaternion = two_dirs_to_quat(vec3(0,0,1), elemNormal);
+        vec3 newNormal = rotate(quaternion, normal);
 
-    tmpColor += computeDirectionalLight(dirLight, elemToCamera, newNormal);
-    tmpColor += computePointLight(pointLight, elemToCamera, newNormal);
+        tmpColor += computeDirectionalLight(dirLight, elemToCamera, newNormal);
+        tmpColor += computePointLight(pointLight, elemToCamera, newNormal);
+    }
+    else {
+        tmpColor += computeDirectionalLight(dirLight, elemToCamera, elemNormal);
+        tmpColor += computePointLight(pointLight, elemToCamera, elemNormal);
+    }
 
-    FragColor = vec4(tmpColor,1.0);
-    //FragColor = texture(normals, elemTexCoord);
+    FragColor = texturingActive ? vec4(tmpColor,1.0) * texture(tex, elemTexCoord) : vec4(tmpColor,1.0);
 }
 

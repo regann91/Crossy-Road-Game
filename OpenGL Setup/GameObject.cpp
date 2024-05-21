@@ -5,10 +5,10 @@
 #include "NormalMappedRenderable.h"
 
 // Constructor implementation
-GameObject::GameObject(float startX, float startY, float startZ, float objWidth, float objHeight, float objDepth, glm::vec3 color, float rotation)
+GameObject::GameObject(float startX, float startY, float startZ, float objWidth, float objHeight, float objDepth, glm::vec3 color, float rotation, std::string tex)
     : x(startX), y(startY), z(startZ), width(objWidth), height(objHeight), depth(objDepth), rotation(rotation)
 {
-    renderable = std::make_shared<Renderable>("cube.obj", color);
+    renderable = std::make_shared<Renderable>("cube.obj", color, tex);
     renderable->setTransform(
         Renderable::getTrans(x, y, z) *
         Renderable::getRot(rotation, glm::vec3(0, 0, 1)) * 

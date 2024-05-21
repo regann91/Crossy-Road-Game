@@ -8,7 +8,7 @@ NormalMappedRenderable::NormalMappedRenderable(std::string pathMesh, glm::vec3 c
     : Renderable(pathMesh, colorVec, pathTex)
 {
     // Load normals info
-    normalMapShaderId = ShaderManager::instance()->getShader("normalMappedPhong", "normalMappedPhongVertex.glsl", "normalMappedPhongFragment.glsl");
+    phongShaderId = ShaderManager::instance()->getShader("normalMappedPhong", "normalMappedPhongVertex.glsl", "normalMappedPhongFragment.glsl");
     normalMap = TextureManager::instance()->getTexture(pathNormal);
 }
 
@@ -17,7 +17,7 @@ NormalMappedRenderable::NormalMappedRenderable(std::shared_ptr<Mesh> mesh, glm::
     : Renderable(mesh, colorVec, pathTex)
 {
     // Load normals info
-    normalMapShaderId = ShaderManager::instance()->getShader("normalMappedPhong", "normalMappedPhongVertex.glsl", "normalMappedPhongFragment.glsl");
+    phongShaderId = ShaderManager::instance()->getShader("normalMappedPhong", "normalMappedPhongVertex.glsl", "normalMappedPhongFragment.glsl");
     normalMap = TextureManager::instance()->getTexture(pathNormal);
 }
 
@@ -25,40 +25,15 @@ NormalMappedRenderable::NormalMappedRenderable(Renderable& renderable, std::stri
     : Renderable(renderable)
 {
     // Load normals info
-    normalMapShaderId = ShaderManager::instance()->getShader("normalMappedPhong", "normalMappedPhongVertex.glsl", "normalMappedPhongFragment.glsl");
+    phongShaderId = ShaderManager::instance()->getShader("normalMappedPhong", "normalMappedPhongVertex.glsl", "normalMappedPhongFragment.glsl");
     normalMap = TextureManager::instance()->getTexture(pathNormal);
 }
-
-/*
-// Transformation
-    glm::mat4 transform;
-
-    // Information
-    std::shared_ptr<Mesh> meshInfo;
-    GLuint shaderId;
-    GLuint texture;
-
-    // Material
-    struct Material {
-        glm::vec3 ambient;
-        glm::vec3 diffuse;
-        glm::vec3 specular;
-        float shininess;
-
-        Material(glm::vec3 amb = glm::vec3(1), glm::vec3 diff = glm::vec3(1), glm::vec3 spec = glm::vec3(1), float shine = 10)
-            : ambient(amb), diffuse(diff), specular(spec), shininess(shine) {}
-
-    } material;
-    
-    // Hierarchical children
-    std::vector<std::shared_ptr<Renderable>> children;
-*/
 
 // Draw implementation
 void NormalMappedRenderable::draw() const {
     glPushMatrix();
 
-    GLuint activeShader = normalMapShaderId;
+    GLuint activeShader = Renderer::instance()->shadingType ? phongShaderId : gouraudShaderId;
 
     // Activate shader
     ShaderManager::bind(activeShader);
@@ -69,14 +44,17 @@ void NormalMappedRenderable::draw() const {
     ShaderManager::instance()->setMat4(activeShader, "viewMat", Camera::instance()->viewMatrix);
 
     // Send lighting info to shader
-    Renderable::sendMaterialToShader();
+    Renderable::sendMaterialToShader(activeShader);
     Renderer::instance()->sendLightsToShader(activeShader);
 
     // Send texture info to shader
-    ShaderManager::instance()->setInt(normalMapShaderId, "tex", 0);
+    ShaderManager::instance()->setBool(activeShader, "texturingActive", Renderer::instance()->texturing);
+    ShaderManager::instance()->setInt(activeShader, "tex", 0);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
-    ShaderManager::instance()->setInt(normalMapShaderId, "normals", 1);
+    // Normal map info
+    ShaderManager::instance()->setBool(activeShader, "normalMappingActive", Renderer::instance()->normalMapping);
+    ShaderManager::instance()->setInt(activeShader, "normals", 1);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, normalMap);
 

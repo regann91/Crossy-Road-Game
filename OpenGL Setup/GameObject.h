@@ -14,7 +14,7 @@ public:
     std::shared_ptr<Renderable> renderable;
     
     // Constructor
-    GameObject(float startX, float startY, float startZ, float objWidth, float objHeight, float objDepth, glm::vec3 color, float rotation = 0);
+    GameObject(float startX, float startY, float startZ, float objWidth, float objHeight, float objDepth, glm::vec3 color, float rotation = 0, std::string tex = "defaultTex.bmp");
 
     // Constructor
     GameObject() {}
