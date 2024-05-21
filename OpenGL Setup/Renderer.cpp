@@ -55,10 +55,10 @@ void Renderer::toggleRenderingMode() {
 void Renderer::toggleShadingMode() {
     shadingType = !shadingType;
     if (shadingType) {
-        std::cout << "Current shading mode: Gouraud" << std::endl;
+        std::cout << "Current shading mode: Phong" << std::endl;
     }
     else {
-        std::cout << "Current shading mode: Phong" << std::endl;
+        std::cout << "Current shading mode: Gouraud" << std::endl;
     }
 }
 
