@@ -15,7 +15,7 @@ public:
     static const float MAX_TIME;
 
     // Constructor
-    Collectible(float startX = 0, float startZ = 0, float time = MAX_TIME, glm::vec4 color = glm::vec4(1));
+    Collectible(float startX = 0, float startZ = 0, float time = MAX_TIME, glm::vec3 color = glm::vec4(1));
 
     // Update function for time and collection
     void update(float deltaTime, std::shared_ptr<Character> player);

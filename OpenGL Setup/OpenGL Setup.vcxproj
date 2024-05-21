@@ -196,6 +196,8 @@
     <None Include="shaders\colorVertex.glsl" />
     <None Include="shaders\flatFragment.glsl" />
     <None Include="shaders\flatVertex.glsl" />
+    <None Include="shaders\phongFragment.glsl" />
+    <None Include="shaders\phongVertex.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

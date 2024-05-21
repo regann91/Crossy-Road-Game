@@ -25,6 +25,38 @@ public:
 
     // Toggles between different rendering modes
     void toggleRenderingMode();
+
+    // Send light info to a shader
+    void sendLightsToShader(GLuint shaderId);
+
+    // Lights
+    struct DirectionalLight {
+        glm::vec3 position;
+        glm::vec3 direction;
+        glm::vec3 ambient;
+        glm::vec3 diffuse;
+        glm::vec3 specular;
+
+        DirectionalLight(glm::vec3 pos = glm::vec3(1), glm::vec3 dir = glm::vec3(1), glm::vec3 amb = glm::vec3(1), 
+                glm::vec3 diff = glm::vec3(1), glm::vec3 spec = glm::vec3(1)) :
+            position(pos), direction(dir), ambient(amb), diffuse(diff), specular(spec) {}
+
+    } dirLight;
+
+    struct PointLight {
+        glm::vec3 position;
+        glm::vec3 ambient;
+        glm::vec3 diffuse;
+        glm::vec3 specular;
+        float constant;
+        float linear;
+        float quadratic;
+
+        PointLight(glm::vec3 pos = glm::vec3(1), glm::vec3 amb = glm::vec3(1), glm::vec3 diff = glm::vec3(1), 
+                glm::vec3 spec = glm::vec3(1), float c = 1, float l = 0.1, float q = 0) :
+            position(pos), ambient(amb), diffuse(diff), specular(spec), constant(c), linear(l), quadratic(q) {}
+
+    } pointLight;
     
 private:
     // Private constructor
@@ -43,4 +75,7 @@ private:
         WIREFRAME_DEPTH_REMOVAL
     };
     RenderingMode renderingMode;
+
+    // Shader mode (true is Phong/false is Gouraud)
+    bool shadingType;
 };

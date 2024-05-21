@@ -142,5 +142,11 @@
     <None Include="shaders\colorVertex.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="shaders\phongVertex.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\phongFragment.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -3,19 +3,19 @@
 #include <random>     // Include the random header for std::default_random_engine
 
 // Constructor implementation
-Path::Path(float roadY, float roadZ, float roadWidth, glm::vec4 color, int nbObj, float objD)
+Path::Path(float roadY, float roadZ, float roadWidth, glm::vec3 color, int nbObj, float objD)
     : GameObject(0, roadY, roadZ+50, roadWidth, 10, 100, color), nbObjPerLane(nbObj), objWidth(objD) {}
 
 void Path::createRoadMovingObj(float initX, float initZ, float speed) {
     movingObjects.emplace_back(
-        MovingObject(initX, 18, initZ, objWidth, 50.0, 50, glm::vec4(1, 0.96, 1, 1), speed, width)
+        MovingObject(initX, 18, initZ, objWidth, 50.0, 50, glm::vec3(1, 0.96, 1), speed, width)
     );
     renderable->addChildRenderable(movingObjects.back().renderable);
 }
 
 void Path::createRiverMovingObj(float initX, float initZ, float speed) {
     movingObjects.emplace_back(
-        MovingObject(initX, -11, initZ, objWidth, 20, 50.0, glm::vec4(1, 0.96, 1, 1), speed, width)
+        MovingObject(initX, -11, initZ, objWidth, 20, 50.0, glm::vec3(1, 0.96, 1), speed, width)
     );
     renderable->addChildRenderable(movingObjects.back().renderable);
 }
