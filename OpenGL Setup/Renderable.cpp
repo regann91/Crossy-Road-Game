@@ -9,8 +9,8 @@ Renderable::Renderable(glm::vec3 colorVec, std::string path)
 {
     // Load mesh, shader, set transformation to Id Matrix
     meshInfo = MeshManager::instance()->getMesh(path);
-    shaderId = ShaderManager::instance()->getShader("phong", "phongVertex.glsl", "phongFragment.glsl");
-    //shaderId = ShaderManager::instance()->getShader("gouraud", "gouraudVertex.glsl", "gouraudFragment.glsl");
+    //shaderId = ShaderManager::instance()->getShader("phong", "phongVertex.glsl", "phongFragment.glsl");
+    shaderId = ShaderManager::instance()->getShader("gouraud", "gouraudVertex.glsl", "gouraudFragment.glsl");
     //if (shadingMode) {
     //    shaderId = ShaderManager::instance()->getShader("phong", "phongVertex.glsl", "phongFragment.glsl");
     //}
@@ -26,8 +26,8 @@ Renderable::Renderable(std::shared_ptr<Mesh> mesh)
 {
     // Load mesh, shader, set transformation to Id Matrix
     meshInfo = mesh;
-    shaderId = ShaderManager::instance()->getShader("phong","phongVertex.glsl","phongFragment.glsl");
-    //shaderId = ShaderManager::instance()->getShader("gouraud", "gouraudVertex.glsl", "gouraudFragment.glsl");
+    //shaderId = ShaderManager::instance()->getShader("phong","phongVertex.glsl","phongFragment.glsl");
+    shaderId = ShaderManager::instance()->getShader("gouraud", "gouraudVertex.glsl", "gouraudFragment.glsl");
     //if (shadingMode) {
     //    shaderId = ShaderManager::instance()->getShader("phong", "phongVertex.glsl", "phongFragment.glsl");
     //}
@@ -41,7 +41,6 @@ Renderable::Renderable(std::shared_ptr<Mesh> mesh)
 // Draw implementation
 void Renderable::draw() const {
     glPushMatrix();
-    
     // Activate shader
     ShaderManager::bind(shaderId);
 
@@ -49,6 +48,7 @@ void Renderable::draw() const {
     ShaderManager::instance()->setMat4(shaderId, "modelMat", transform);
     ShaderManager::instance()->setMat4(shaderId, "projMat", Camera::instance()->projectionMatrix);
     ShaderManager::instance()->setMat4(shaderId, "viewMat", Camera::instance()->viewMatrix);
+
 
     // Send lighting info to shader
     sendMaterialToShader();

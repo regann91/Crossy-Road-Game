@@ -7,8 +7,6 @@ layout (location = 3) in vec3 normal;
 out vec3 elemPosition;
 out vec4 elemColor;
 out vec3 elemNormal;
-out vec3 vertexNormal; // Gouraud shading normal
-
 
 // Matrices
 uniform mat4 modelMat;
@@ -23,7 +21,6 @@ void main()
     elemPosition = vec3(modelMat * vec4(position, 1.0f));
     elemNormal = normal;
     elemColor  = vec4(color, 1.0);
-    vertexNormal = normal; // Pass the normal to the fragment shader
     
     // Compute the position of the camera in world space
     cameraPos = - vec3( viewMat[3] ) * mat3( viewMat );

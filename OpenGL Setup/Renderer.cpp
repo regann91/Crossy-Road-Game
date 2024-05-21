@@ -52,19 +52,17 @@ void Renderer::toggleRenderingMode() {
     }
 }
 
-void Renderer::toggleShadingMode() {
-    useGouraudShading = !useGouraudShading;
-    if (useGouraudShading) {
-        std::cout << "Current shading mode: Gouraud" << std::endl;
-    }
-    else {
-        std::cout << "Current shading mode: Phong" << std::endl;
-    }
-    // Update the uniform in the shader
-    glUseProgram(shaderId);
-    GLint useGouraudShadingLocation = glGetUniformLocation(shaderId, "useGouraudShading");
-    glUniform1i(useGouraudShadingLocation, useGouraudShading ? GL_TRUE : GL_FALSE);
-}
+//void Renderer::toggleShadingMode() {
+//    useGouraudShading = !useGouraudShading;
+//    if (useGouraudShading) {
+//        std::cout << "Current shading mode: Gouraud" << std::endl;
+//        shaderId = ShaderManager::instance()->getShader("gouraud", "gouraudVertex.glsl", "gouraudFragment.glsl");
+//    }
+//    else {
+//        std::cout << "Current shading mode: Phong" << std::endl;
+//        shaderId = ShaderManager::instance()->getShader("phong", "phongVertex.glsl", "phongFragment.glsl");
+//    }
+//}
 // Build world
 void Renderer::buildWorld(Game& game) {
     
@@ -113,8 +111,8 @@ void Renderer::buildWorld(Game& game) {
     }
 
     ground = std::make_shared<Renderable>(MeshManager::instance()->getMesh("ground", vertGround, indGround));
-    ground->shaderId = ShaderManager::instance()->getShader("phongShader", "phongVertex.glsl", "phongFragment.glsl");
-    //ground->shaderId = ShaderManager::instance()->getShader("gouraudShader", "gouraudVertex.glsl", "gouraudFragment.glsl");
+    //ground->shaderId = ShaderManager::instance()->getShader("phongShader", "phongVertex.glsl", "phongFragment.glsl");
+    ground->shaderId = ShaderManager::instance()->getShader("gouraudShader", "gouraudVertex.glsl", "gouraudFragment.glsl");
     //if (shadingMode) {
     //    ground->shaderId = ShaderManager::instance()->getShader("phong", "phongVertex.glsl", "phongFragment.glsl");
     //}

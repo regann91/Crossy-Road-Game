@@ -1,5 +1,15 @@
 #version 330 core
-out vec4 FragColor;
+layout (location = 0) in vec3 position;
+layout (location = 1) in vec3 color;
+layout (location = 2) in vec2 texCoord;
+layout (location = 3) in vec3 normal;
+
+out vec4 elemColor;
+
+// Matrices
+uniform mat4 modelMat;
+uniform mat4 viewMat;
+uniform mat4 projMat;
 
 // STRUCT DEFINITIONS FOR LIGHT RELATED OBJECTS
 
@@ -34,17 +44,9 @@ struct PointLight {
 uniform Material material;
 uniform DirectionalLight dirLight;
 uniform PointLight pointLight;
+uniform vec3 cameraPos;
 
-// In from vertex shader
-in vec3 elemPosition;
-in vec4 elemColor;
-in vec3 elemNormal;
-
-// Camera position in world space
-in vec3 cameraPos;
-
-
-vec3 computeDirectionalLight(DirectionalLight light, vec3 elemToCamera)
+vec3 computeDirectionalLight(DirectionalLight light, vec3 elemToCamera, vec3 elemNormal)
 {
     vec3 lightDir = -light.direction;
 
@@ -64,13 +66,13 @@ vec3 computeDirectionalLight(DirectionalLight light, vec3 elemToCamera)
     return (ambient + diffuse + specular);
 }
 
-vec3 computePointLight(PointLight light, vec3 elemToCamera)
+vec3 computePointLight(PointLight light, vec3 elemToCamera, vec3 elemPosition, vec3 elemNormal)
 {
     // Diffuse shading
     vec3 lightDir = light.position - elemPosition;
-    float distance = length( lightDir );
+    float distance = length(lightDir);
     lightDir *= float(1) / distance;
-    float diffuseFactor = max(dot(elemNormal, elemToCamera), 0.0);
+    float diffuseFactor = max(dot(elemNormal, lightDir), 0.0);
     
     // Specular
     vec3 reflectDir = reflect(-lightDir, elemNormal);
@@ -81,8 +83,8 @@ vec3 computePointLight(PointLight light, vec3 elemToCamera)
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * pow(distance, 2));
 
     // Combine results    
-    vec3 ambient  = attenuation * light.ambient * material.ambient ;
-    vec3 diffuse  = attenuation * diffuseFactor * light.diffuse  * material.diffuse ;
+    vec3 ambient = attenuation * light.ambient * material.ambient;
+    vec3 diffuse = attenuation * diffuseFactor * light.diffuse * material.diffuse;
     vec3 specular = attenuation * specularFactor * light.specular * material.specular;
 
     return (ambient + diffuse + specular);
@@ -90,14 +92,17 @@ vec3 computePointLight(PointLight light, vec3 elemToCamera)
 
 void main()
 {
-    //Surface to camera vector
-    vec3 elemToCamera = normalize( cameraPos - elemPosition );
+    vec3 elemPosition = vec3(modelMat * vec4(position, 1.0f));
+    vec3 elemNormal = normalize(mat3(transpose(inverse(modelMat))) * normal);
+    
+    vec3 elemToCamera = normalize(cameraPos - elemPosition);
 
     vec3 tmpColor = vec3(0.0, 0.0, 0.0);
 
-    tmpColor += computeDirectionalLight(dirLight, elemToCamera);
-    tmpColor += computePointLight(pointLight, elemToCamera);
+    tmpColor += computeDirectionalLight(dirLight, elemToCamera, elemNormal);
+    tmpColor += computePointLight(pointLight, elemToCamera, elemPosition, elemNormal);
 
-    FragColor = vec4(tmpColor,1.0);
+    elemColor = vec4(tmpColor, 1.0);
+    
+    gl_Position = projMat * viewMat * vec4(elemPosition, 1.0f);
 }
-
