@@ -26,6 +26,9 @@ Renderer* Renderer::instance()
     return INSTANCE;
 }
 
+void Renderer::setShaderProgram(GLuint shaderId) {
+    this->shaderId = shaderId;
+}
 
 void Renderer::toggleRenderingMode() {
     switch (renderingMode) {
@@ -53,7 +56,17 @@ void Renderer::toggleRenderingMode() {
     }
 }
 
-
+//void Renderer::toggleShadingMode() {
+//    useGouraudShading = !useGouraudShading;
+//    if (useGouraudShading) {
+//        std::cout << "Current shading mode: Gouraud" << std::endl;
+//        shaderId = ShaderManager::instance()->getShader("gouraud", "gouraudVertex.glsl", "gouraudFragment.glsl");
+//    }
+//    else {
+//        std::cout << "Current shading mode: Phong" << std::endl;
+//        shaderId = ShaderManager::instance()->getShader("phong", "phongVertex.glsl", "phongFragment.glsl");
+//    }
+//}
 // Build world
 void Renderer::buildWorld(Game& game) {
     

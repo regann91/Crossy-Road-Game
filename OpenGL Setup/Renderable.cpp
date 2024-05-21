@@ -43,6 +43,7 @@ void Renderable::draw() const {
     ShaderManager::instance()->setMat4(activeShader, "projMat", Camera::instance()->projectionMatrix);
     ShaderManager::instance()->setMat4(activeShader, "viewMat", Camera::instance()->viewMatrix);
 
+
     // Send lighting info to shader
     sendMaterialToShader(activeShader);
     Renderer::instance()->sendLightsToShader(activeShader);

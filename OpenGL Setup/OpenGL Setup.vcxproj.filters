@@ -160,5 +160,11 @@
     <None Include="shaders\normalMappedPhongFragment.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="gouraudVertex.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="gouraudFragment.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

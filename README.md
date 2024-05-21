@@ -1,15 +1,17 @@
-# CSED451 - Assignment 1 (Crossy Road Game)
+# CSED451 - Assignment 4  (Crossy Road Game)
 
 Our rendition of the popular arcade game, Crossy Road.
 
 ### Controls
 You can move your character using the arrow keys (Up, Right, Left, Down). 
 You can also move the camera using W, A, S, D, Z, Space (Forward, Left, Backwards, Right, Up, Down).
+
 Pressing C reinitializes camera position.
-
-Pressing R allows to change rendering mode (Color, Wireframe, Wireframe with hidden face removal).
+Pressing R allows changing between different rendering modes (Color, Wireframe, Wireframe with hidden face removal).
 Pressing V changes the viewing mode (Third person, First person, Side view, Above view).
-
+Pressing X allows toggling between Gouraud & Phong shading.
+Pressing T will toggle the application of diffuse texture mapping on and off.
+Pressing N will toggle the application of normal mapping on and off.
 Pressing P will activate cheat mode, allowing the character to pass through obstacles and not die when colliding with a car or the water.
 
 ### How to play
@@ -18,7 +20,7 @@ Your goal is to get to the flag across the rivers and roads! You can collect coi
 
 ## Authors
 
-- [@regan91](https://www.github.com/regan91)
+- [@regann91](https://www.github.com/regann91)
 - [@Emy-En](https://www.github.com/Emy-En)
 
 ## Project environment

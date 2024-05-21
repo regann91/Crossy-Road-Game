@@ -26,8 +26,12 @@ public:
     // Toggles between different rendering modes
     void toggleRenderingMode();
 
+    //void toggleShadingMode();
+
     // Send light info to a shader
     void sendLightsToShader(GLuint shaderId);
+
+    void setShaderProgram(GLuint shaderId);
 
     // Lights
     struct DirectionalLight {

@@ -195,6 +195,8 @@
     <ClInclude Include="TextureManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="gouraudFragment.glsl" />
+    <None Include="gouraudVertex.glsl" />
     <None Include="shaders\colorVertex.glsl" />
     <None Include="shaders\flatFragment.glsl" />
     <None Include="shaders\flatVertex.glsl" />

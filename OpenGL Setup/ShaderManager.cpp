@@ -81,7 +81,7 @@ GLuint ShaderManager::loadShader(std::string name, std::string vertexPath, std::
     // COMPILING THE SHADERS
     GLuint vertex, fragment;
     int success;
-    char infoLog[512];
+    GLchar infoLog[512];
 
     // Compiling Vertex Shader
     vertex = glCreateShader(GL_VERTEX_SHADER);
