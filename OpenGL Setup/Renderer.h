@@ -24,7 +24,9 @@ public:
     void drawScene(Game& game);
 
     // Toggles between different rendering modes
-    void toggleRenderingMode();
+    void toggleRenderingMode(GLuint shaderId);
+
+    void toggleShadingMode();
 
     // Send light info to a shader
     void sendLightsToShader(GLuint shaderId);
@@ -76,6 +78,6 @@ private:
     };
     RenderingMode renderingMode;
 
-    // Shader mode (true is Phong/false is Gouraud)
-    bool shadingType;
+    bool useGouraudShading = false; // Start with Phong shading
+
 };

@@ -105,6 +105,9 @@ void handleInputCharKeys(unsigned char key, int x, int y) {
     case 'c':
         Camera::instance()->resetInputOffset();
         break;
+    case 'x':
+        Renderer::instance()->toggleShadingMode();
+        break;
     default:
         break;
     }
