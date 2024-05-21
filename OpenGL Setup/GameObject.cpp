@@ -1,13 +1,14 @@
 #include "GameObject.h"
 #include "TextureManager.h"
 #include <iostream>
-
+#include <memory>
+#include "NormalMappedRenderable.h"
 
 // Constructor implementation
 GameObject::GameObject(float startX, float startY, float startZ, float objWidth, float objHeight, float objDepth, glm::vec3 color, float rotation)
     : x(startX), y(startY), z(startZ), width(objWidth), height(objHeight), depth(objDepth), rotation(rotation)
 {
-    renderable = std::make_shared<Renderable>(color, "cube.obj");
+    renderable = std::make_shared<Renderable>("cube.obj", color);
     renderable->setTransform(
         Renderable::getTrans(x, y, z) *
         Renderable::getRot(rotation, glm::vec3(0, 0, 1)) * 
@@ -50,4 +51,17 @@ void GameObject::setPosition(float newX, float newY, float newZ) {
         Renderable::getRot(rotation, glm::vec3(0, 0, 1)) * 
         Renderable::getScale(width, height, depth)
     );
+}
+
+void GameObject::draw() const
+{ 
+    // Check of class
+    NormalMappedRenderable* ptr = dynamic_cast<NormalMappedRenderable*>(renderable.get());
+    if (ptr != nullptr) {
+        // Draws Normal mapped renderable
+        ptr->draw();
+    }
+    else {
+        renderable->draw(); // Draws classic renderable
+    }
 }

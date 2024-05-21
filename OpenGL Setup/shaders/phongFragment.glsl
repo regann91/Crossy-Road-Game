@@ -35,10 +35,13 @@ uniform Material material;
 uniform DirectionalLight dirLight;
 uniform PointLight pointLight;
 
+uniform sampler2D tex;
+
 // In from vertex shader
 in vec3 elemPosition;
 in vec4 elemColor;
 in vec3 elemNormal;
+in vec2 elemTexCoord;
 
 // Camera position in world space
 in vec3 cameraPos;
@@ -99,5 +102,6 @@ void main()
     tmpColor += computePointLight(pointLight, elemToCamera);
 
     FragColor = vec4(tmpColor,1.0);
+    //FragColor = texture(tex, elemTexCoord);
 }
 

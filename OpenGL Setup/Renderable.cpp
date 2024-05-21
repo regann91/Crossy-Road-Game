@@ -4,23 +4,26 @@
 #include <iostream>
 #include "Renderer.h"
 
+
 // Constructor implementations
-Renderable::Renderable(glm::vec3 colorVec, std::string path)
+Renderable::Renderable(std::string pathMesh, glm::vec3 colorVec, std::string pathTex)
 {
     // Load mesh, shader, set transformation to Id Matrix
-    meshInfo = MeshManager::instance()->getMesh(path);
+    meshInfo = MeshManager::instance()->getMesh(pathMesh);
     shaderId = ShaderManager::instance()->getShader("phong", "phongVertex.glsl", "phongFragment.glsl");
+    texture = TextureManager::instance()->getTexture(pathTex);
     material = Material(colorVec * glm::vec3(0.35, 0.3, 0.40), colorVec, glm::vec3(0.3), 11.36);
     transform = glm::mat4(1);
 }
 
 // Manual mesh loading constructor
-Renderable::Renderable(std::shared_ptr<Mesh> mesh)
+Renderable::Renderable(std::shared_ptr<Mesh> mesh, glm::vec3 colorVec, std::string pathTex)
 {
     // Load mesh, shader, set transformation to Id Matrix
     meshInfo = mesh;
     shaderId = ShaderManager::instance()->getShader("phong","phongVertex.glsl","phongFragment.glsl");
-    material = Material(glm::vec3(0.35, 0.3, 0.40), glm::vec3(1), glm::vec3(0.3), 11.36);
+    texture = TextureManager::instance()->getTexture(pathTex);
+    material = Material(colorVec * glm::vec3(0.35, 0.3, 0.40), colorVec, glm::vec3(0.3), 11.36);
     transform = glm::mat4(1);
 }
 
@@ -39,6 +42,11 @@ void Renderable::draw() const {
     // Send lighting info to shader
     sendMaterialToShader();
     Renderer::instance()->sendLightsToShader(shaderId);
+
+    // Send texture info to shader
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    ShaderManager::instance()->setInt(shaderId, "ground", 0);
 
     glBindVertexArray(meshInfo->buffer);
     glDrawElements(GL_TRIANGLES, meshInfo->indexNb, GL_UNSIGNED_INT, 0);

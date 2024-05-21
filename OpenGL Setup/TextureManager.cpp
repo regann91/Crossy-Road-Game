@@ -28,7 +28,10 @@ GLuint TextureManager::getTexture(const std::string filename)
         return it->second;
     }
     // Else load it
-    return loadTexture(filename);
+    // Add texture to the map and return
+    GLuint tex = loadTexture("../OpenGL\ Setup/textures/" + filename);
+    loadedTex.emplace(filename, tex);
+    return tex;
 }
 
 
@@ -70,8 +73,7 @@ GLuint TextureManager::loadTexture(const std::string filename)
     for (int i = 0; i < width * height; ++i)
     {
         index = i * 4;
-        B = data[index]; G = data[index + 1]; R = data[index + 2];
-        A = ((int)R == 255 && (int)G == 0 && (int)B == 255) ? 0 : 255;
+        B = data[index]; G = data[index + 1]; R = data[index + 2]; A = 255 - data[index + 3];
         data[index] = R; data[index + 1] = G; data[index + 2] = B; data[index + 3] = A;
     }
 
@@ -85,8 +87,8 @@ GLuint TextureManager::loadTexture(const std::string filename)
     // Parameters of texture
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
@@ -97,7 +99,5 @@ GLuint TextureManager::loadTexture(const std::string filename)
     // Free data in memory
     free(data);
 
-    // Add texture to the map and return
-    loadedTex.emplace(filename, texture);
     return texture;
 }

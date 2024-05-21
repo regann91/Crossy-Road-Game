@@ -23,7 +23,7 @@ public:
     bool collidesWith(std::shared_ptr<GameObject> obj) const;
 
     // Draw from renderable
-    void draw() const { renderable->draw(); }
+    void draw() const;
 
     // Moving functions
     void move(float dx, float dy, float dz);

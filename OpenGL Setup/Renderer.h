@@ -3,7 +3,7 @@
 #include <GL/freeglut.h>
 #include <map>
 #include <string>
-#include "Renderable.h"
+#include "NormalMappedRenderable.h"
 #include "GameObject.h"
 #include "Game.h"
 #include "Camera.h"
@@ -66,7 +66,7 @@ private:
     static Renderer* INSTANCE;
 
     // Ground mesh
-    std::shared_ptr<Renderable> ground;
+    std::shared_ptr<NormalMappedRenderable> ground;
 
     // Rendering mode
     enum RenderingMode {
