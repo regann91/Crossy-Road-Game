@@ -136,6 +136,7 @@ void MeshManager::loadInfoFromFile(std::string filename, std::vector<Vertex>& ve
             }
         }
     }
+    /*
     // Build final vertex array 
     vertices.resize(vertPos.size(), Vertex());
 
@@ -159,6 +160,21 @@ void MeshManager::loadInfoFromFile(std::string filename, std::vector<Vertex>& ve
     // Build index 
     indices = posIndices;
     for (GLuint& i : indices) i--;
+    */
+    // Build final vertex array 
+    vertices.resize(posIndices.size(), Vertex());
+
+    // Load in all vertices
+    for (size_t i = 0; i < vertices.size(); ++i) {
+        vertices[i].position = vertPos[posIndices[i] - 1];
+        vertices[i].texCoord = vertTexCoord[texCoordIndices[i] - 1];
+        vertices[i].normal = vertNorm[normIndices[i] - 1];
+        vertices[i].color = glm::vec3(i % 2, (i + 1) % 2, (i * 3) % 2);
+    }
+    // Build index 
+    indices.resize(vertices.size(), 0);
+    std::iota(std::begin(indices), std::end(indices), 0);
+    
 }
 
 Vertex::Vertex(glm::vec3 pos, glm::vec3 col, glm::vec2 texC, glm::vec3 norm) {

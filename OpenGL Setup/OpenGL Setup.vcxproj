@@ -160,6 +160,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="MeshManager.cpp" />
+    <ClCompile Include="NormalMappedRenderable.cpp" />
     <ClCompile Include="Renderable.cpp" />
     <ClCompile Include="MovingObject.cpp" />
     <ClCompile Include="Path.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="MeshManager.h" />
+    <ClInclude Include="NormalMappedRenderable.h" />
     <ClInclude Include="Tree.h" />
     <ClInclude Include="MovingObject.h" />
     <ClInclude Include="Renderable.h" />
@@ -198,6 +200,8 @@
     <None Include="shaders\colorVertex.glsl" />
     <None Include="shaders\flatFragment.glsl" />
     <None Include="shaders\flatVertex.glsl" />
+    <None Include="shaders\normalMappedPhongFragment.glsl" />
+    <None Include="shaders\normalMappedPhongVertex.glsl" />
     <None Include="shaders\phongFragment.glsl" />
     <None Include="shaders\phongVertex.glsl" />
   </ItemGroup>

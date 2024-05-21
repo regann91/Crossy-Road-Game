@@ -75,6 +75,7 @@ int Game::movePlayer(float deltaX, float deltaZ)
 
             // Exit the game
             endRound(true);
+            return movesSucceeded;
         }
         // Check if move would get us out of bounds
         if (playerChar->x + playerChar->width / 2 > 400 || 
@@ -206,8 +207,8 @@ void Game::toggleCheatMode() {
 
 void Game::endRound(bool roundWon) {
     // Reinitialize player andposition
-    Camera::instance()->moveCameraTo(0,0,0);
     playerChar->setPosition(0, playerChar->y, 0);
+    Camera::instance()->moveCameraTo(0, 0, 0);
 
     // Reinitialize player items and scores
     maxHeight = 0;

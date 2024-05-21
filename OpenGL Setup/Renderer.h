@@ -3,7 +3,7 @@
 #include <GL/freeglut.h>
 #include <map>
 #include <string>
-#include "Renderable.h"
+#include "NormalMappedRenderable.h"
 #include "GameObject.h"
 #include "Game.h"
 #include "Camera.h"
@@ -61,6 +61,13 @@ public:
             position(pos), ambient(amb), diffuse(diff), specular(spec), constant(c), linear(l), quadratic(q) {}
 
     } pointLight;
+
+    // Shader mode (true is Phong/false is Gouraud)
+    bool shadingType;
+    // Texturing activated or not
+    bool texturing;
+    // Normal mapping activated or not
+    bool normalMapping;
     
 private:
     // Private constructor
@@ -70,7 +77,7 @@ private:
     static Renderer* INSTANCE;
 
     // Ground mesh
-    std::shared_ptr<Renderable> ground;
+    std::shared_ptr<NormalMappedRenderable> ground;
 
     // Rendering mode
     enum RenderingMode {
@@ -79,9 +86,4 @@ private:
         WIREFRAME_DEPTH_REMOVAL
     };
     RenderingMode renderingMode;
-
-    // bool useGouraudShading = false; // Start with Phong shading
-    GLuint shaderId;
-
-
 };

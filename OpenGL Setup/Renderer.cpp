@@ -1,11 +1,15 @@
 #include "Renderer.h"
 #include <glm/geometric.hpp>
+#include "NormalMappedRenderable.h"
 
 const float rotationRate = -0.001;
 
 // Constructor implementation with initialized world (ground)
 Renderer::Renderer() {
     renderingMode = COLOR;
+    // Starts on Phong with shading and normal mapping
+    texturing = true;
+    shadingType = true;
 }
 
 // Init to null
@@ -69,35 +73,47 @@ void Renderer::buildWorld(Game& game) {
     // CONSTRUCT GROUND
     glm::vec3 color = glm::vec3(0.66, 0.53, 0.74);
 
+    // Ratio of terrain, used for texture mapping (total length of mesh/width of mesh)
+    float totalLength = (1800 + game.paths.size() * 40);
+    float ratio = totalLength/800;
+    // Amount of texture tiles per width
+    float tiles = 3;
+
     // Starting vertices
     std::vector<Vertex> vertGround = {
                 // Position               // Color      // Tex Coord     // Normal
-         Vertex(glm::vec3(-400, 0, -400), color, glm::vec2(0, 0), glm::vec3(0, 1, 0)),     // Bottom left
-         Vertex(glm::vec3(400, 0, -400), color, glm::vec2(1, 0), glm::vec3(0, 1, 0)),      // Bottom right
+         Vertex(glm::vec3(-400, 0, -400), color, tiles * glm::vec2(0, 0), glm::vec3(0, 1, 0)),     // Bottom left
+         Vertex(glm::vec3(400, 0, -400), color, tiles * glm::vec2(1, 0), glm::vec3(0, 1, 0)),      // Bottom right
     };
+    float lengthMesh = 0;
+    float previousZ = -400;
 
     // Iterate over the game paths to add vertices
     for (auto& path : game.paths) {
         // BEFORE THE PATH - Ground level (0)
-        vertGround.emplace_back(glm::vec3(-400, 0, path->z - path->depth / 2), color, glm::vec2(0, 0), glm::vec3(0, 1, 0));
-        vertGround.emplace_back(glm::vec3(400, 0, path->z - path->depth / 2), color, glm::vec2(0, 0), glm::vec3(0, 1, 0));
+        lengthMesh += (- previousZ + (path->z - path->depth / 2));
+        vertGround.emplace_back(glm::vec3(-400, 0, path->z - path->depth / 2), color, tiles * glm::vec2(0, ratio * lengthMesh / totalLength), glm::vec3(0, 1, 0));
+        vertGround.emplace_back(glm::vec3(400, 0, path->z - path->depth / 2), color, tiles * glm::vec2(1, ratio * lengthMesh / totalLength), glm::vec3(0, 1, 0));
 
         // Path level (lower)
-        vertGround.emplace_back(glm::vec3(-400, -20, path->z - path->depth / 2), color, glm::vec2(0, 0), glm::vec3(0, 0, 1));
-        vertGround.emplace_back(glm::vec3(400, -20, path->z - path->depth / 2), color, glm::vec2(0, 0), glm::vec3(0, 0, 1));
+        lengthMesh += 20;
+        vertGround.emplace_back(glm::vec3(-400, -20, path->z - path->depth / 2), color, tiles * glm::vec2(0, ratio * lengthMesh / totalLength), glm::vec3(0, 0, 1));
+        vertGround.emplace_back(glm::vec3(400, -20, path->z - path->depth / 2), color, tiles * glm::vec2(1, ratio * lengthMesh / totalLength), glm::vec3(0, 0, 1));
 
         // AFTER THE PATH - Path level (lower)
-        vertGround.emplace_back(glm::vec3(-400, -20, path->z + path->depth / 2), color, glm::vec2(0, 0), glm::vec3(0, 0, -1));
-        vertGround.emplace_back(glm::vec3(400, -20, path->z + path->depth / 2), color, glm::vec2(0, 0), glm::vec3(0, 0, -1));
+        lengthMesh += path->depth;
+        previousZ = path->z + path->depth / 2;
+        vertGround.emplace_back(glm::vec3(-400, -20, path->z + path->depth / 2), color, tiles * glm::vec2(0, ratio * lengthMesh / totalLength), glm::vec3(0, 0, -1));
+        vertGround.emplace_back(glm::vec3(400, -20, path->z + path->depth / 2), color, tiles * glm::vec2(1, ratio * lengthMesh / totalLength), glm::vec3(0, 0, -1));
 
         // Ground level (0)
-        vertGround.emplace_back(glm::vec3(-400, 0, path->z + path->depth / 2), color, glm::vec2(0, 0), glm::vec3(0, 1, 0));
-        vertGround.emplace_back(glm::vec3(400, 0, path->z + path->depth / 2), color, glm::vec2(0, 0), glm::vec3(0, 1, 0));
+        lengthMesh += 20;
+        vertGround.emplace_back(glm::vec3(-400, 0, path->z + path->depth / 2), color, tiles * glm::vec2(0, ratio * lengthMesh / totalLength), glm::vec3(0, 1, 0));
+        vertGround.emplace_back(glm::vec3(400, 0, path->z + path->depth / 2), color, tiles * glm::vec2(1, ratio * lengthMesh / totalLength), glm::vec3(0, 1, 0));
     }
-
     // Ending vertices
-    vertGround.emplace_back(glm::vec3(-400, 0, 1400), color, glm::vec2(0, 0), glm::vec3(0, 1, 0));
-    vertGround.emplace_back(glm::vec3(400, 0, 1400), color, glm::vec2(0, 0), glm::vec3(0, 1, 0));
+    vertGround.emplace_back(glm::vec3(-400, 0, 1400), color, tiles * glm::vec2(0, ratio), glm::vec3(0, 1, 0));
+    vertGround.emplace_back(glm::vec3(400, 0, 1400), color, tiles * glm::vec2(1, ratio), glm::vec3(0, 1, 0));
 
 
     // Iterate over the constructed vertices to build all of the triangles
@@ -110,16 +126,8 @@ void Renderer::buildWorld(Game& game) {
         indGround.insert(indGround.end(), { 2*i+1, 2*i+2, 2*i+3 });   // 2nd triangle
     }
 
-    ground = std::make_shared<Renderable>(MeshManager::instance()->getMesh("ground", vertGround, indGround));
-    //ground->shaderId = ShaderManager::instance()->getShader("phongShader", "phongVertex.glsl", "phongFragment.glsl");
-    ground->shaderId = ShaderManager::instance()->getShader("gouraudShader", "gouraudVertex.glsl", "gouraudFragment.glsl");
-    //if (shadingMode) {
-    //    ground->shaderId = ShaderManager::instance()->getShader("phong", "phongVertex.glsl", "phongFragment.glsl");
-    //}
-    //else {
-    //    ground->shaderId = ShaderManager::instance()->getShader("gouraud", "gouraudVertex.glsl", "gouraudFragment.glsl");
-    //}
-    ground->material = Renderable::Material(glm::vec3(0.35, 0.3, 0.40) * color, color, glm::vec3(0.3), 11.36);
+    ground = std::make_shared<NormalMappedRenderable>(MeshManager::instance()->getMesh("ground", vertGround, indGround), color);
+    //ground->material = Renderable::Material(glm::vec3(0.35, 0.3, 0.40) * color, color, glm::vec3(0.3), 11.36);
 
     // ADD LIGHTS
     //Define a directional light for the whole scene
@@ -152,18 +160,15 @@ void Renderer::drawScene(Game& game)
     ground->draw();
 
     // Update lights
-    float rate = dirLight.direction.y > 0 ? 5 : 1;
-    dirLight.direction.x = dirLight.direction.x * cos(rotationRate * rate) - dirLight.direction.y * sin(rotationRate * rate);
-    dirLight.direction.y = dirLight.direction.x * sin(rotationRate * rate) + dirLight.direction.y * cos(rotationRate * rate);
+    dirLight.direction.x = dirLight.direction.x * cos(rotationRate) - dirLight.direction.y * sin(rotationRate);
+    dirLight.direction.y = dirLight.direction.x * sin(rotationRate) + dirLight.direction.y * cos(rotationRate);
+    if (dirLight.direction.y > 0) dirLight.direction = glm::vec3(1, 0, 0);
 
-    // Render roads
+    // Render roads and rivers
     for (const auto& path : game.paths) {
         path->draw();
     }
-
-    // Render player
-    game.playerChar->draw();
-
+   
     // Render all powerups
     for (const auto& powerup : game.collectibles) {
         powerup->draw();
@@ -176,6 +181,9 @@ void Renderer::drawScene(Game& game)
 
     // Render end flag
     game.flagEnd->draw();
+
+    // Render player
+    game.playerChar->draw();
 
     // Render powerup bar
     /*
@@ -194,15 +202,11 @@ void Renderer::drawScene(Game& game)
 }
 
 void Renderer::sendLightsToShader(GLuint shaderId) {
-    float rate = dirLight.direction.y > 0
-        ? (1 - 12*dirLight.direction.y < 0 ? 0 : 1 - 12 * dirLight.direction.y)
-        : 1
-    ;
     // SEND DIR LIGHT INFO
     ShaderManager::instance()->setVec3(shaderId, "dirLight.position", dirLight.position);
     ShaderManager::instance()->setVec3(shaderId, "dirLight.direction", dirLight.direction);
     ShaderManager::instance()->setVec3(shaderId, "dirLight.ambient", dirLight.ambient);
-    ShaderManager::instance()->setVec3(shaderId, "dirLight.diffuse", dirLight.diffuse * rate);
+    ShaderManager::instance()->setVec3(shaderId, "dirLight.diffuse", dirLight.diffuse);
     ShaderManager::instance()->setVec3(shaderId, "dirLight.specular", dirLight.specular);
 
     // SEND POINT LIGHT INFO

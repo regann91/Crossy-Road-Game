@@ -20,7 +20,8 @@ public:
 
     // Information
     std::shared_ptr<Mesh> meshInfo;
-    GLuint shaderId;
+    GLuint phongShaderId, gouraudShaderId;
+    GLuint texture;
 
     // Material
     struct Material {
@@ -38,12 +39,13 @@ public:
     std::vector<std::shared_ptr<Renderable>> children;
 
     // Constructor - default magenta
-    Renderable(glm::vec3 colorVec = glm::vec4(1,0,1,1), std::string path = "cube.obj");
+    Renderable(std::string pathMesh = "cube.obj", glm::vec3 colorVec = glm::vec4(1, 0, 1, 1), std::string pathTex = "texx.bmp");
     // Constructor with manually constructed mesh
-    Renderable(std::shared_ptr<Mesh> mesh);
+    Renderable(std::shared_ptr<Mesh> mesh, glm::vec3 colorVec = glm::vec4(1, 0, 1, 1), std::string pathTex = "texx.bmp");
 
     // Function for drawing the object
-    void draw() const;
+    virtual void draw() const;
+    void sendMaterialToShader(GLuint activeShader) const;
 
     // Function to add a child Renderable
     void addChildRenderable(std::shared_ptr<Renderable> r);
@@ -57,8 +59,5 @@ public:
 
     static glm::mat4 getTrans(float x, float y, float z);
     static glm::mat4 getRot(float theta, glm::vec3 axis);
-    static glm::mat4 getScale(float w, float h, float d);
-
-private:
-    void sendMaterialToShader() const;
+    static glm::mat4 getScale(float w, float h, float d);  
 };

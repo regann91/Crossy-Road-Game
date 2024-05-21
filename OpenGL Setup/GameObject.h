@@ -14,7 +14,7 @@ public:
     std::shared_ptr<Renderable> renderable;
     
     // Constructor
-    GameObject(float startX, float startY, float startZ, float objWidth, float objHeight, float objDepth, glm::vec3 color, float rotation = 0);
+    GameObject(float startX, float startY, float startZ, float objWidth, float objHeight, float objDepth, glm::vec3 color, float rotation = 0, std::string tex = "defaultTex.bmp");
 
     // Constructor
     GameObject() {}
@@ -23,7 +23,7 @@ public:
     bool collidesWith(std::shared_ptr<GameObject> obj) const;
 
     // Draw from renderable
-    void draw() const { renderable->draw(); }
+    void draw() const;
 
     // Moving functions
     void move(float dx, float dy, float dz);

@@ -4,55 +4,55 @@
 #include <iostream>
 #include "Renderer.h"
 
+
 // Constructor implementations
-Renderable::Renderable(glm::vec3 colorVec, std::string path)
+Renderable::Renderable(std::string pathMesh, glm::vec3 colorVec, std::string pathTex)
 {
     // Load mesh, shader, set transformation to Id Matrix
-    meshInfo = MeshManager::instance()->getMesh(path);
-    //shaderId = ShaderManager::instance()->getShader("phong", "phongVertex.glsl", "phongFragment.glsl");
-    shaderId = ShaderManager::instance()->getShader("gouraud", "gouraudVertex.glsl", "gouraudFragment.glsl");
-    //if (shadingMode) {
-    //    shaderId = ShaderManager::instance()->getShader("phong", "phongVertex.glsl", "phongFragment.glsl");
-    //}
-    //else {
-    //    shaderId = ShaderManager::instance()->getShader("gouraud", "gouraudVertex.glsl", "gouraudFragment.glsl");
-    //}
+    meshInfo = MeshManager::instance()->getMesh(pathMesh);
+    phongShaderId = ShaderManager::instance()->getShader("phong", "phongVertex.glsl", "phongFragment.glsl");
+    gouraudShaderId = ShaderManager::instance()->getShader("gouraud", "gouraudVertex.glsl", "gouraudFragment.glsl");
+    texture = TextureManager::instance()->getTexture(pathTex);
     material = Material(colorVec * glm::vec3(0.35, 0.3, 0.40), colorVec, glm::vec3(0.3), 11.36);
     transform = glm::mat4(1);
 }
 
 // Manual mesh loading constructor
-Renderable::Renderable(std::shared_ptr<Mesh> mesh)
+Renderable::Renderable(std::shared_ptr<Mesh> mesh, glm::vec3 colorVec, std::string pathTex)
 {
     // Load mesh, shader, set transformation to Id Matrix
     meshInfo = mesh;
-    //shaderId = ShaderManager::instance()->getShader("phong","phongVertex.glsl","phongFragment.glsl");
-    shaderId = ShaderManager::instance()->getShader("gouraud", "gouraudVertex.glsl", "gouraudFragment.glsl");
-    //if (shadingMode) {
-    //    shaderId = ShaderManager::instance()->getShader("phong", "phongVertex.glsl", "phongFragment.glsl");
-    //}
-    //else {
-    //    shaderId = ShaderManager::instance()->getShader("gouraud", "gouraudVertex.glsl", "gouraudFragment.glsl");
-    //}
-    material = Material(glm::vec3(0.35, 0.3, 0.40), glm::vec3(1), glm::vec3(0.3), 11.36);
+    phongShaderId = ShaderManager::instance()->getShader("phong","phongVertex.glsl","phongFragment.glsl");
+    gouraudShaderId = ShaderManager::instance()->getShader("gouraud", "gouraudVertex.glsl", "gouraudFragment.glsl");
+    texture = TextureManager::instance()->getTexture(pathTex);
+    material = Material(colorVec * glm::vec3(0.35, 0.3, 0.40), colorVec, glm::vec3(0.3), 11.36);
     transform = glm::mat4(1);
 }
 
 // Draw implementation
 void Renderable::draw() const {
     glPushMatrix();
+    
+    GLuint activeShader = Renderer::instance()->shadingType ? phongShaderId : gouraudShaderId;
+
     // Activate shader
-    ShaderManager::bind(shaderId);
+    ShaderManager::bind(activeShader);
 
     // Send matrix info to buffer
-    ShaderManager::instance()->setMat4(shaderId, "modelMat", transform);
-    ShaderManager::instance()->setMat4(shaderId, "projMat", Camera::instance()->projectionMatrix);
-    ShaderManager::instance()->setMat4(shaderId, "viewMat", Camera::instance()->viewMatrix);
+    ShaderManager::instance()->setMat4(activeShader, "modelMat", transform);
+    ShaderManager::instance()->setMat4(activeShader, "projMat", Camera::instance()->projectionMatrix);
+    ShaderManager::instance()->setMat4(activeShader, "viewMat", Camera::instance()->viewMatrix);
 
 
     // Send lighting info to shader
-    sendMaterialToShader();
-    Renderer::instance()->sendLightsToShader(shaderId);
+    sendMaterialToShader(activeShader);
+    Renderer::instance()->sendLightsToShader(activeShader);
+
+    // Send texture info to shader
+    ShaderManager::instance()->setBool(activeShader, "texturingActive", Renderer::instance()->texturing);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    ShaderManager::instance()->setInt(activeShader, "ground", 0);
 
     glBindVertexArray(meshInfo->buffer);
     glDrawElements(GL_TRIANGLES, meshInfo->indexNb, GL_UNSIGNED_INT, 0);
@@ -100,9 +100,9 @@ glm::mat4 Renderable::getScale(float w, float h, float d) {
     return glm::scale(glm::mat4(1), glm::vec3(w, h, d));
 }
 
-void Renderable::sendMaterialToShader() const {
-    ShaderManager::instance()->setVec3(shaderId, "material.ambient", material.ambient);
-    ShaderManager::instance()->setVec3(shaderId, "material.diffuse", material.diffuse);
-    ShaderManager::instance()->setVec3(shaderId, "material.specular", material.specular);
-    ShaderManager::instance()->setFloat(shaderId, "material.shininess", material.shininess);
+void Renderable::sendMaterialToShader(GLuint activeShader) const {
+    ShaderManager::instance()->setVec3(activeShader, "material.ambient", material.ambient);
+    ShaderManager::instance()->setVec3(activeShader, "material.diffuse", material.diffuse);
+    ShaderManager::instance()->setVec3(activeShader, "material.specular", material.specular);
+    ShaderManager::instance()->setFloat(activeShader, "material.shininess", material.shininess);
 }

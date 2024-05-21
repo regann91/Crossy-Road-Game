@@ -1,13 +1,13 @@
 #include "Road.h"
 #include <random>
+#include "NormalMappedRenderable.h"
+#include "TextureManager.h"
 
 // Constructor
 Road::Road(float riverZ, float riverWidth)
-    : Path(-12, riverZ, riverWidth, glm::vec3(1, 0.68, 0.83), 5, 50)
-{
+    : Path(-12, riverZ, riverWidth, glm::vec3(1, 0.68, 0.83), 5, 50, "groundTex.bmp") {
     initRoadMovingObjects();
 }
-
 
 
 bool Road::getsKilled(std::shared_ptr<Character> player) {
